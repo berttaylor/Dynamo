@@ -2,7 +2,7 @@
 
 ## Summary
 
-DynamoAPI is a fully functional  **Collaborative Goal Tracking** & **Task Management** web application, written with the following goals in mind:
+Dynamo is a fully functional  **Collaborative Goal Tracking** & **Task Management** web application, written with the following goals in mind:
 
 * Allow individuals users with a similar cause to form online groups
 * Allow these groups to plan and track collaborations in a way which is fully featured (see the feature spec below), but also intuitive and simple to use.
@@ -72,7 +72,6 @@ __What you should see__
 - After the successful build, check that your containers cane run by using `make -f make-dev up`.
   You should have obvious terminal output that confirms this, but you can also run
   `docker ps` - you should have all of the required containers running.
-- At `http://127.0.0.1:8000/`, you should see the browsable API (DRF)
 - At `http://127.0.0.1:8000/admin`, you should see the admin login page.
 
 ## Usage & Testing
