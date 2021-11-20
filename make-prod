@@ -1,0 +1,211 @@
+TODO
+
+
+# Dev-specific Makefile, for local development.
+.PHONY: springclean
+
+# Generic declarations
+PROJECT = dynamo
+INSTALL = pip install
+
+# Sets commands for individual containers
+BACKEND_RUN = docker-compose -f docker-compose.dev.yml run --rm web /bin/bash -c
+BACKEND_EXEC = docker-compose -f docker-compose.dev.yml exec web /bin/bash -c
+
+WORKER_RUN = docker-compose -f docker-compose.dev.yml run --rm worker /bin/bash -c
+WORKER_EXEC = docker-compose -f docker-compose.dev.yml exec worker /bin/bash -c
+
+DATABASE_RUN = docker-compose -f docker-compose.dev.yml run --rm db /bin/bash -c
+DATABASE_EXEC = docker-compose -f docker-compose.dev.yml exec db bash -c
+
+# Includes and exports environment variables for Database
+include .env.dev
+export
+
+# Build one named container
+build:
+	docker-compose -f docker-compose.dev.yml build --no-cache $(CONT)
+
+# Build all containers
+buildall:
+	docker-compose -f docker-compose.dev.yml build
+	docker-compose -f docker-compose.dev.yml up
+
+up:
+	docker-compose -f docker-compose.dev.yml up
+
+down:
+	docker-compose -f docker-compose.dev.yml down --remove-orphans
+
+killdocker:
+	docker kill $(docker ps -q)
+
+# Pass this a container name to reboot it
+# Needed if you make changes to Django's application layer or admin files
+restart:
+	docker-compose -f docker-compose.dev.yml restart $(CONT)
+
+fullrebuild:
+	docker-compose -f docker-compose.dev.yml down --rmi local -v
+	docker-compose -f docker-compose.dev.yml build --no-cache
+	docker-compose -f docker-compose.dev.yml up
+
+# DATABASE - Migration & DB tools
+planmigrations:
+	$(BACKEND_RUN) "cd $(PROJECT); ./manage.py migrate $(APP) --plan;"
+
+# Makes migrations for a single named app
+makemigrations:
+	$(BACKEND_RUN) "cd $(PROJECT); ./manage.py makemigrations $(APP);"
+
+# Dry runs migration
+dryrunmigrations:
+	$(BACKEND_RUN) "cd $(PROJECT); ./manage.py makemigrations $(APP) --dry-run --verbosity 3;"
+
+migrate:
+	$(BACKEND_RUN) "cd $(PROJECT); ./manage.py migrate;"
+
+planmigrate:
+	$(BACKEND_RUN) "cd $(PROJECT); ./manage.py migrate --plan;"
+
+squashmigrations:
+	$(BACKEND_RUN) "cd $(PROJECT); ./manage.py squashmigrations app_core $(NUM);"
+
+# Used specifically for the first load operation after cloning the repo down
+initialisebackend: makeallmigrations migrate createadmin
+
+#fixtures
+dumpdatatofixtures:
+	$(BACKEND_RUN) "cd $(PROJECT); ./manage.py dumpdata -o fixtures/fixtures.json -e auth -e admin -e sessions -e contenttypes -e axes"
+
+loaddata:
+	$(BACKEND_RUN) "cd $(PROJECT); ./manage.py loaddata fixtures/fixtures.json;"
+
+# Starts any registered Celery worker tasks
+startbeat:
+	$(WORKER_RUN) "celery -A backend worker --beat;"
+
+# Axes stuff
+axesresetall:
+	$(BACKEND_RUN) "cd $(PROJECT); ./manage.py axes_reset;"
+
+axesresetallbyuser:
+	$(BACKEND_RUN) "cd $(PROJECT);manage.py axes_reset_username $(USER);"
+
+# Empties entire local database apart from migration tables
+flush:
+	$(BACKEND_RUN) "cd $(PROJECT); ./manage.py flush;"
+
+flushapptables:
+	$(BACKEND_RUN) "cd $(PROJECT); ./manage.py flush_app_tables;"
+
+# WARNING - This drops and rebuilds your local db from your local migrations, from scratch. You'll need to
+# reimport any data that you remove with it
+rebuilddb:
+	$(DATABASE_EXEC) "PGUSER=$(POSTGRES_USER) PGPASSWORD=$(POSTGRES_PASSWORD) dropdb $(POSTGRES_DB);"
+	$(DATABASE_EXEC) "PGUSER=$(POSTGRES_USER) PGPASSWORD=$(POSTGRES_PASSWORD) createdb $(POSTGRES_DB)"
+	$(BACKEND_RUN) "cd $(PROJECT); ./manage.py migrate;"
+
+# WARNING - This drops your entire local db
+dropdb:
+	$(DATABASE_EXEC) "PGUSER=$(POSTGRES_USER) PGPASSWORD=$(POSTGRES_PASSWORD) dropdb $(POSTGRES_DB);"
+
+createdb:
+	$(DATABASE_EXEC) "PGUSER=$(POSTGRES_USER) PGHOST=$(POSTGRES_DB_HOST) PGPORT=$(POSTGRES_DB_PORT) PGPASSWORD=$(POSTGRES_PASSWORD) createdb $(POSTGRES_DB)"
+
+# Starts a psql shell if you like actually being inside the database. Usually, I don't
+psqlshell:
+	$(DATABASE_EXEC) "PGUSER=$(POSTGRES_USER) PGPASSWORD=$(POSTGRES_PASSWORD) psql $(POSTGRES_DB)"
+
+# GENERAL - General purpose tools
+createsuperuser:
+	$(BACKEND_RUN) "cd $(PROJECT); ./manage.py createsuperuser;"
+
+# This accepts any manage.py argument passed through it by ARG1= on the command
+# line - for example: make manage ARG1=migrate ARG2=--plan
+# (This is can be useful for the less common manage.py tools you might need)
+manage:
+	$(BACKEND_RUN) "cd $(PROJECT); ./manage.py $(ARG1) $(ARG2);"
+
+# This accepts any pipenv install package passed to it by PKG on the command
+# line - for example: make install PKG=djangorestframework
+install:
+	$(BACKEND_RUN) "cd $(PROJECT); pip install $(PKG)"
+
+installallreqs:
+	$(BACKEND_RUN) "cd $(PROJECT); pip install -r requirements.txt"
+
+freezereqs:
+	$(BACKEND_RUN) "cd $(PROJECT); pip freeze > requirements.txt"
+
+uninstall:
+	$(BACKEND_RUN) "cd $(PROJECT); pip uninstall $(PKG);"
+
+collectstatic:
+	$(BACKEND_RUN) "cd $(PROJECT); ./manage.py collectstatic --no-input;"
+
+djangocheck:
+	$(BACKEND_RUN) "cd $(PROJECT); ./manage.py check;"
+
+loadfixtures:
+	$(BACKEND_RUN) "cd $(PROJECT); ./manage.py loaddata fixtures/fixtures.json"
+
+djangoshell:
+	$(BACKEND_RUN) "cd $(PROJECT); ./manage.py shell;"
+
+startapp:
+	$(BACKEND_RUN) "cd $(PROJECT); ./manage.py startapp $(APP);"
+
+# TEST - Testing tools
+setuptests:
+	$(BACKEND_EXEC) "pip install --dev"
+
+runtests:
+	$(BACKEND_EXEC) "cd dynamo/tests; pytest"
+
+droptestdata:
+	$(BACKEND_RUN) "cd $(PROJECT); ./manage.py drop_pm_test_data;"
+
+# Some quick ways to check versions of some installations if we want
+djangoversion:
+	$(BACKEND_RUN) "cd $(PROJECT); python3 -m django --version;"
+
+nodeversion:
+	$(BACKEND_RUN) "cd $(PROJECT); node -v;"
+
+npmversion:
+	$(BACKEND_RUN) "cd $(PROJECT); npm -v;"
+
+# Some tools for working more easily with SASS compilation commands
+gulpwatch:
+	cd $(PROJECT)/static/src; gulp watch
+
+gulpbuild:
+	cd $(PROJECT)/static/src; gulp build
+
+# If we need to manually rebuild node-sass due to OSX/Unix incompatibility
+rebuildnodesass:
+	$(BACKEND_RUN) "cd backend/static/src; npm rebuild node-sass;"
+
+# Maintenance & cleanup tools
+
+# Run this before redeployment
+predeploy: springclean runtests
+
+# Cleans out any weird temp files that the dependencies throw in during build,
+springclean:
+	rm -rf $(PROJECT)/backend.egg-info
+	rm -rf $(PROJECT)/dist
+	rm -rf $(PROJECT)/.tox
+	rm -rf $(PROJECT)/.cache
+	rm -rf $(PROJECT)/.pytest_cache
+	find . -type f -name "*.pyc" -delete
+	rm -rf $(find . -type d -name __pycache__)
+
+# Use with CAUTION - drops all local docker stuff
+dockerclean:
+	docker system prune -f
+	docker system prune -f --volumes
+
+# See above
+bigclean: springclean dockerclean

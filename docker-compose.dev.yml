@@ -1,0 +1,73 @@
+version: '3'
+
+services:
+  # Database container for PostgreSQL
+  db:
+    env_file:
+      - .env.dev
+    image: postgres:13.4
+    ports:
+      - 5432:5432
+    environment:
+      - POSTGRES_DB=dynamo_db_dev
+      - POSTGRES_USER=dynamo_db_user_dev
+      - POSTGRES_PASSWORD=rNKu2JPhbVY>NG]N
+    volumes:
+      - db_volume:/var/lib/postgresql/data:delegated
+
+  # Reverse proxy container for Nginx
+  nginx:
+    image: nginx:1.21.0
+    ports:
+      - 8000:80
+    volumes:
+      - ./dynamo/config/nginx/conf.d:/etc/nginx/conf.d
+      - ./dynamo/static/compiled/:/compiled:delegated
+      - ./dynamo/static/admin/:/admin:delegated
+      - ./dynamo/static/rest_framework/:/rest_framework:delegated
+    depends_on:
+      - web
+
+  # Backend container, with both Django + Gunicorn
+  web:
+    env_file:
+      - .env.dev
+    build: .
+    environment:
+      - DJANGO_SETTINGS_MODULE
+    volumes:
+      - .:/opt/services/dynamo/src:delegated
+      - static:/opt/services/dynamo/static:delegated
+      - media:/opt/services/dynamo/media:delegated
+      - logs:/opt/services/dynamo/logs:delegated
+    depends_on:
+      - db
+      - redis
+
+  # Message queue for Celery tasks
+  redis:
+    image: redis:6.2.2-alpine
+
+  # Container specifically for Celery workers
+  worker:
+    env_file:
+      - .env.dev
+    working_dir: /opt/services/dynamo/src/dynamo
+    build: .
+    # In prod, we may want to pass the --uid of the user to silence warnings
+    command: celery -A dynamo worker -l info
+    # command: sh -c "celery -A dynamo worker --beat --loglevel=INFO"
+    volumes:
+      - .:/opt/services/dynamo/src:delegated
+      - static:/opt/services/dynamo/static:delegated
+      - media:/opt/services/dynamo/media:delegated
+    depends_on:
+      - db
+      - redis
+
+# Persist certain volumes
+volumes:
+  logs:
+  db_volume:
+  static:
+  media:
