@@ -1,13 +1,8 @@
-import datetime
-import os
-from pathlib import Path
-
-import requests
 from celery import shared_task
 from celery.utils.log import get_task_logger
-from django.core.exceptions import ObjectDoesNotExist
+
 from templated_email import send_templated_mail
-# from users.models import CustomUser
+
 from dynamo import settings
 
 logger = get_task_logger(__name__)

@@ -15,14 +15,9 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
-from users.views import UserRegisterView, PasswordUpdateView
 
 urlpatterns = [
     # ADMIN
     path('admin/', admin.site.urls),
-
-    # Register
-    path("register", UserRegisterView.as_view(), name="register"),
-    path("password-update", PasswordUpdateView.as_view(), name="password-update"),
 
 ]
