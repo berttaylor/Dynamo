@@ -1,18 +1,26 @@
-# DynamoAPI
+# Dynamo
 
 ## Summary
 
-DynamoAPI is a fully functional REST-API for **Collaborative Goal Tracking** & **Task Management**
+DynamoAPI is a fully functional  **Collaborative Goal Tracking** & **Task Management** web application, written with the following goals in mind:
 
-It is written in Python/Django, and using the tools made available by DRF (Django Rest Framework). 
+* Allow individuals users with a similar cause to form online groups
+* Allow these groups to plan and track collaborations in a way which is fully featured (see the feature spec below), but also intuitive and simple to use.
+
+To do this, we prioritise the following points when making decisions about th application:
+
+* Simplicity over complexity
+* Convenience for all (Brag-worthy technical skills should never be required in order to use the application)
 
 **Features**:
 
+* Full Specification/ Feature List : https://docs.google.com/document/d/1hGJv78bRKELfpIdVuFYk0ieoiUYLcTmtASej49wl9mk/edit?usp=sharing
+
+**Demo**:
+
 * YouTube Demo / Rundown: TODO
 
-* Full Specification/ Feature List : https://docs.google.com/document/d/1BxU15l53dZzGxrcrWOXJelseyPZ2xzWbcYuOos9DTSg/edit?usp=sharing
-
-**System Overview**:
+**Data Naming**:
 
 * Users - Anyone who uses the platform
 * Groups - Collections of Users with a common cause or interest e.g. 'Riverdale Parents Group'
@@ -24,7 +32,6 @@ It is written in Python/Django, and using the tools made available by DRF (Djang
 
 The platform is built on the following technology:
 * Python / Django
-* Django Rest Framework
 * PostgreSQL
 * Docker
 
@@ -46,7 +53,7 @@ We use the following local Docker Compose containers:
 
 ## Building the application locally
 
-(_Important: You will need to complete the local .env.dev file with the correct information. More information will be provided on this in later versions of the app/readme._)
+(_Important: You will need to complete a local .env file with the correct information. More information will be provided on this in later versions of the app/readme._)
 
 To get the build running locally, there are a few things that need to happen:
 
@@ -70,16 +77,4 @@ __What you should see__
 
 ## Usage & Testing
 
-The application uses a POSTMAN collection test suite for interacting and further Test Driven Development. 
-
-It provides a useful guide as to:
-* how to register/authenticate using JWT
-* which endpoints are available 
-* what the API expects to receive
-* what the API will return
-
-Get access to the Postman collection here - https://www.postman.com/restless-shuttle-820873/workspace/dynamo/overview
-
-NOTE: The tests are chained sequentially, and as such to run all of them, they depend on each other.
-
-### 🎉 Happy Building! 🎉
+TODO
