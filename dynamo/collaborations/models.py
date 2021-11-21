@@ -226,11 +226,12 @@ class CollaborationTask(TimeStampedSoftDeleteBase):
             return CollaborationMilestone.objects.filter(
                 collaboration=self.collaboration,
                 position__gt=self.position
-            ).order_by('-position')[0]
+            ).order_by('position')[0]
         else:
             return None
 
     def save(self, *args, **kwargs) -> None:
+
         """
         On save, we need to call some extra functions to ensure the adding/re-ordering of tasks also updates the
         positions of those around them, and on the milestones which log them.
@@ -247,8 +248,9 @@ class CollaborationTask(TimeStampedSoftDeleteBase):
                 milestone.prerequisites.add(self)
 
             # 3: If the task has been added in between other elements, then we will need to reorder everything
-            # afterwards, by adding 1 to their position. We increment with an 'F' expression for efficiency.
-            # TODO: we could look at using a bulk_update here.
+            # afterwards, by adding 1 to their position. We use an F expression, rather than looping,
+            # as this results in a single db query.
+            # NOTE: This section only gets called if the new task is not placed at the end
             if self.position <= self.collaboration.number_of_elements:
                 CollaborationTask.objects.filter(
                     collaboration=self.collaboration,
@@ -269,7 +271,7 @@ class CollaborationTask(TimeStampedSoftDeleteBase):
                 # If moving to a higher position, we target all elements with a position greater than the
                 # '__original_position' of this task, but less than or equal to the new position of this task. from this
                 # queryset, we subtract '1' from the position column, making room for our task, and keeping the rest in order.
-                # TODO: we could look at using a bulk_update here.
+                # We use an F expression, rather than looping, as this results in a single db query.
 
                 if self.position > self.__original_position:
                     CollaborationTask.objects.filter(
@@ -285,8 +287,8 @@ class CollaborationTask(TimeStampedSoftDeleteBase):
 
                 # If moving to a lower position, we target all elements with a position lower than the
                 # '__original_position' of this task, but greater than or equal to the new position of this task. from
-                # this queryset, we add '1' to the position column, making room for our task, and keeping the rest in order.
-                # TODO: we could look at using a bulk_update here.
+                # this queryset, we add '1' to the position column, making room for our task, and keeping the rest in
+                # order. We use an F expression, rather than looping, as this results in a single db query.
 
                 else:
                     CollaborationTask.objects.filter(
@@ -304,15 +306,32 @@ class CollaborationTask(TimeStampedSoftDeleteBase):
                 response = super(CollaborationTask, self).save(*args, **kwargs)
 
                 # Update the prerequisites on the milestones
-                # For simplicity, we call the set_prerequisites function on all of the milestones.
-                # we can probably do this in a smarter way, but it works for now.
-                self.collaboration.milestones.all().set_prerequisites()
+                # First we get the next milestone from the old position (if one exists),
+                # and remove the task from its list of prerequisites
+                if old_ms := \
+                self.collaboration.milestones.filter(position__gt=self.__original_position).order_by('position')[0]:
+                    old_ms.prerequisites.remove(self)
+                # Next, we get the milestone from the new position (if one exists),
+                # and add this task to its list of prerequisites
+                if new_ms := self.collaboration.milestones.filter(position__gt=self.position).order_by('position')[0]:
+                    new_ms.prerequisites.add(self)
 
                 # Return response
                 return response
 
             # For simple edits (no reordering), we just return super().save
             return super(CollaborationTask, self).save(*args, **kwargs)
+
+    class Meta:
+        verbose_name_plural = "Tasks"
+        indexes = [
+            models.Index(fields=["collaboration", "position"]),
+            models.Index(fields=["collaboration", "-position"]),
+            models.Index(fields=["collaboration"]),
+            models.Index(fields=["position"]),
+            models.Index(fields=["-position"]),
+        ]
+        ordering = ["collaboration", "position"]
 
 
 class CollaborationMilestone(TimeStampedSoftDeleteBase):
@@ -390,6 +409,20 @@ class CollaborationMilestone(TimeStampedSoftDeleteBase):
         else:
             return c.MILESTONE_STATUS_BEHIND_TARGET
 
+    @property
+    def next_milestone(self):
+        """Gets the next milestone"""
+        if CollaborationMilestone.objects.filter(
+                collaboration=self.collaboration,
+                position__gt=self.position
+        ).exists():
+            return CollaborationMilestone.objects.filter(
+                collaboration=self.collaboration,
+                position__gt=self.position
+            ).order_by('position')[0]
+        else:
+            return None
+
     def set_prerequisites(self, *args, **kwargs) -> None:
         """
         Logic to set all of the prerequisites required to meet a milestone,
@@ -410,7 +443,7 @@ class CollaborationMilestone(TimeStampedSoftDeleteBase):
         tasks = CollaborationTask.objects.filter(
             collaboration=self.collaboration,
             position__lt=self.position,
-            position__gt=previous_milestone_position) \
+            position__gte=previous_milestone_position) \
             .order_by('position')
 
         self.prerequisites.set(tasks)
@@ -419,19 +452,102 @@ class CollaborationMilestone(TimeStampedSoftDeleteBase):
 
     def save(self, *args, **kwargs) -> None:
         """
-        On save, we need to add a reference, and then attach the prerequisite tasks by many-to-many
+        On save, we need to add a reference, attach the prerequisite tasks by many-to-many and call some extra functions
+        to ensure the adding/re-ordering of tasks also updates the positions of those around them,
+        and on the milestones which log them.
         """
-        # Add a reference number when the element is created
+
+        # FOR CREATION
         if self._state.adding:
+
+            # 1: Generate Reference
             self.reference = self.generate_ref(5)
 
-        # Save the milestone
-        response = super(CollaborationMilestone, self).save(*args, **kwargs)
+            # 2: Set the prerequisite tasks for completion of this milestone
+            response = super(CollaborationMilestone, self).save(*args, **kwargs)
 
-        # Add a update the prerequisites for meeting the milestones
-        self.set_prerequisites(self)
+            # 3: Set the prerequisite tasks for completion of this milestone
+            self.set_prerequisites()
 
-        return response
+            # 4: If the milestone has been added in between other elements, then we will need to reorder everything
+            # afterwards, by adding 1 to their position. We use an F expression, rather than looping,
+            # as this results in a single db query.
+            # NOTE: This section only gets called if the new milestone is not placed at the end
+            if self.position <= self.collaboration.number_of_elements:
+                CollaborationTask.objects.filter(
+                    collaboration=self.collaboration,
+                    position__gte=self.position
+                ).update(position=F('position') + 1)
+                CollaborationMilestone.objects.filter(
+                    collaboration=self.collaboration,
+                    position__gte=self.position
+                ).update(position=F('position') + 1)
+
+                # 5: If there is another milestone after this one, then it will now have some duplicate prerequisite tasks,
+                # We need to reset these.
+                if next_milestone := self.next_milestone:
+                    next_milestone.set_prerequisites()
+
+            return response
+
+        else:
+            # IF REPOSITIONING
+            if self.position != self.__original_position:
+
+                # If moving to a higher position, we target all elements with a position greater than the
+                # '__original_position' of this milestone, but less than or equal to the new position of this milestone.
+                # from this queryset, we subtract '1' from the position column, making room for this milestone, and
+                # keeping the rest in order. We use an F expression, rather than looping,
+                # as this results in a single db query.
+
+                if self.position > self.__original_position:
+                    CollaborationTask.objects.filter(
+                        collaboration=self.collaboration,
+                        position__gt=self.__original_position,
+                        position__lte=self.position,
+                    ).update(position=F('position') - 1)
+                    CollaborationMilestone.objects.filter(
+                        collaboration=self.collaboration,
+                        position__gt=self.__original_position,
+                        position__lte=self.position,
+                    ).update(position=F('position') - 1)
+
+                # If moving to a lower position, we target all elements with a position lower than the
+                # '__original_position' of this milestone, but greater than or equal to the new position of this
+                # milestone. from this queryset, we add '1' to the position column, making room for our milestone,
+                # and keeping the rest in order. We use an F expression, rather than looping,
+                # as this results in a single db query.
+
+                else:
+                    CollaborationTask.objects.filter(
+                        collaboration=self.collaboration,
+                        position__lt=self.__original_position,
+                        position__gte=self.position,
+                    ).update(position=F('position') + 1)
+                    CollaborationMilestone.objects.filter(
+                        collaboration=self.collaboration,
+                        position__lt=self.__original_position,
+                        position__gte=self.position,
+                    ).update(position=F('position') + 1)
+
+                # Update the instance
+                response = super(CollaborationMilestone, self).save(*args, **kwargs)
+
+                # Update the prerequisites on the milestones
+                # First we get the next milestone from the old position (if one exists),
+                # and update it to reflect the change in prerequisite tasks
+                if old_ms := \
+                        self.collaboration.milestones.filter(position__gt=self.__original_position).order_by(
+                            'position')[0]:
+                    old_ms.set_prerequisites()
+                # Next, we update the prerequisite tasks for this milestone in its new position
+                self.set_prerequisites()
+
+                # Return response
+                return response
+
+            # For simple edits (no reordering), we just return super().save
+            return super(CollaborationMilestone, self).save(*args, **kwargs)
 
     def __str__(self):
         """
@@ -446,13 +562,15 @@ class CollaborationMilestone(TimeStampedSoftDeleteBase):
         return f"Milestone - {self.name} ({completed_prerequisite_tasks.count()} of {prerequisite_tasks.count()} complete)"
 
     class Meta:
-        verbose_name_plural = "Elements"
+        verbose_name_plural = "Milestones"
         indexes = [
             models.Index(fields=["collaboration", "position"]),
+            models.Index(fields=["collaboration", "-position"]),
             models.Index(fields=["collaboration"]),
             models.Index(fields=["position"]),
+            models.Index(fields=["-position"]),
         ]
-        ordering = ["collaboration", "-position"]
+        ordering = ["collaboration", "position"]
 
 
 class CollaborationTaskTag(TimeStampedSoftDeleteBase):
