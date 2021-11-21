@@ -8,6 +8,9 @@ from django.utils.translation import gettext_lazy as _
 class User(AbstractUser):
     """
     Custom User model, allowing for further fields to be added at a later date, if required.
+
+    NOTE: Subclassing AbstractUser also subclasses AbstractBaseUser, and both
+    come with their own additional fields such as is_active and last_login.
     """
 
     # Replace the ID field with a UUID for better security
