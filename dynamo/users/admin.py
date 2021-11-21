@@ -34,7 +34,16 @@ class UserAdmin(admin.ModelAdmin):
                 )
             },
         ),
-        ("Permissions", {"fields": ("is_staff", "is_active", "is_superuser",)}),
+        (
+            "Permissions",
+            {
+                "fields": (
+                    "is_staff",
+                    "is_active",
+                    "is_superuser",
+                )
+            },
+        ),
         (
             "Database information",
             {"fields": (("date_joined", "last_login"),)},

@@ -1,6 +1,5 @@
 from celery import shared_task
 from celery.utils.log import get_task_logger
-
 from templated_email import send_templated_mail
 
 from dynamo import settings
@@ -22,9 +21,9 @@ def send_email(mail_props) -> bool:
 
     # First, check if all required arguments were passed in before starting
     if (
-            "template" not in mail_props
-            or "recipients" not in mail_props
-            or "additional_context" not in mail_props
+        "template" not in mail_props
+        or "recipients" not in mail_props
+        or "additional_context" not in mail_props
     ):
         logger.info(
             "Email couldn't be sent - it appears to either be missing "

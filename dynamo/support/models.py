@@ -1,7 +1,7 @@
 from django.db import models
+from users.utils import get_sentinel_user
 
 from dynamo.base.models import TimeStampedBase
-from users.utils import get_sentinel_user
 
 
 class FAQCategory(TimeStampedBase):
@@ -44,17 +44,13 @@ class FAQ(TimeStampedBase):
         null=True,
     )
 
-    question = models.TextField(
-        help_text="The question"
-    )
+    question = models.TextField(help_text="The question")
 
-    answer = models.TextField(
-        help_text="The answer to the question"
-    )
+    answer = models.TextField(help_text="The answer to the question")
 
     position = models.PositiveSmallIntegerField(
         help_text="The position in which the question should be displayed "
-                  "within its category section - 1 = 1st",
+        "within its category section - 1 = 1st",
     )
 
     def __str__(self):
@@ -92,17 +88,14 @@ class SupportMessage(TimeStampedBase):
         blank=True,
     )
 
-    subject = models.TextField(
-        help_text="The subject of the message"
-    )
+    subject = models.TextField(help_text="The subject of the message")
 
     message = models.TextField(
         help_text="Please describe the issue in as much detail as possible"
     )
 
     read = models.BooleanField(
-        default=False,
-        help_text="whether or not the message has been read"
+        default=False, help_text="whether or not the message has been read"
     )
 
     def __str__(self):

@@ -1,6 +1,12 @@
 from django.contrib import admin
 
-from .models import Collaboration, CollaborationFile, CollaborationTaskTag, CollaborationMilestone, CollaborationTask
+from .models import (
+    Collaboration,
+    CollaborationFile,
+    CollaborationMilestone,
+    CollaborationTask,
+    CollaborationTaskTag,
+)
 
 
 @admin.register(Collaboration)
@@ -14,18 +20,28 @@ class CollaborationAdmin(admin.ModelAdmin):
         "related_group",
     )
 
-    list_filter = (
-        "created_at",
-        "related_group"
-    )
+    list_filter = ("created_at", "related_group")
 
     fieldsets = (
         ("Collaboration details", {"fields": (("name", "slug"), "description")}),
         ("Users", {"fields": ("created_by",)}),
-        ("Database", {"fields": (("created_at", "updated_at"), "deleted_at",)}),
+        (
+            "Database",
+            {
+                "fields": (
+                    ("created_at", "updated_at"),
+                    "deleted_at",
+                )
+            },
+        ),
     )
 
-    readonly_fields = ("created_at", "updated_at", "deleted_at", "slug",)
+    readonly_fields = (
+        "created_at",
+        "updated_at",
+        "deleted_at",
+        "slug",
+    )
 
 
 @admin.register(CollaborationTask)
@@ -46,13 +62,40 @@ class CollaborationTaskAdmin(admin.ModelAdmin):
     )
 
     fieldsets = (
-        ("Task details", {"fields": (
-        ("reference", "collaboration"), ("name", "description"), "assigned_to", "prerequisites", "position")}),
-        ("Completion", {"fields": (("completed_at", "completed_by"), "completion_notes")}),
-        ("Database", {"fields": (("created_at", "updated_at"), "deleted_at",)}),
+        (
+            "Task details",
+            {
+                "fields": (
+                    ("reference", "collaboration"),
+                    ("name", "description"),
+                    "assigned_to",
+                    "prerequisites",
+                    "position",
+                )
+            },
+        ),
+        (
+            "Completion",
+            {"fields": (("completed_at", "completed_by"), "completion_notes")},
+        ),
+        (
+            "Database",
+            {
+                "fields": (
+                    ("created_at", "updated_at"),
+                    "deleted_at",
+                )
+            },
+        ),
     )
 
-    readonly_fields = ("created_at", "updated_at", "deleted_at", "reference", "prerequisites")
+    readonly_fields = (
+        "created_at",
+        "updated_at",
+        "deleted_at",
+        "reference",
+        "prerequisites",
+    )
 
 
 @admin.register(CollaborationMilestone)
@@ -73,37 +116,69 @@ class CollaborationMilestoneAdmin(admin.ModelAdmin):
     )
 
     fieldsets = (
-        (None, {"fields": (("reference", "collaboration"), ("name", "target_date"), "prerequisites", "position")}),
-        ("Database", {"fields": (("created_at", "updated_at"), "deleted_at",)}),
+        (
+            None,
+            {
+                "fields": (
+                    ("reference", "collaboration"),
+                    ("name", "target_date"),
+                    "prerequisites",
+                    "position",
+                )
+            },
+        ),
+        (
+            "Database",
+            {
+                "fields": (
+                    ("created_at", "updated_at"),
+                    "deleted_at",
+                )
+            },
+        ),
     )
 
-    readonly_fields = ("created_at", "updated_at", "deleted_at", "reference", "prerequisites")
+    readonly_fields = (
+        "created_at",
+        "updated_at",
+        "deleted_at",
+        "reference",
+        "prerequisites",
+    )
 
 
 @admin.register(CollaborationTaskTag)
 class CollaborationTaskTagAdmin(admin.ModelAdmin):
     ordering = ("name",)
 
-    list_display = (
-        "alt_text",
-    )
+    list_display = ("alt_text",)
 
-    list_filter = (
-        "created_at",
-    )
+    list_filter = ("created_at",)
 
     fieldsets = (
         (None, {"fields": ("name",)}),
-        ("Database", {"fields": (("created_at", "updated_at"), "deleted_at",)}),
+        (
+            "Database",
+            {
+                "fields": (
+                    ("created_at", "updated_at"),
+                    "deleted_at",
+                )
+            },
+        ),
     )
 
-    readonly_fields = ("created_at", "updated_at", "deleted_at",)
+    readonly_fields = (
+        "created_at",
+        "updated_at",
+        "deleted_at",
+    )
 
 
 @admin.register(CollaborationFile)
 class CollaborationFileAdmin(admin.ModelAdmin):
     ordering = ("name",)
-    search_fields = ("name")
+    search_fields = "name"
 
     list_display = (
         "created_at",
@@ -112,13 +187,31 @@ class CollaborationFileAdmin(admin.ModelAdmin):
         "format",
     )
 
-    list_filter = (
-        "format",
-    )
+    list_filter = ("format",)
 
     fieldsets = (
-        (None, {"fields": ("collaboration", ("name", "format"),)}),
-        ("Database", {"fields": (("created_at", "updated_at"), "deleted_at",)}),
+        (
+            None,
+            {
+                "fields": (
+                    "collaboration",
+                    ("name", "format"),
+                )
+            },
+        ),
+        (
+            "Database",
+            {
+                "fields": (
+                    ("created_at", "updated_at"),
+                    "deleted_at",
+                )
+            },
+        ),
     )
 
-    readonly_fields = ("created_at", "updated_at", "deleted_at",)
+    readonly_fields = (
+        "created_at",
+        "updated_at",
+        "deleted_at",
+    )

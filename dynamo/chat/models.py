@@ -1,9 +1,8 @@
 from django.db import models
-
+from users.utils import get_sentinel_user
 
 # Create your models here.
 from dynamo.base.models import TimeStampedSoftDeleteBase
-from users.utils import get_sentinel_user
 
 
 class Message(TimeStampedSoftDeleteBase):
@@ -40,9 +39,7 @@ class Message(TimeStampedSoftDeleteBase):
         null=True,
     )
 
-    message = models.TextField(
-        help_text="The message itself"
-    )
+    message = models.TextField(help_text="The message itself")
 
     def __str__(self):
         return f"{self.created_at:[ %d%b'%y %I:%M%p ]} {self.user}: '{self.message}'"
@@ -54,4 +51,3 @@ class Message(TimeStampedSoftDeleteBase):
         indexes = [
             models.Index(fields=["created_at"]),
         ]
-

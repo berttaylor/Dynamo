@@ -2,10 +2,10 @@ import time
 
 from django.db import models
 from django.template.defaultfilters import slugify
-
-from dynamo.base.models import TimeStampedSoftDeleteBase
 from groups import constants as c
 from users.utils import get_sentinel_user
+
+from dynamo.base.models import TimeStampedSoftDeleteBase
 
 
 class Group(TimeStampedSoftDeleteBase):
@@ -139,7 +139,7 @@ class GroupJoinRequest(TimeStampedSoftDeleteBase):
     )
 
     class Meta:
-        unique_together = ('user', 'group')
+        unique_together = ("user", "group")
         verbose_name_plural = "Join Requests"
 
     def __str__(self):

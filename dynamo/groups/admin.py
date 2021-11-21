@@ -14,17 +14,28 @@ class GroupAdmin(admin.ModelAdmin):
         "created_by",
     )
 
-    list_filter = (
-        "created_at",
-    )
+    list_filter = ("created_at",)
 
     fieldsets = (
         ("Group details", {"fields": (("name", "slug"), "description")}),
-        ("Users", {"fields": ("created_by", "admins", 'members', "subscribers")}),
-        ("Database", {"fields": (("created_at", "updated_at"), "deleted_at",)}),
+        ("Users", {"fields": ("created_by", "admins", "members", "subscribers")}),
+        (
+            "Database",
+            {
+                "fields": (
+                    ("created_at", "updated_at"),
+                    "deleted_at",
+                )
+            },
+        ),
     )
 
-    readonly_fields = ("created_at", "updated_at", "deleted_at", "slug",)
+    readonly_fields = (
+        "created_at",
+        "updated_at",
+        "deleted_at",
+        "slug",
+    )
 
 
 @admin.register(GroupJoinRequest)
@@ -47,10 +58,23 @@ class GroupJoinRequestAdmin(admin.ModelAdmin):
     fieldsets = (
         ("Request details", {"fields": (("user", "group"), "status")}),
         ("Handling", {"fields": (("handled_by", "handled_date"),)}),
-        ("Database", {"fields": (("created_at", "updated_at"), "deleted_at",)}),
+        (
+            "Database",
+            {
+                "fields": (
+                    ("created_at", "updated_at"),
+                    "deleted_at",
+                )
+            },
+        ),
     )
 
-    readonly_fields = ("created_at", "updated_at", "deleted_at", "slug",)
+    readonly_fields = (
+        "created_at",
+        "updated_at",
+        "deleted_at",
+        "slug",
+    )
 
 
 @admin.register(GroupProfileImage)
@@ -58,18 +82,25 @@ class GroupProfileImageAdmin(admin.ModelAdmin):
     search_fields = ("alt_text",)
     ordering = ("created_at",)
 
-    list_display = (
-        "alt_text",
-    )
+    list_display = ("alt_text",)
 
-    list_filter = (
-        "created_at",
-    )
+    list_filter = ("created_at",)
 
     fieldsets = (
         (None, {"fields": (("user", "group"), "status")}),
-        ("Database", {"fields": (("created_at", "updated_at"), "deleted_at",)}),
+        (
+            "Database",
+            {
+                "fields": (
+                    ("created_at", "updated_at"),
+                    "deleted_at",
+                )
+            },
+        ),
     )
 
-    readonly_fields = ("created_at", "updated_at", "deleted_at",)
-
+    readonly_fields = (
+        "created_at",
+        "updated_at",
+        "deleted_at",
+    )

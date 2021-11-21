@@ -20,7 +20,7 @@ class TimeStampedSoftDeleteManager(models.Manager):
         to True.
         """
         self.alive_only = kwargs.pop("alive_only", True)
-        super().__init__(*args, **kwargs) 
+        super().__init__(*args, **kwargs)
 
     def get_queryset(self):
         """
@@ -43,7 +43,6 @@ class TimeStampedSoftDeleteManager(models.Manager):
 
 
 class TimeStampedSoftDeleteQueryset(models.QuerySet):
-
     def alive(self):
         """Helper to get only the alive results."""
         return self.filter(deleted_at=None)

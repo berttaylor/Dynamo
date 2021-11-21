@@ -1,7 +1,6 @@
-from django.contrib import admin
-
 # Register your models here.
 from chat.models import Message
+from django.contrib import admin
 
 
 @admin.register(Message)
@@ -17,13 +16,23 @@ class MessageAdmin(admin.ModelAdmin):
         "collaboration",
     )
 
-    list_filter = (
-        "created_at",
-    )
+    list_filter = ("created_at",)
 
     fieldsets = (
         (None, {"fields": (("group", "collaboration"), "user", "message")}),
-        ("Database", {"fields": (("created_at", "updated_at"), "deleted_at",)}),
+        (
+            "Database",
+            {
+                "fields": (
+                    ("created_at", "updated_at"),
+                    "deleted_at",
+                )
+            },
+        ),
     )
 
-    readonly_fields = ("created_at", "updated_at", "deleted_at",)
+    readonly_fields = (
+        "created_at",
+        "updated_at",
+        "deleted_at",
+    )
