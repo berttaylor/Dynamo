@@ -308,13 +308,28 @@ class CollaborationTask(TimeStampedSoftDeleteBase):
                 # Update the prerequisites on the milestones
                 # First we get the next milestone from the old position (if one exists),
                 # and remove the task from its list of prerequisites
+                # TODO - Which one is faster? version 1 (below) - or version 2 (below that)
                 if old_ms := \
-                self.collaboration.milestones.filter(position__gt=self.__original_position).order_by('position')[0]:
+                        self.collaboration.milestones.filter(position__gt=self.__original_position).order_by(
+                            'position')[0]:
                     old_ms.prerequisites.remove(self)
                 # Next, we get the milestone from the new position (if one exists),
                 # and add this task to its list of prerequisites
                 if new_ms := self.collaboration.milestones.filter(position__gt=self.position).order_by('position')[0]:
                     new_ms.prerequisites.add(self)
+
+                # version 2
+                # old_ms = self.collaboration.milestones.filter(position__gt=self.__original_position).order_by(
+                #         'position')[0]
+                # new_ms = self.collaboration.milestones.filter(position__gt=self.position).order_by('position')[0]
+                # # If the milestone has changed:
+                # if old_ms != new_ms:
+                #     if old_ms:
+                #         # we remove this task from the old one (if it exists)
+                #         old_ms.prerequisites.remove(self)
+                #     if new_ms:
+                #         # and add it to the new one (if it exists)
+                #         new_ms.prerequisites.add(self)
 
                 # Return response
                 return response
@@ -387,7 +402,7 @@ class CollaborationMilestone(TimeStampedSoftDeleteBase):
     prerequisites = models.ManyToManyField(
         "CollaborationTask",
         help_text="Tasks that must be completed to each this milestones",
-        related_name="dependant_milestone",
+        related_name="milestone",
         blank=True,
     )
 
@@ -490,6 +505,7 @@ class CollaborationMilestone(TimeStampedSoftDeleteBase):
 
             return response
 
+        # FOR EDITING
         else:
             # IF REPOSITIONING
             if self.position != self.__original_position:
@@ -552,7 +568,7 @@ class CollaborationMilestone(TimeStampedSoftDeleteBase):
     def __str__(self):
         """
         We have quite a detailed str representation, to avoid needing to do anything more on the front end.
-        That said, we may be able to find more efficient ways fo doing this in terms of database queries
+        That said, we may be able to find more efficient ways of doing this in terms of database queries
         """
 
         prerequisite_tasks = self.prerequisites.all()

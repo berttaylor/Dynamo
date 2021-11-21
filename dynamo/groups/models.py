@@ -126,7 +126,7 @@ class GroupJoinRequest(TimeStampedSoftDeleteBase):
     handled_by = models.ForeignKey(
         "users.User",
         help_text="User who handled the request",
-        on_delete=models.SET(get_sentinel_user),
+        on_delete=models.CASCADE,
         related_name="group_join_requests_handled",
         blank=True,
         null=True,
@@ -146,3 +146,28 @@ class GroupJoinRequest(TimeStampedSoftDeleteBase):
         return f"[{self.status}] {self.user.username}"
 
 
+class GroupProfileImage(TimeStampedSoftDeleteBase):
+    """
+    Images stored for the Groups' main profile page
+    """
+
+    # TODO : sort file uploads
+    #  related_file = models.FileField(
+    #     # The PrivateAssetStorage class extends the S3Boto with some overrides
+    #     # (Sends to a private, separate DO space)
+    #     storage=PrivateAssetStorage(),
+    #     upload_to=build_image_storage_path,
+    #     help_text="The file of the image. Please aim to keep this below 1mb in size.",
+    #     )
+
+    alt_text = models.CharField(
+        null=False,
+        max_length=100,
+        help_text="The full alt text of the image for accessibility purposes.",
+    )
+
+    def __str__(self):
+        return self.alt_text
+
+    class Meta:
+        verbose_name_plural = "Profile Images"
