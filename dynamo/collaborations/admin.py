@@ -1,8 +1,9 @@
 from django.contrib import admin
 
-from .models import Collaboration, CollaborationFile, CollaborationTaskTag, CollaborationElement
+from .models import Collaboration, CollaborationFile, CollaborationTaskTag, CollaborationMilestone, CollaborationTask
 
 admin.site.register(Collaboration)
 admin.site.register(CollaborationFile)
 admin.site.register(CollaborationTaskTag)
-admin.site.register(CollaborationElement)
+admin.site.register(CollaborationMilestone)
+admin.site.register(CollaborationTask)
