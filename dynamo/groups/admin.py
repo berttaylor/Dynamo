@@ -73,7 +73,6 @@ class GroupJoinRequestAdmin(admin.ModelAdmin):
         "created_at",
         "updated_at",
         "deleted_at",
-        "slug",
     )
 
 

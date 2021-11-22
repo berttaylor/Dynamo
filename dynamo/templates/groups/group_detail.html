@@ -1,0 +1,16 @@
+{% include "main_nav.html" %}
+
+<h1>{{ group.name }}</h1>
+<p>{{ group.description }}</p>
+<p>{{ group.created_by }}</p>
+<p>Stats</p>
+<p>Members: {{ group.members.count }}</p>
+<p>Subscribers: {{ group.subscribers.count }}</p>
+<br>
+<p>Actions</p>
+<a href="{% url 'group-join' slug=group.slug %}">Join</a>
+<a href="{% url 'group-leave' slug=group.slug %}">Leave</a>
+<br>
+<p>Admin</p>
+<a href="{% url 'group-update' slug=group.slug %}">Edit</a>
+<a href="{% url 'group-delete' slug=group.slug %}">Delete</a>

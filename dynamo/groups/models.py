@@ -93,6 +93,7 @@ class Group(TimeStampedSoftDeleteBase):
             models.Index(fields=["name"]),
             models.Index(fields=["slug"]),
         ]
+        ordering = ("created_at",)
 
 
 class GroupJoinRequest(TimeStampedSoftDeleteBase):
@@ -141,6 +142,7 @@ class GroupJoinRequest(TimeStampedSoftDeleteBase):
     class Meta:
         unique_together = ("user", "group")
         verbose_name_plural = "Join Requests"
+        ordering = ("created_at",)
 
     def __str__(self):
         return f"[{self.status}] {self.user.username}"

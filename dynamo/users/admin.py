@@ -50,7 +50,7 @@ class UserAdmin(admin.ModelAdmin):
         ),
     )
 
-    readonly_fields = ("password", "date_joined", "last_login")
+    readonly_fields = ("password", "date_joined", "last_login",)
 
     # Users are added through registering on the site, or using the createsuperuser command (for devs/admins)
     def has_add_permission(self, request):
