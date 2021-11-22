@@ -1,0 +1,7 @@
+{% include "main_nav.html" %}
+<a href="{% url 'group-detail' slug=collaboration.related_group.slug %}">Back to group</a>
+<h1>{{ collaboration.name }}</h1>
+
+</p>
+<p>Created by: {{ collaboration.created_by }}</p>
+<p>Description: {{ collaboration.description }}</p>

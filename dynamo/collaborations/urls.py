@@ -15,6 +15,8 @@ Including another URLconf
 """
 
 from django.urls import path
+
+from collaborations.views import CollaborationCreateView, CollaborationDetailView
 from groups.views import (
     GroupListView,
     GroupDetailView,
@@ -28,49 +30,16 @@ from groups.views import (
 )
 
 urlpatterns = [
+    # We use long URLs here because collaborations are created within groups and this probably make more sense
+    # to the user in terms of data hierarchy.
     path(
-        "",
-        GroupListView.as_view(),
-        name="group-list",
+        "groups/<group_slug>/create-collaboration/",
+        CollaborationCreateView.as_view(),
+        name="collaboration-create",
     ),
     path(
-        "create/",
-        GroupCreateView.as_view(),
-        name="group-create",
-    ),
-    path(
-        "<slug>/",
-        GroupDetailView.as_view(),
-        name="group-detail",
-    ),
-    path(
-        "<slug>/update/",
-        GroupUpdateView.as_view(),
-        name="group-update",
-    ),
-    path(
-        "<slug>/delete/",
-        GroupDeleteView.as_view(),
-        name="group-delete",
-    ),
-    path(
-        "<slug>/join/",
-        GroupJoinView,
-        name="group-join",
-    ),
-    path(
-        "<slug>/leave/",
-        GroupLeaveView,
-        name="group-leave",
-    ),
-    path(
-        "<uuid>/approve/",
-        GroupRequestApproveView,
-        name="join-request-approve",
-    ),
-    path(
-        "<uuid>/deny/",
-        GroupRequestDenyView,
-        name="join-request-deny",
+        "collaborations/<slug>/",
+        CollaborationDetailView.as_view(),
+        name="collaboration-detail",
     ),
 ]

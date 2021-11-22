@@ -140,7 +140,7 @@ class GroupJoinRequest(TimeStampedSoftDeleteBase):
     )
 
     class Meta:
-        unique_together = ("user", "group")
+        unique_together = ("user", "group", "status")
         verbose_name_plural = "Join Requests"
         ordering = ("created_at",)
 

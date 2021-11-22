@@ -1,4 +1,4 @@
-"""dynamo URL Configuration
+"""URL Configuration
 
 The `urlpatterns` list routes URLs to views. For more information please see:
     https://docs.djangoproject.com/en/3.2/topics/http/urls/
@@ -28,5 +28,8 @@ urlpatterns = [
     path("support/", include("support.urls")),
     # Groups
     path("groups/", include("groups.urls")),
-
+    # Chat
+    path("chat/", include("chat.urls")),
+    # Collaborations
+    path("", include("collaborations.urls")),
 ]

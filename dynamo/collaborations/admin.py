@@ -23,7 +23,10 @@ class CollaborationAdmin(admin.ModelAdmin):
     list_filter = ("created_at", "related_group")
 
     fieldsets = (
-        ("Collaboration details", {"fields": (("name", "slug"), "description")}),
+        (
+            "Collaboration details",
+            {"fields": (("name", "slug"), "description", "related_group")},
+        ),
         ("Users", {"fields": ("created_by",)}),
         (
             "Database",

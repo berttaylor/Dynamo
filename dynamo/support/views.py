@@ -46,8 +46,7 @@ class SupportMessageCreateView(CreateView):
 
     def form_valid(self, form):
         """
-        We add the user (buyer or vendor), and if a vendor, we add the organisation,
-        before saving the SupportMessage
+        We add the user before saving the SupportMessage
         """
 
         # 1. Add User, if logged in

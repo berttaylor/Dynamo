@@ -16,27 +16,12 @@ Including another URLconf
 
 from django.urls import path
 
-from support.views import (
-    FAQListView,
-    SupportMessageCreateView,
-    SupportMessageThanksView,
-)
+from chat.views import GroupMessageCreateView
 
 urlpatterns = [
-    # FAQ & Support
     path(
-        "faq/",
-        FAQListView.as_view(),
-        name="faq",
-    ),
-    path(
-        "contact-support/",
-        SupportMessageCreateView.as_view(),
-        name="support-message-create",
-    ),
-    path(
-        "contact-support/thanks/",
-        SupportMessageThanksView.as_view(),
-        name="support-message-thanks",
+        "group/<group_uuid>",
+        GroupMessageCreateView,
+        name="group-chat",
     ),
 ]

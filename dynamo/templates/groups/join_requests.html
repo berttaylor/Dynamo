@@ -1,0 +1,14 @@
+{% if join_requests %}
+<h2>Group Join Requests</h2>
+{% for request in join_requests %}
+    <tr>
+        <th>
+            {{ request.user.username }}
+        </th>
+        <th>
+            <a href="{% url 'join-request-approve' uuid=request.id %}">Approve</a> | <a href="{% url 'join-request-deny' uuid=request.id %}">Deny</a>
+        </th>
+    </tr>
+    <br>
+{% endfor %}
+{% endif %}
