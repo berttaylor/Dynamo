@@ -180,8 +180,9 @@ MEDIA_ROOT = os.path.join(BASE_DIR, "media/root")  # Added
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 # ADDED: Set some URLs and overrides
-LOGIN_URL = "/"
-LOGOUT_REDIRECT_URL = "/login"
+LOGIN_URL = "/accounts/login/"
+LOGOUT_REDIRECT_URL = "/accounts/login/"
+LOGIN_REDIRECT_URL = "/"
 
 # ADDED: Axes settings
 AXES_FAILURE_LIMIT = 10  # Number of failed attempts before lockout

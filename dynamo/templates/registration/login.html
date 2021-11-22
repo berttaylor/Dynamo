@@ -1,0 +1,15 @@
+{% include "main_nav.html" %}
+<h1>Login</h1>
+  <form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Login</button>
+  </form>
+
+<div>
+    <a href="{% url 'password_reset' %}">Forgot password?</a>
+</div>
+
+{% for message in messages %}
+    <p id="messages">{{ message }}</p>
+{% endfor %}
