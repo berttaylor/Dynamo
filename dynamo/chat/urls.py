@@ -16,12 +16,17 @@ Including another URLconf
 
 from django.urls import path
 
-from chat.views import GroupMessageCreateView
+from chat.views import GroupMessageCreateView, CollaborationMessageCreateView
 
 urlpatterns = [
     path(
         "group/<group_uuid>",
         GroupMessageCreateView,
         name="group-chat",
+    ),
+    path(
+        "collaboration/<collaboration_uuid>",
+        CollaborationMessageCreateView,
+        name="collaboration-chat",
     ),
 ]

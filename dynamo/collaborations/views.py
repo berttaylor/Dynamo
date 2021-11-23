@@ -1,8 +1,8 @@
 from django.contrib.auth.decorators import login_required
-from django.urls import reverse_lazy
+from django.urls import reverse_lazy, reverse
 from django.utils.decorators import method_decorator
 from django.views.generic import CreateView, DetailView
-from django.views.generic.edit import FormMixin
+from django.views.generic.edit import FormMixin, UpdateView, DeleteView
 
 from chat.forms import CollaborationMessageForm
 from chat.models import Message
@@ -86,3 +86,35 @@ class CollaborationDetailView(FormMixin, DetailView):
         )
 
         return context
+
+
+@method_decorator(login_required, name="dispatch")
+class CollaborationUpdateView(UpdateView):
+    """
+    Allows the user to update multiple fields on a collaboration which they are the admin/creator of.
+    """
+
+    template_name = "collaborations/collaboration_update.html"
+    model = Collaboration
+    fields = [
+        "name",
+        "description",
+    ]
+
+    def get_success_url(self):
+        return reverse_lazy(
+            "collaboration-detail",
+            kwargs={"slug": self.object.slug},
+        )
+
+
+@method_decorator(login_required, name="dispatch")
+class CollaborationDeleteView(DeleteView):
+    template_name = "collaborations/collaboration_delete.html"
+    model = Collaboration
+
+    def get_success_url(self):
+        return reverse_lazy(
+            "group-detail",
+            kwargs={"slug": self.object.related_group.slug},
+        )

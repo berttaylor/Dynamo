@@ -9,9 +9,6 @@
             Name: {{ collaboration.name }}
         </th>
         <th>
-            Slug: {{ collaboration.slug }}
-        </th>
-        <th>
             Description: {{ collaboration.short_description }}
         </th>
         <th>
@@ -19,6 +16,9 @@
         </th>
         <th>
             Percentage Complete: {{ collaboration.percent_completed }}
+        </th>
+        <th>
+            <a href="{% url 'collaboration-detail' slug=collaboration.slug %}">Visit</a>
         </th>
     </tr>
     <br>

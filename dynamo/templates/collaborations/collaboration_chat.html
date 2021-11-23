@@ -1,0 +1,23 @@
+<h3>Chat</h3>
+{% if user.is_authenticated %}
+
+    <form method="post" action="{% url 'collaboration-chat' collaboration.id %}">{% csrf_token %}
+        {{ chat_form }}
+        <input type="submit" value="Save">
+    </form>
+
+{% endif %}
+{% for message in chat_messages %}
+    <tr>
+        <th>
+            {{ message.created_at }}
+        </th>
+        <th>
+            {{ message.user.username }}
+        </th>
+        <th>
+            {{ message.message }}
+        </th>
+    </tr>
+    <br>
+{% endfor %}

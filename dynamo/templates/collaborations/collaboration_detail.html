@@ -2,6 +2,14 @@
 <a href="{% url 'group-detail' slug=collaboration.related_group.slug %}">Back to group</a>
 <h1>{{ collaboration.name }}</h1>
 
-</p>
+{% if user in collaboration.related_group.admins.all %}
+    <a href="{% url 'collaboration-update' slug=collaboration.slug %}">Edit</a> |
+    <a href="{% url 'collaboration-delete' slug=collaboration.slug %}">Delete</a>
+{% endif %}
+
+<p>Created by: {{ collaboration.status }}</p>
+<p>Completed: {{ collaboration.percent_completed }}</p>
 <p>Created by: {{ collaboration.created_by }}</p>
 <p>Description: {{ collaboration.description }}</p>
+
+{% include "collaborations/collaboration_chat.html" %}
