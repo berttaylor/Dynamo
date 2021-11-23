@@ -1,4 +1,6 @@
 from django.contrib.auth.decorators import login_required
+from django.db.models import Value, CharField
+from django.http import HttpResponseRedirect
 from django.urls import reverse_lazy, reverse
 from django.utils.decorators import method_decorator
 from django.views.generic import CreateView, DetailView
@@ -6,8 +8,10 @@ from django.views.generic.edit import FormMixin, UpdateView, DeleteView
 from itertools import chain
 from chat.forms import CollaborationMessageForm
 from chat.models import Message
+from collaborations.forms import MilestoneForm, TaskForm
 from collaborations.models import Collaboration, CollaborationTask, CollaborationMilestone
 from groups.models import Group
+from users.models import User
 
 
 @method_decorator(login_required, name="dispatch")
@@ -82,15 +86,23 @@ class CollaborationDetailView(FormMixin, DetailView):
                 "chat_form": CollaborationMessageForm(
                     initial={"collaboration": collaboration}
                 ),
+                "task_form": TaskForm(
+                    initial={"collaboration": collaboration},
+                ),
+                "milestone_form": MilestoneForm(
+                    initial={"collaboration": collaboration}
+                ),
                 "elements": self.get_all_elements()
             },
         )
 
+        # print(User.objects.filter(memberships__collaborations=collaboration))
+
         return context
 
     def get_all_elements(self):
-        tasks = CollaborationTask.objects.all()
-        milestones = CollaborationMilestone.objects.all()
+        tasks = CollaborationTask.objects.all().annotate(type=Value('Task', output_field=CharField()))
+        milestones = CollaborationMilestone.objects.all().annotate(type=Value('Milestone', output_field=CharField()))
         element_list = sorted(
             chain(tasks, milestones),
             key=lambda element: element.position, reverse=True)
@@ -127,3 +139,53 @@ class CollaborationDeleteView(DeleteView):
             "group-detail",
             kwargs={"slug": self.object.related_group.slug},
         )
+
+
+@login_required()
+def TaskCreateView(request, collaboration_uuid):
+    """
+    FUNCTIONAL VIEW - Allows task messages to be added
+    """
+    # TODO: Secure and set methods
+
+    # Get  variables
+    name = str(request.POST["name"])
+    description = str(request.POST["description"])
+    assigned_to_id = str(request.POST["assigned_to"])
+
+    user = request.user
+    collaboration = Collaboration.objects.get(id=collaboration_uuid)
+    assigned_to = User.objects.get(id=assigned_to_id)
+
+    CollaborationTask.objects.create(collaboration=collaboration, name=name, description=description, assigned_to=assigned_to)
+
+    return HttpResponseRedirect(
+        reverse_lazy(
+            "collaboration-detail",
+            kwargs={"slug": collaboration.slug},
+        )
+    )
+
+
+@login_required()
+def MilestoneCreateView(request, collaboration_uuid):
+    """
+    FUNCTIONAL VIEW - Allows task messages to be added
+    """
+    # TODO: Secure and set methods
+
+    # Get  variables
+    name = str(request.POST["name"])
+    target_date = str(request.POST["target_date"])
+
+    user = request.user
+    collaboration = Collaboration.objects.get(id=collaboration_uuid)
+
+    CollaborationMilestone.objects.create(collaboration=collaboration, name=name, target_date=target_date)
+
+    return HttpResponseRedirect(
+        reverse_lazy(
+            "collaboration-detail",
+            kwargs={"slug": collaboration.slug},
+        )
+    )

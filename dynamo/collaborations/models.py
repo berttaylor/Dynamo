@@ -342,6 +342,28 @@ class CollaborationTask(TimeStampedSoftDeleteBase):
             # For simple edits (no reordering), we just return super().save
             return super(CollaborationTask, self).save(*args, **kwargs)
 
+    def __str__(self):
+        """
+        We have quite a detailed str representation, to avoid needing to do anything more on the front end.
+        That said, we may be able to find more efficient ways of doing this in terms of database queries
+        """
+        # Check if task/milestone has been completed
+        complete = True if self.completed_at else False
+
+        # Tasks
+        # If complete, give a string
+        if complete:
+            if self.completion_notes:
+                return f" ☒ {self.name} (notes)"
+            return f" ☒ {self.name}"
+
+        # If not, check if assigned to anyone, and return an appropriate string.
+        assigned_to = string.capwords(self.assigned_to.username) if self.assigned_to else None
+        if assigned_to:
+            return f" ☐ {self.name} ({assigned_to})"
+        else:
+            return f" ☐ {self.name}"
+
     class Meta:
         verbose_name_plural = "Tasks"
         indexes = [
