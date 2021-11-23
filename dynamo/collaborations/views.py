@@ -3,10 +3,10 @@ from django.urls import reverse_lazy, reverse
 from django.utils.decorators import method_decorator
 from django.views.generic import CreateView, DetailView
 from django.views.generic.edit import FormMixin, UpdateView, DeleteView
-
+from itertools import chain
 from chat.forms import CollaborationMessageForm
 from chat.models import Message
-from collaborations.models import Collaboration
+from collaborations.models import Collaboration, CollaborationTask, CollaborationMilestone
 from groups.models import Group
 
 
@@ -82,10 +82,19 @@ class CollaborationDetailView(FormMixin, DetailView):
                 "chat_form": CollaborationMessageForm(
                     initial={"collaboration": collaboration}
                 ),
+                "elements": self.get_all_elements()
             },
         )
 
         return context
+
+    def get_all_elements(self):
+        tasks = CollaborationTask.objects.all()
+        milestones = CollaborationMilestone.objects.all()
+        element_list = sorted(
+            chain(tasks, milestones),
+            key=lambda element: element.position, reverse=True)
+        return element_list
 
 
 @method_decorator(login_required, name="dispatch")

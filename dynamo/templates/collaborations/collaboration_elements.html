@@ -1,0 +1,17 @@
+<h3>Elements</h3>
+{#{% if user.is_authenticated %}#}
+{##}
+{#    <form method="post" action="{% url 'collaboration-chat' collaboration.id %}">{% csrf_token %}#}
+{#        {{ chat_form }}#}
+{#        <input type="submit" value="Save">#}
+{#    </form>#}
+{##}
+{#{% endif %}#}
+{% for element in elements %}
+    <tr>
+        <th>
+            {{ element }}
+        </th>
+    </tr>
+    <br>
+{% endfor %}
