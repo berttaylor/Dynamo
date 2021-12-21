@@ -1,7 +1,0 @@
-{% include "main_nav.html" %}
-<h1>Collaboration Update</h1>
-<form method="post">{% csrf_token %}
-    {{ form.as_p }}
-    <input type="submit" value="Save">
-</form>
-<a href="{% url 'collaboration-detail' slug=collaboration.slug %}">Back</a>

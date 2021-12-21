@@ -1,0 +1,27 @@
+{% extends "base/page.html" %}
+{% block body %}
+    <h1>{{ group.name }}</h1>
+    <p>Members: {{ group.members.count }} | Subscribers: {{ group.subscribers.count }} |
+        {% if user in group.members.all %}
+            <a href="{% url 'group-leave' slug=group.slug %}">Leave</a>
+        {% else %}
+            <a href="{% url 'group-join' slug=group.slug %}">Join</a>
+        {% endif %}
+        {% if user in group.admins.all %}
+            | <a href="{% url 'group-update' slug=group.slug %}">Edit</a> |
+            <a href="{% url 'group-delete' slug=group.slug %}">Delete</a>
+        {% endif %}
+    </p>
+    <p>Created by: {{ group.created_by }}</p>
+    <p>Description: {{ group.description }}</p>
+
+    {% if user in group.admins.all %}
+        {% include "groups/partials/join_requests.html" %}
+    {% endif %}
+
+    {% include "groups/partials/group_chat.html" %}
+
+    {% include "groups/partials/group_collaborations.html" %}
+{% endblock body %}
+
+

@@ -1,0 +1,26 @@
+<table>
+    <h3>Collaborations</h3>
+
+    <a href="{% url 'collaboration-create' group_slug=group.slug %}">Add</a>
+
+    {% for collaboration in collaborations %}
+        <tr>
+            <th>
+                Name: {{ collaboration.name }}
+            </th>
+            <th>
+                Description: {{ collaboration.short_description }}
+            </th>
+            <th>
+                Status: {{ collaboration.status }}
+            </th>
+            <th>
+                Percentage Complete: {{ collaboration.percent_completed }}
+            </th>
+            <th>
+                <a href="{% url 'collaboration-detail' slug=collaboration.slug %}">Visit</a>
+            </th>
+        </tr>
+        <br>
+    {% endfor %}
+</table>
