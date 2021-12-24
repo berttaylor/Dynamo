@@ -1,63 +1,61 @@
-{% extends "base/page.html" %}
+{% extends "static_site/static_base.html" %}
 {% block body %}
-    {% include "base/partials/header.html" %}
 
-<body>
-    <main>
 
         <!-- Section -->
-        <section class="min-vh-100 d-flex align-items-center section-image overlay-soft-dark" data-background="../../assets/img/pages/form-image.jpg">
-            <div class="container">
-                <div class="row justify-content-center">
-                    <div class="col-12 d-flex align-items-center justify-content-center">
-                        <div class="signin-inner my-4 my-lg-0 bg-white shadow-soft border rounded border-gray-300 p-4 p-lg-5 w-100 fmxw-500">
+
+                        <div class="mt-6 bg-white shadow-soft border rounded border-gray-300 p-4 p-lg-5 w-100 fmxw-550">
                             <div class="text-center text-md-center mb-4 mt-md-0">
-                                <h1 class="mb-0 h3">Sign Up by Email</h1>
+                                <h1 class="mb-0 h3">Sign Up</h1>
                             </div>
 
                             <form action="" method="post">
                                 {% csrf_token %}
                                 <!-- Form -->
                                 <div class="form-group mb-4">
-                                                                    {% if form.errors %}
-        <div id="form_errors" class="f-errors mt-2">
-            {% for key, value in form.errors.items %}
-                <strong>{{ value }}</strong>
-            {% endfor %}
-        </div>
-    {% endif %}
+                                    {% if form.errors %}
+                                        <div id="form_errors" class="f-errors mt-2">
+                                            {% for key, value in form.errors.items %}
+                                                <strong>{{ value }}</strong>
+                                            {% endfor %}
+                                        </div>
+                                    {% endif %}
                                     <label for="email">Username</label>
                                     <div class="input-group">
-                                        <span class="input-group-text" id="basic-addon3"><span class="fas fa-user"></span></span>
-{{ form.username }}
+                                        <span class="input-group-text" id="basic-addon3"><span
+                                                class="fas fa-user"></span></span>
+                                        {{ form.username }}
                                     </div>
                                 </div>
                                 <!-- Form -->
                                 <div class="form-group mb-4">
                                     <label for="email">Your Email</label>
                                     <div class="input-group">
-                                        <span class="input-group-text" id="basic-addon3"><span class="fas fa-envelope"></span></span>
+                                        <span class="input-group-text" id="basic-addon3"><span
+                                                class="fas fa-envelope"></span></span>
                                         {{ form.email }}
                                     </div>
                                 </div>
                                 <!-- End of Form -->
                                 <div class="form-group">
                                     <!-- Form -->
-                                    <div class="form-group mb-4">
+                                    <div class="form-group mb-4" title="{{ form.password1.help_text }}">
                                         <label for="password">Your Password</label>
                                         <div class="input-group">
-                                            <span class="input-group-text" id="basic-addon4"><span class="fas fa-unlock-alt"></span></span>
+                                            <span class="input-group-text" id="basic-addon4"><span
+                                                    class="fas fa-unlock-alt"></span></span>
                                             {{ form.password1 }}
                                         </div>
 
                                     </div>
-                                    {{ form.password1.help_text }}
+
                                     <!-- End of Form -->
                                     <!-- Form -->
                                     <div class="form-group mb-4">
                                         <label for="password_confirm">Confirm Password</label>
                                         <div class="input-group">
-                                            <span class="input-group-text" id="basic-addon5"><span class="fas fa-unlock-alt"></span></span>
+                                            <span class="input-group-text" id="basic-addon5"><span
+                                                    class="fas fa-unlock-alt"></span></span>
                                             {{ form.password2 }}
                                         </div>
                                     </div>
@@ -73,11 +71,8 @@
                                 </span>
                             </div>
                         </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-    </main>
+
+
 
 
 {% endblock body %}

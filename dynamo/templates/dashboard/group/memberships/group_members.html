@@ -1,0 +1,28 @@
+<div class="mb-4 p-4 bg-white rounded shadow-sm">
+    <div class="d-flex align-items-center justify-content-between">
+        <h5 class="mb-0">Members</h5>
+
+
+        <div class="d-flex">
+
+            <select class="form-select fmxw-150 pe-5" id="inlineFormCustomSelectMessages"
+                    aria-label="Messages select example"
+                    name="membership_list_view"
+                    hx-get={% url 'htmx_membership_view_handler' group_id=group_id %}
+                    hx-target="#list_of_members"
+{#                    hx-indicator=".htmx-indicator"#}
+            >
+                <option value="PENDING"> Pending </option>
+                <option value="MEMBERS"> Members </option>
+                <option value="DENIED"> Denied </option>
+                <option value="HIDE"> Hidden </option>
+
+            </select>
+        </div>
+    </div>
+
+<div id="list_of_members">
+    {% include "dashboard/group/memberships/group_members_list.html" %}
+</div>
+
+</div>

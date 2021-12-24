@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from .models import Group, GroupJoinRequest, GroupProfileImage
+from .models import Group, GroupProfileImage, GroupAnnouncement, GroupJoinRequest
 
 
 @admin.register(Group)
@@ -87,6 +87,47 @@ class GroupProfileImageAdmin(admin.ModelAdmin):
 
     fieldsets = (
         (None, {"fields": (("user", "group"), "status")}),
+        (
+            "Database",
+            {
+                "fields": (
+                    ("created_at", "updated_at"),
+                    "deleted_at",
+                )
+            },
+        ),
+    )
+
+    readonly_fields = (
+        "created_at",
+        "updated_at",
+        "deleted_at",
+    )
+
+
+@admin.register(GroupAnnouncement)
+class GroupAnnouncementAdmin(admin.ModelAdmin):
+    search_fields = ("title",)
+    ordering = ("created_at",)
+
+    list_display = (
+        "title",
+        "group",
+    )
+
+    list_filter = ("created_at",)
+
+    fieldsets = (
+        (None, {"fields": (("user", "group"),)}),
+        (
+            "Announcement",
+            {
+                "fields": (
+                    "title",
+                    "body",
+                )
+            },
+        ),
         (
             "Database",
             {

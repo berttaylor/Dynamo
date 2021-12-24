@@ -1,9 +1,9 @@
-{% extends "base/page.html" %}
-{% block body %}
+{% extends "dashboard/dashboard_base.html" %}
+{% block body_content %}
     <h1>Group Create</h1>
     <form method="post">{% csrf_token %}
         {{ form.as_p }}
         <input type="submit" value="Save">
     </form>
-{% endblock body %}
+{% endblock %}
 

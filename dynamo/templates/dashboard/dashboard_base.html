@@ -8,19 +8,32 @@
 <body>
 
 <!-- Section -->
-<section class="min-vh-100 d-flex align-items-center section-image overlay-soft-dark"
-         data-background="/compiled/img/landing-background.jpg">
 
-    {% block global_header %}
-        {% include 'base/partials/header.html' %}
-    {% endblock %}
+{% block global_header %}
+    {% include 'dashboard/partials/dash_header.html' %}
+{% endblock %}
 
-<div class="col-12 d-flex justify-content-center align-content-center">
-    {% block body %}
-    {% endblock %}
-</div>
+{% block body %}
+    <div class="section section-lg pt-5 pt-md-7 bg-gray-200">
+        <div class="container">
+            <div class="row pt-5 pt-md-0">
+                {% block sidenav %}
+                    {% include 'dashboard/partials/sidenav.html' %}
 
-</section>
+                {% endblock %}
+                <div class="col-12 col-lg-8">
+                    {% block body_content %}
+
+                    {% endblock %}
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}
+
+
 
 {% block global_footer %}
     {% include 'base/partials/footer.html' %}
@@ -29,6 +42,9 @@
 
 {% block global_scripts %}
     {% include 'base/partials/scripts.html' %}
+    {% block extra_scripts %}
+
+    {% endblock %}
 {% endblock %}
 </body>
 

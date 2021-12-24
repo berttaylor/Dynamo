@@ -1,6 +1,9 @@
-from django.forms import ModelForm, HiddenInput, CharField, DateInput, ChoiceField, RadioSelect, ModelChoiceField
+from django.forms import ModelForm, HiddenInput, CharField, DateInput, ModelChoiceField, TextInput, Textarea, \
+    SelectMultiple
+from django.forms.widgets import Select
 
 from collaborations.models import CollaborationMilestone, CollaborationTask
+
 
 
 class TaskForm(ModelForm):
@@ -18,10 +21,39 @@ class TaskForm(ModelForm):
         collaboration = kwargs['initial']['collaboration']
         group_members = collaboration.related_group.members.all()
         self.fields['assigned_to'].queryset = group_members
+        for field_name, field in self.fields.items():
+            field.widget.attrs['class'] = 'form-control'
 
     class Meta:
         model = CollaborationTask
-        fields = ["name", "description", "collaboration", "assigned_to"]
+        fields = ["name", "description", "collaboration", "assigned_to", "prerequisites"]
+        widgets = {
+            "assigned_to": Select(
+                attrs={
+                    "class": "form-control",
+                    "id": "task_name",
+                    "rows": "1",
+                    "placeholder": "Task Name",
+                    "required": True
+                }
+            ),
+            "description": Textarea(
+                attrs={
+                    "class": "validate form-control",
+                    "rows": 6,
+                    "cols": 5,
+                    "placeholder": "text",
+                }
+            ),
+            "prerequisites": SelectMultiple(
+                attrs={
+                    "class": "form-control",
+                    "placeholder": "prerequisites",
+                    "size": 6,
+                }
+            ),
+
+        }
 
 
 class DateInputLocal(DateInput):
@@ -38,3 +70,8 @@ class MilestoneForm(ModelForm):
         widgets = {
             'target_date': DateInputLocal()
         }
+
+    def __init__(self, *args, **kwargs):
+        super(MilestoneForm, self).__init__(*args, **kwargs)
+        for field_name, field in self.fields.items():
+            field.widget.attrs['class'] = 'form-control'

@@ -23,8 +23,9 @@ from groups.views import (
     GroupDeleteView,
     GroupJoinView,
     GroupLeaveView,
-    GroupRequestApproveView,
-    GroupRequestDenyView,
+    htmx_membership_selector,
+    htmx_membership_handler,
+    htmx_membership_view_handler,
 )
 
 urlpatterns = [
@@ -63,14 +64,21 @@ urlpatterns = [
         GroupLeaveView,
         name="group-leave",
     ),
+
+    # Views for the membership section of the group detail page.
     path(
-        "<uuid>/approve/",
-        GroupRequestApproveView,
-        name="join-request-approve",
+        "htmx_membership_view_handler/<group_id>/",
+        htmx_membership_view_handler,
+        name="htmx_membership_view_handler",
     ),
     path(
-        "<uuid>/deny/",
-        GroupRequestDenyView,
-        name="join-request-deny",
+        "htmx_membership_selector/<group_id>/<membership_id>/<membership_list_view>/",
+        htmx_membership_selector,
+        name="htmx_membership_selector",
+    ),
+    path(
+        "htmx_membership_handler/<group_id>/<action>/<membership_list_view>/",
+        htmx_membership_handler,
+        name="htmx_membership_handler",
     ),
 ]

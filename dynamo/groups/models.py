@@ -142,7 +142,7 @@ class GroupJoinRequest(TimeStampedSoftDeleteBase):
     class Meta:
         unique_together = ("user", "group", "status")
         verbose_name_plural = "Join Requests"
-        ordering = ("created_at",)
+        ordering = ("-created_at", "-updated_at")
 
     def __str__(self):
         return f"[{self.status}] {self.user.username}"
@@ -173,3 +173,41 @@ class GroupProfileImage(TimeStampedSoftDeleteBase):
 
     class Meta:
         verbose_name_plural = "Profile Images"
+
+
+class GroupAnnouncement(TimeStampedSoftDeleteBase):
+    """
+    Announcements are important communications made by admins, and displayed atop the Groups page, for all to see
+
+    An example could be that the group is not accepting new members right now, or a clarification of group rules
+    """
+
+    user = models.ForeignKey(
+        "users.User",
+        help_text="User who wrote the announcement",
+        on_delete=models.SET(get_sentinel_user),
+        related_name="group_announcements",
+    )
+
+    group = models.ForeignKey(
+        "groups.Group",
+        help_text="The group where the announcement was written",
+        on_delete=models.CASCADE,
+        related_name="group_announcements",
+    )
+
+    title = models.TextField(help_text="The question")
+
+    body = models.TextField(help_text="The message itself")
+
+    def __str__(self):
+        return f"{self.group}'s announcement: '{self.title}'"
+
+    class Meta:
+        ordering = ["-created_at"]
+        verbose_name_plural = "Group Announcements"
+
+        indexes = [
+            models.Index(fields=["group"]),
+            models.Index(fields=["created_at"]),
+        ]

@@ -1,0 +1,36 @@
+<div class="card bg-white border-gray-300  pb-3 mb-4">
+
+    {% if user.is_authenticated %}
+
+        <div class="ps-3 pe-3">
+            <form class="mt-4 mb-3">{% csrf_token %}
+                <div class="input-group">
+                    {{ chat_form.message }}
+
+                    <button hx-post="{% url 'collaboration-chat' collaboration_uuid=collaboration.id %}"
+                            hx-target="#collaboration_chat" type="submit" class="btn btn-dark">Send
+                    </button>
+                </div>
+            </form>
+        </div>
+
+    {% endif %}
+
+    <div id="message_list">
+        {% for message in chat_messages %}
+            <div class="col-12 m-1 ps-3 pe-3">
+                <div class="d-flex justify-content-between align-items-center">
+        <span class="font-small">
+            <span class="fw-bold">{{ message.user.username }}</span>
+            <span class="ps-3">{{ message.message }}</span>
+        </span>
+                    <span class="font-small pe-3 text-muted">
+            {{ message.created_at|date:"SHORT_DATE_FORMAT" }}
+        </span>
+                </div>
+            </div>
+        {% endfor %}
+
+    </div>
+</div>
+

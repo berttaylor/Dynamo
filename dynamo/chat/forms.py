@@ -1,4 +1,4 @@
-from django.forms import ModelForm, IntegerField, HiddenInput, CharField
+from django.forms import ModelForm, HiddenInput, CharField, TextInput
 
 from chat.models import Message
 
@@ -11,6 +11,18 @@ class GroupMessageForm(ModelForm):
         model = Message
         fields = ["message", "group"]
 
+        widgets = {
+            "message": TextInput(
+                attrs={
+                    "class": "form-control",
+                    "id": "message",
+                    "rows": "1",
+                    "placeholder": "Your Message",
+                    "required": True
+                }
+            ),
+        }
+
 
 class CollaborationMessageForm(ModelForm):
     # We hide the collaboration section, as this is set by the view
@@ -19,3 +31,15 @@ class CollaborationMessageForm(ModelForm):
     class Meta:
         model = Message
         fields = ["message", "collaboration"]
+
+        widgets = {
+            "message": TextInput(
+                attrs={
+                    "class": "form-control",
+                    "id": "message",
+                    "rows": "1",
+                    "placeholder": "Your Message",
+                    "required": True
+                }
+            ),
+        }

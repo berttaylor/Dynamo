@@ -17,18 +17,8 @@ Including another URLconf
 from django.urls import path
 
 from collaborations.views import CollaborationCreateView, CollaborationDetailView, CollaborationUpdateView, \
-    CollaborationDeleteView, TaskCreateView, MilestoneCreateView
-from groups.views import (
-    GroupListView,
-    GroupDetailView,
-    GroupCreateView,
-    GroupUpdateView,
-    GroupDeleteView,
-    GroupJoinView,
-    GroupLeaveView,
-    GroupRequestApproveView,
-    GroupRequestDenyView,
-)
+    CollaborationDeleteView, task_create_view, milestone_create_view, TaskUpdateView, MilestoneUpdateView, task_delete_view, \
+    milestone_delete_view, CollaborationListView
 
 urlpatterns = [
     # We use long URLs here because collaborations are created within groups and this probably make more sense
@@ -37,6 +27,11 @@ urlpatterns = [
         "groups/<group_slug>/create-collaboration/",
         CollaborationCreateView.as_view(),
         name="collaboration-create",
+    ),
+    path(
+        "collaborations/",
+        CollaborationListView.as_view(),
+        name="collaboration-list",
     ),
     path(
         "collaborations/<slug>/",
@@ -55,12 +50,32 @@ urlpatterns = [
     ),
     path(
         "collaboration/<collaboration_uuid>/create-task",
-        TaskCreateView,
+        task_create_view,
         name="task-create",
     ),
     path(
         "collaboration/<collaboration_uuid>/create-milesteone",
-        MilestoneCreateView,
+        milestone_create_view,
         name="milestone-create",
+    ),
+    path(
+        "task/<pk>/update",
+        TaskUpdateView.as_view(),
+        name="task-update",
+    ),
+    path(
+        "milestone/<pk>/update",
+        MilestoneUpdateView.as_view(),
+        name="milestone-update",
+    ),
+    path(
+        "task/<pk>/delete",
+        task_delete_view,
+        name="task-delete",
+    ),
+    path(
+        "milestone/<pk>/delete",
+        milestone_delete_view,
+        name="milestone-delete",
     ),
 ]

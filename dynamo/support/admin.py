@@ -73,7 +73,6 @@ class SupportMessageAdmin(admin.ModelAdmin):
 
     list_display = (
         "created_at",
-        "subject",
         "email",
         "read",
     )
@@ -90,7 +89,6 @@ class SupportMessageAdmin(admin.ModelAdmin):
             "Message",
             {
                 "fields": (
-                    "subject",
                     "message",
                 )
             },
@@ -103,7 +101,6 @@ class SupportMessageAdmin(admin.ModelAdmin):
         "updated_at",
         "name",
         "email",
-        "subject",
         "message",
     )
 
