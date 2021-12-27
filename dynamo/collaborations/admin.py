@@ -23,7 +23,10 @@ class CollaborationAdmin(admin.ModelAdmin):
     list_filter = ("created_at", "related_group")
 
     fieldsets = (
-        ("Collaboration details", {"fields": (("name", "slug"), "description")}),
+        (
+            "Collaboration details",
+            {"fields": (("name", "slug"), "description", "related_group")},
+        ),
         ("Users", {"fields": ("created_by",)}),
         (
             "Database",
@@ -151,7 +154,7 @@ class CollaborationMilestoneAdmin(admin.ModelAdmin):
 class CollaborationTaskTagAdmin(admin.ModelAdmin):
     ordering = ("name",)
 
-    list_display = ("alt_text",)
+    list_display = ("name",)
 
     list_filter = ("created_at",)
 
@@ -178,7 +181,7 @@ class CollaborationTaskTagAdmin(admin.ModelAdmin):
 @admin.register(CollaborationFile)
 class CollaborationFileAdmin(admin.ModelAdmin):
     ordering = ("name",)
-    search_fields = "name"
+    search_fields = ("name",)
 
     list_display = (
         "created_at",

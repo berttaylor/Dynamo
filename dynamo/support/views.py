@@ -1,13 +1,12 @@
 from django.contrib.auth.decorators import login_required
-from django.core.exceptions import ObjectDoesNotExist
 from django.urls import reverse_lazy
 from django.utils.decorators import method_decorator
 from django.views.generic import ListView, CreateView, TemplateView
 
-from support.forms import SupportMessageForm
-from support.models import FAQ, SupportMessage
 from dynamo.settings import DEFAULT_SYSTEM_TO_EMAIL
 from dynamo.tasks import send_email
+from support.forms import SupportMessageForm
+from support.models import FAQ, SupportMessage
 
 
 class FAQListView(ListView):
@@ -16,7 +15,7 @@ class FAQListView(ListView):
     """
 
     model = FAQ
-    template_name = "support/faq_list.html"
+    template_name = "static_site/faq_list.html"
     paginate_by = 30
 
 
@@ -27,7 +26,7 @@ class SupportMessageCreateView(CreateView):
 
     model = SupportMessage
     form_class = SupportMessageForm
-    template_name = "support/support_message_form.html"
+    template_name = "static_site/support_message_form.html"
     success_url = reverse_lazy("support-message-thanks")
 
     def get_initial(self):
@@ -36,7 +35,7 @@ class SupportMessageCreateView(CreateView):
         """
         initial = {}
         if self.request.user.is_authenticated:
-            initial["user_name"] = (
+            initial["name"] = (
                 str(self.request.user.first_name)
                 + " "
                 + str(self.request.user.last_name)
@@ -46,8 +45,7 @@ class SupportMessageCreateView(CreateView):
 
     def form_valid(self, form):
         """
-        We add the user (buyer or vendor), and if a vendor, we add the organisation,
-        before saving the SupportMessage
+        We add the user before saving the SupportMessage
         """
 
         # 1. Add User, if logged in
@@ -64,12 +62,9 @@ class SupportMessageCreateView(CreateView):
                 "template": "admin_support_message.email",
                 "recipients": (DEFAULT_SYSTEM_TO_EMAIL,),
                 "additional_context": {
-                    "subject": f"New Support Message Received from {message.name}",
                     "user": str(message.name),
                     "email": str(message.email),
-                    "subject_line": str(message.subject),
                     "message_body": str(message.message),
-                    "related_user": str(message.related_user_account.id),
                 },
             }
         )
@@ -83,4 +78,4 @@ class SupportMessageThanksView(TemplateView):
     Confirms to the user that the message has been sent
     """
 
-    template_name = "support/support_message_thanks.html"
+    template_name = "static_site/support_message_thanks.html"

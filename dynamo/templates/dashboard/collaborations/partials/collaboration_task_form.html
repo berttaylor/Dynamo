@@ -1,0 +1,16 @@
+<form class="d-flex flex-wrap">
+    <div class="form-floating my-1 pe-2 col-12 col-md-6 border-gray-800">
+        {{ task_form.name }}
+        {{ task_form.name.label_tag }}
+    </div>
+    <div class="form-floating my-1 pe-2 col-12 col-md-4">
+        {{ task_form.assigned_to }}
+        {{ task_form.assigned_to.label_tag }}
+    </div>
+
+    <button class="col-12 col-md-2 my-1 py-2 btn btn-tertiary"
+            hx-post="{% url 'task-create' collaboration_uuid=collaboration.id %}"
+            hx-target="#collaboration_elements"
+            type="submit">Add
+    </button>
+</form>

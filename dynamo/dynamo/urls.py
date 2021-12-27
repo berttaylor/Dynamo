@@ -1,4 +1,4 @@
-"""dynamo URL Configuration
+"""URL Configuration
 
 The `urlpatterns` list routes URLs to views. For more information please see:
     https://docs.djangoproject.com/en/3.2/topics/http/urls/
@@ -15,14 +15,7 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
-import django.contrib.auth.views as auth_views
 from django.views.generic import TemplateView
-
-from support.views import (
-    FAQListView,
-    SupportMessageCreateView,
-    SupportMessageThanksView,
-)
 
 urlpatterns = [
     # ADMIN
@@ -30,21 +23,13 @@ urlpatterns = [
     # AUTH
     path("accounts/", include("users.urls")),
     # Home
-    path("", TemplateView.as_view(template_name="home.html"), name="home"),
-    # FAQ & Support
-    path(
-        "faq/",
-        FAQListView.as_view(),
-        name="faq",
-    ),
-    path(
-        "contact-support/",
-        SupportMessageCreateView.as_view(),
-        name="support-message-create",
-    ),
-    path(
-        "contact-support/thanks/",
-        SupportMessageThanksView.as_view(),
-        name="support-message-thanks",
-    ),
+    path("", TemplateView.as_view(template_name="static_site/landing.html"), name="home"),
+    # FAQ / Support
+    path("support/", include("support.urls")),
+    # Groups
+    path("groups/", include("groups.urls")),
+    # Chat
+    path("chat/", include("chat.urls")),
+    # Collaborations
+    path("", include("collaborations.urls")),
 ]

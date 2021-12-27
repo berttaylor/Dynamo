@@ -1,9 +1,0 @@
-{% include "main_nav.html" %}
-<h1>Register By Email</h1>
-<form enctype="multipart/form-data" method="post">
-    {% csrf_token %}
-    {{ form.as_p }}
-
-    <br>
-    <input type="submit" value="Save">
-</form>

@@ -1,0 +1,71 @@
+{% extends "dashboard/dashboard_base.html" %}
+{% block body_content %}
+
+
+
+
+
+
+
+
+    <!-- Profile widget -->
+    <div class="bg-white shadow rounded overflow-hidden text-center mb-0">
+        <div class="p-4 bg-dark text-center text-white">
+
+            <img src="/compiled/img/eagle_labs_outside.png"
+                 class="organic-radius img-fluid" alt="Joseph Avatar">
+            <h1 class="m-4">{{ group.name }}</h1>
+        <p class="lead ">{{ group.description }}</p>
+            <p class="mt-4 mb-0">
+                {% if user in group.members.all %}
+                    <a href="{% url 'group-leave' slug=group.slug %}">Leave</a>
+                {% else %}
+                    <a href="{% url 'group-join' slug=group.slug %}">Join</a>
+                {% endif %}
+                {% if user in group.admins.all %}
+                    | <a href="{% url 'group-update' slug=group.slug %}">Edit</a> |
+                    <a href="{% url 'group-delete' slug=group.slug %}">Delete</a>
+                {% endif %}
+            </p>
+
+        </div>
+
+
+    </div>
+
+    <div class="bg-light p-4 d-flex justify-content-end text-center">
+        <ul class="list-inline mb-0">
+            <li class="list-inline-item">
+                <h5 id="h5_admin_count" class="font-weight-bold mb-0 d-block">{{ group.admins.count }}</h5><small class="text-muted"> <i
+                    class="fa fa-picture-o mr-1"></i>Admins</small>
+            </li>
+            <li class="list-inline-item">
+                <h5 id="h5_member_count" class="font-weight-bold mb-0 d-block">{{ group.members.count }}</h5><small class="text-muted"> <i
+                    class="fa fa-user-circle-o mr-1"></i>Members</small>
+            </li>
+            <li class="list-inline-item">
+                <h5 id="h5_subscriber_count" class="font-weight-bold mb-0 d-block">{{ group.subscribers.count }}</h5><small class="text-muted">
+                <i class="fa fa-user-circle-o mr-1"></i>Subscribers</small>
+            </li>
+        </ul>
+    </div>
+
+    {% if user in group.admins.all %}
+        {% include "dashboard/group/memberships/group_members.html" with membership_list=membership_list group_id=group.pk %}
+    {% endif %}
+
+    <div id="group_announcements">
+        {% include "dashboard/group/partials/group_announcements.html" %}
+    </div>
+
+    <div id="group_collaborations">
+        {% include "dashboard/group/partials/group_collaborations.html" %}
+    </div>
+
+    <div id="group_chat">
+        {% include "dashboard/group/partials/group_chat.html" %}
+    </div>
+
+{% endblock %}
+
+

@@ -1,0 +1,48 @@
+{% if membership_list_view == "PENDING" %}
+    <div class="text-center mt-4">
+        <p>{{ selected_memberships }} selected.
+            <a
+                    hx-post="{% url 'htmx_membership_handler' group_id=group_id action="APPROVE" membership_list_view=membership_list_view %}"
+                    hx-target="#list_of_members"
+            >Approve</a> |
+            <a
+                    hx-post="{% url 'htmx_membership_handler' group_id=group_id action="IGNORE" membership_list_view=membership_list_view %}"
+                    hx-target="#list_of_members"
+            >Ignore</a> |
+            <a
+                    hx-post="{% url 'htmx_membership_handler' group_id=group_id action="CLEAR" membership_list_view=membership_list_view %}"
+                    hx-target="#requests_action_bar"
+            >Clear</a>
+        </p>
+    </div>
+
+{% elif membership_list_view == "MEMBERS" %}
+    <div class="text-center mt-4">
+        <p>{{ selected_memberships }} selected.
+            <a
+                    hx-post="{% url 'htmx_membership_handler' group_id=group_id action="REMOVE" membership_list_view=membership_list_view %}"
+                    hx-target="#list_of_members"
+            >Remove From Group</a> |
+            <a
+                    hx-post="{% url 'htmx_membership_handler' group_id=group_id action="CLEAR" membership_list_view=membership_list_view %}"
+                    hx-target="#requests_action_bar"
+            >Clear</a>
+        </p>
+    </div>
+
+{% elif membership_list_view == "DENIED" %}
+
+    <div class="text-center mt-4">
+        <p>{{ selected_memberships }} selected.
+            <a
+                    hx-post="{% url 'htmx_membership_handler' group_id=group_id action="APPROVE" membership_list_view=membership_list_view %}"
+                    hx-target="#list_of_members"
+            >Approve</a> |
+            <a
+                    hx-post="{% url 'htmx_membership_handler' group_id=group_id action="CLEAR" membership_list_view=membership_list_view %}"
+                    hx-target="#requests_action_bar"
+            >Clear</a>
+        </p>
+    </div>
+
+{% endif %}

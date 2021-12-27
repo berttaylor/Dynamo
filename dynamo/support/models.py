@@ -88,8 +88,6 @@ class SupportMessage(TimeStampedBase):
         blank=True,
     )
 
-    subject = models.TextField(help_text="The subject of the message")
-
     message = models.TextField(
         help_text="Please describe the issue in as much detail as possible"
     )

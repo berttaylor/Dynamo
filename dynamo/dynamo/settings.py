@@ -55,7 +55,6 @@ INSTALLED_APPS = [
     "groups",
     "support",
     "chat",
-    "rest_framework",
     "axes",
 ]
 
@@ -182,7 +181,7 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 # ADDED: Set some URLs and overrides
 LOGIN_URL = "/accounts/login/"
 LOGOUT_REDIRECT_URL = "/accounts/login/"
-LOGIN_REDIRECT_URL = "/"
+LOGIN_REDIRECT_URL = "/collaborations/"
 
 # ADDED: Axes settings
 AXES_FAILURE_LIMIT = 10  # Number of failed attempts before lockout
@@ -192,31 +191,3 @@ AXES_RESET_ON_SUCCESS = (
 )
 AXES_ONLY_ADMIN_SITE = False  # Handle both admin panel and regular logins
 AXES_ENABLE_ADMIN = True  # Allow admin management
-
-"""
-Django Rest Framework
-"""
-DEFAULT_RENDERER_CLASSES = ("rest_framework.renderers.JSONRenderer",)
-
-if DEBUG:
-    DEFAULT_RENDERER_CLASSES = DEFAULT_RENDERER_CLASSES + (
-        "rest_framework.renderers.BrowsableAPIRenderer",
-    )
-
-REST_FRAMEWORK = {
-    "DEFAULT_PERMISSION_CLASSES": [
-        "rest_framework.permissions.IsAuthenticated",
-    ],
-    # Use hyperlinked serializer, unless the `serializer_class` attribute is set on a view.
-    "DEFAULT_MODEL_SERIALIZER_CLASS": "rest_framework.serializers.HyperlinkedModelSerializer",
-    "DEFAULT_AUTHENTICATION_CLASSES": [
-        "rest_framework.authentication.SessionAuthentication",
-        "rest_framework.authentication.BasicAuthentication",
-    ],
-    "DEFAULT_RENDERER_CLASSES": DEFAULT_RENDERER_CLASSES,
-    "DEFAULT_THROTTLE_CLASSES": [
-        "rest_framework.throttling.AnonRateThrottle",
-        "rest_framework.throttling.UserRateThrottle",
-    ],
-    "DEFAULT_THROTTLE_RATES": {"anon": "9999/hour", "user": "99999/hour"},
-}

@@ -1,0 +1,17 @@
+<div class="mb-3" id="element_form">
+    {% include "dashboard/collaborations/partials/collaboration_element_form.html" %}
+</div>
+<div class="mb-3" id="element_list">
+    {% for element in elements %}
+        {% if element.type == "Task" %}
+
+            {% include "dashboard/collaborations/partials/collaboration_element_task.html" with task=element %}
+
+        {% else %}
+
+            {% include "dashboard/collaborations/partials/collaboration_element_milestone.html" with milestone=element %}
+
+        {% endif %}
+    {% endfor %}
+</div>
+
