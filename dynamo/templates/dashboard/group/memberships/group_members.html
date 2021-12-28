@@ -1,3 +1,4 @@
+
 <div class="mb-4 p-4 bg-white rounded shadow-sm">
     <div class="d-flex align-items-center justify-content-between">
         <h5 class="mb-0">Members</h5>
@@ -12,10 +13,16 @@
                     hx-target="#list_of_members"
 {#                    hx-indicator=".htmx-indicator"#}
             >
-                <option value="PENDING"> Pending </option>
-                <option value="MEMBERS"> Members </option>
-                <option value="DENIED"> Denied </option>
-                <option value="HIDE"> Hidden </option>
+
+
+
+                <option value="{{ MEMBERSHIP_STATUS_PENDING }}">{{ MEMBERSHIP_STATUS_PENDING }}</option>
+                <option value="{{ MEMBERSHIP_STATUS_CURRENT }}">{{ MEMBERSHIP_STATUS_CURRENT }}</option>
+                <option value="{{ MEMBERSHIP_STATUS_IGNORED }}">{{ MEMBERSHIP_STATUS_IGNORED }}</option>
+                <option value="{{ MEMBERSHIP_STATUS_REMOVED }}">{{ MEMBERSHIP_STATUS_REMOVED }}</option>
+
+                <option value="HIDE">Hidden</option>
+
 
             </select>
         </div>

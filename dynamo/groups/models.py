@@ -3,6 +3,7 @@ import time
 from django.db import models
 from django.template.defaultfilters import slugify
 from groups import constants as c
+from .managers import MembershipManager
 from users.utils import get_sentinel_user
 
 from dynamo.base.models import TimeStampedSoftDeleteBase
@@ -37,24 +38,11 @@ class Group(TimeStampedSoftDeleteBase):
         blank=True,
     )
 
-    admins = models.ManyToManyField(
-        "users.User",
-        help_text="Users with Administrative Rights",
-        related_name="admin_positions",
-        blank=True,
-    )
-
     members = models.ManyToManyField(
         "users.User",
+        through="Membership",
+        through_fields=('group', 'user'),
         help_text="Users who are members of the Group",
-        related_name="memberships",
-        blank=True,
-    )
-
-    subscribers = models.ManyToManyField(
-        "users.User",
-        help_text="Users who receive email updates from the Group",
-        related_name="subscriptions",
         blank=True,
     )
 
@@ -96,52 +84,61 @@ class Group(TimeStampedSoftDeleteBase):
         ordering = ("created_at",)
 
 
-class GroupJoinRequest(TimeStampedSoftDeleteBase):
+class Membership(TimeStampedSoftDeleteBase):
     """
-    GroupJoinRequest are created when a user requests to join a group.
+    Membership are created when a user requests to join a group.
     They can be approved/denied by the administrators of the relevant group.
     """
 
+    # # Default manager, unedited.
+    # objects = models.Manager()
+    custom_manager = (
+        # Custom manager with helper methods for filtering by status
+        MembershipManager()
+    )
+
     user = models.ForeignKey(
         "users.User",
-        help_text="The User who made the request",
         on_delete=models.SET(get_sentinel_user),
-        related_name="group_join_requests_made",
+        related_name="memberships",
     )
 
     group = models.ForeignKey(
         "Group",
-        help_text="The Group which the User would like to join",
         on_delete=models.CASCADE,
-        related_name="join_requests",
+        related_name="memberships",
     )
 
     status = models.CharField(
         blank=True,
-        choices=c.REQUEST_STATUS_CHOICES,
-        default=c.REQUEST_STATUS_PENDING,
-        help_text="The status of the request",
+        choices=c.MEMBERSHIP_STATUS_CHOICES,
+        default=c.MEMBERSHIP_STATUS_PENDING,
+        help_text="The status of the membership",
         max_length=100,
     )
 
-    handled_by = models.ForeignKey(
+    is_admin = models.BooleanField(
+        help_text="Whether the user has admin rights",
+        default=False,
+    )
+
+    is_subscribed = models.BooleanField(
+        help_text="Whether the user gets email updates",
+        default=False,
+    )
+
+    updated_by = models.ForeignKey(
         "users.User",
         help_text="User who handled the request",
         on_delete=models.CASCADE,
-        related_name="group_join_requests_handled",
+        related_name="memberships_updated",
         blank=True,
-        null=True,
-    )
-
-    handled_date = models.DateTimeField(
-        blank=True,
-        help_text="Timestamped when the request is handled",
         null=True,
     )
 
     class Meta:
-        unique_together = ("user", "group", "status")
-        verbose_name_plural = "Join Requests"
+        unique_together = ("user", "group")
+        verbose_name_plural = "Memberships"
         ordering = ("-created_at", "-updated_at")
 
     def __str__(self):

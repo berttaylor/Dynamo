@@ -36,21 +36,21 @@
     <div class="bg-light p-4 d-flex justify-content-end text-center">
         <ul class="list-inline mb-0">
             <li class="list-inline-item">
-                <h5 id="h5_admin_count" class="font-weight-bold mb-0 d-block">{{ group.admins.count }}</h5><small class="text-muted"> <i
+                <h5 id="h5_admin_count" class="font-weight-bold mb-0 d-block">{{ admin_count }}</h5><small class="text-muted"> <i
                     class="fa fa-picture-o mr-1"></i>Admins</small>
             </li>
             <li class="list-inline-item">
-                <h5 id="h5_member_count" class="font-weight-bold mb-0 d-block">{{ group.members.count }}</h5><small class="text-muted"> <i
+                <h5 id="h5_member_count" class="font-weight-bold mb-0 d-block">{{ member_count }}</h5><small class="text-muted"> <i
                     class="fa fa-user-circle-o mr-1"></i>Members</small>
             </li>
             <li class="list-inline-item">
-                <h5 id="h5_subscriber_count" class="font-weight-bold mb-0 d-block">{{ group.subscribers.count }}</h5><small class="text-muted">
+                <h5 id="h5_subscriber_count" class="font-weight-bold mb-0 d-block">{{ subscriber_count }}</h5><small class="text-muted">
                 <i class="fa fa-user-circle-o mr-1"></i>Subscribers</small>
             </li>
         </ul>
     </div>
 
-    {% if user in group.admins.all %}
+    {% if user_is_admin %}
         {% include "dashboard/group/memberships/group_members.html" with membership_list=membership_list group_id=group.pk %}
     {% endif %}
 

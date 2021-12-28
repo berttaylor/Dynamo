@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from .models import Group, GroupProfileImage, GroupAnnouncement, GroupJoinRequest
+from .models import Group, GroupProfileImage, GroupAnnouncement, Membership
 
 
 @admin.register(Group)
@@ -18,7 +18,7 @@ class GroupAdmin(admin.ModelAdmin):
 
     fieldsets = (
         ("Group details", {"fields": (("name", "slug"), "description")}),
-        ("Users", {"fields": ("created_by", "admins", "members", "subscribers")}),
+        ("Users", {"fields": ("created_by",)}),
         (
             "Database",
             {
@@ -38,8 +38,8 @@ class GroupAdmin(admin.ModelAdmin):
     )
 
 
-@admin.register(GroupJoinRequest)
-class GroupJoinRequestAdmin(admin.ModelAdmin):
+@admin.register(Membership)
+class MembershipAdmin(admin.ModelAdmin):
     search_fields = ("user", "group")
     ordering = ("created_at",)
 
@@ -47,6 +47,7 @@ class GroupJoinRequestAdmin(admin.ModelAdmin):
         "created_at",
         "user",
         "group",
+        "is_admin",
         "status",
     )
 
@@ -56,8 +57,8 @@ class GroupJoinRequestAdmin(admin.ModelAdmin):
     )
 
     fieldsets = (
-        ("Request details", {"fields": (("user", "group"), "status")}),
-        ("Handling", {"fields": (("handled_by", "handled_date"),)}),
+        ("Membership details", {"fields": (("user", "group"), "status", "is_admin", 'is_subscribed')}),
+        ("Handling", {"fields": ("updated_by",)}),
         (
             "Database",
             {

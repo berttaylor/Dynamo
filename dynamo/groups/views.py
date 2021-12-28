@@ -17,10 +17,7 @@ import groups.constants as c
 from chat.forms import GroupMessageForm
 from chat.models import Message
 from collaborations.models import Collaboration
-from groups.models import Group, GroupAnnouncement, GroupJoinRequest
-from django.utils import timezone
-
-from users.models import User
+from groups.models import Group, GroupAnnouncement, Membership
 
 
 class GroupListView(ListView):
@@ -53,6 +50,7 @@ class GroupDetailView(FormMixin, DetailView):
         context = super(GroupDetailView, self).get_context_data(**kwargs)
 
         group = self.get_object()
+        user_is_admin = True if group.memberships.filter(user=self.request.user, group=group, is_admin=True) else False
 
         context.update(
             {
@@ -61,10 +59,12 @@ class GroupDetailView(FormMixin, DetailView):
                 "collaborations": Collaboration.objects.filter(related_group=group),
                 "chat_form": GroupMessageForm(initial={"group": group}),
                 "announcements": GroupAnnouncement.objects.filter(group=group),
-                "membership_list": GroupJoinRequest.objects.filter(
-                    group=group, status=c.REQUEST_STATUS_PENDING
-                ),
-                "membership_list_view": "PENDING",
+                "membership_list_view": c.MEMBERSHIP_STATUS_PENDING,
+                "membership_list": group.memberships.filter(status=c.MEMBERSHIP_STATUS_PENDING),
+                "user_is_admin": user_is_admin,
+                "member_count": Membership.custom_manager.current().filter(group=group).count(),
+                "admin_count": Membership.custom_manager.admin().filter(group=group).count(),
+                "subscriber_count": Membership.custom_manager.subscribers().filter(group=group).count()
             },
         )
 
@@ -104,6 +104,7 @@ class GroupCreateView(CreateView):
         group = self.object
 
         # 3. Add user to admin, members and subscribers
+        # TODO: ned to add through defaults
         group.admins.add(user)
         group.members.add(user)
         group.subscribers.add(user)
@@ -157,33 +158,26 @@ def GroupJoinView(request, slug):
     user, group = request.user, Group.objects.get(slug=slug)
 
     # If the user is already a member, send an error
-    if user in group.members.all():
-        messages.error(request, "You are already a member of this group")
+    if user in group.members.all().exclude(status=c.MEMBERSHIP_STATUS_LEFT):
+        messages.error(request, "Membership object already exists")
         return HttpResponseRedirect(
             reverse_lazy(
                 "group-detail",
                 kwargs={"slug": group.slug},
             )
         )
-    # If the user has already requested to join, send an error
-    elif (
-            GroupJoinRequest.objects.filter(user=user, group=group)
-                    .exclude(status=c.REQUEST_STATUS_APPROVED)
-                    .exists()
-    ):
-        messages.error(request, "You have an outstanding request to join this group")
-        return HttpResponseRedirect(
-            reverse_lazy(
-                "group-detail",
-                kwargs={"slug": group.slug},
-            )
-        )
-    # If the user isn't in the group, and no outstanding request exists, create one.
+
     else:
+        # If they have previously been in the group, we reactivate their membership
+        if Membership.objects.filter(user=user, group=group).exists():
+            Membership.objects.filter(user=user, group=group).update(status=c.MEMBERSHIP_STATUS_PENDING)
+        else:
+            Membership.objects.create(user=user, group=group)
+
         messages.success(
             request, "Membership Requested: Awaiting confirmation from group admin"
         )
-        GroupJoinRequest.objects.create(user=user, group=group)
+
         return HttpResponseRedirect(
             reverse_lazy(
                 "group-detail",
@@ -210,102 +204,33 @@ def GroupLeaveView(request, slug):
                 kwargs={"slug": group.slug},
             )
         )
-    # If the user is last admin of the group, send error
-    elif user in group.admins.all() and group.admins.all().count() == 1:
-        messages.error(
-            request, "You are the last admin. Assign another to leave the group"
-        )
-        return HttpResponseRedirect(
-            reverse_lazy(
-                "group-detail",
-                kwargs={"slug": group.slug},
-            )
-        )
-    # If the user is in the group, and isn't the last admin, let them leave.
+
     else:
-        group.admins.remove(user)
-        group.members.remove(user)
-        group.subscribers.remove(user)
+        # get membership
+        membership = Membership.objects.get(user=user, group=group)
 
-        messages.success(request, "You have left the group")
-
-        return HttpResponseRedirect(
-            reverse_lazy(
-                "group-detail",
-                kwargs={"slug": group.slug},
+        # If the user is last admin of the group, send error
+        if membership.is_admin and not group.memberships.filter(is_admin=True).exclude(pk=membership.pk).exists():
+            messages.error(
+                request, "You are the last admin. Assign another to leave the group"
             )
-        )
-
-
-@login_required()
-def GroupRequestApproveView(request, uuid):
-    """
-    FUNCTIONAL VIEW - Allows admins to approve join requests
-    """
-
-    # Get  variables
-    handling_user = request.user
-    join_request = GroupJoinRequest.objects.get(id=uuid)
-    requesting_user = join_request.user
-
-    # Check user permissions
-    if handling_user not in join_request.group.admins.all():
-        raise PermissionError
-
-    # If all checks out, approve the request and redirect to detail page
-    else:
-        # update the request
-        join_request.status = c.REQUEST_STATUS_APPROVED
-        join_request.handled_by = handling_user
-        join_request.handled_date = timezone.now()
-        join_request.save()
-
-        # add them to the group the request
-        join_request.group.members.add(requesting_user)
-        join_request.group.subscribers.add(requesting_user)
-        messages.success(
-            request,
-            f"'{requesting_user}''s request to join '{join_request.group}' was approved",
-        )
-        return HttpResponseRedirect(
-            reverse_lazy(
-                "group-detail",
-                kwargs={"slug": join_request.group.slug},
+            return HttpResponseRedirect(
+                reverse_lazy(
+                    "group-detail",
+                    kwargs={"slug": group.slug},
+                )
             )
-        )
 
-
-@login_required()
-def GroupRequestDenyView(request, uuid):
-    """
-    FUNCTIONAL VIEW - Allows admins to deny join requests
-    """
-
-    # Get  variables
-    handling_user = request.user
-    join_request = GroupJoinRequest.objects.get(id=uuid)
-    requesting_user = join_request.user
-
-    # Check user permissions
-    if handling_user not in join_request.group.admins.all():
-        raise PermissionError
-
-    # If all checks out, deny the request and redirect to detail page
-    else:
-        join_request.status = c.REQUEST_STATUS_DENIED
-        join_request.handled_by = handling_user
-        join_request.handled_date = timezone.now()
-        join_request.save()
-        messages.success(
-            request,
-            f"'{requesting_user}''s request to join '{join_request.group}' was denied",
-        )
-        return HttpResponseRedirect(
-            reverse_lazy(
-                "group-detail",
-                kwargs={"slug": join_request.group.slug},
+        # If the user is in the group, and isn't the last admin, let them leave.
+        else:
+            membership.update(status=c.MEMBERSHIP_STATUS_LEFT, is_admin=False, is_subscribed=False)
+            messages.success(request, "You have left the group")
+            return HttpResponseRedirect(
+                reverse_lazy(
+                    "group-detail",
+                    kwargs={"slug": group.slug},
+                )
             )
-        )
 
 
 @login_required()
@@ -314,47 +239,57 @@ def htmx_membership_view_handler(request, group_id):
     HTMX VIEW - Sends back list of memberships of the specified type - set by select object on front end
     """
 
-    # if not status is set, we send back only pending membership requests
-    membership_list_view = request.GET.get('membership_list_view', 'PENDING')
+    # if the filter is not set, we send back only pending membership requests
+    membership_list_view = request.GET.get('membership_list_view', c.MEMBERSHIP_STATUS_PENDING)
 
     # Clear the session, if it is being used
     if request.session.get('selected_memberships', None):
         del request.session['selected_memberships']
 
     match membership_list_view:
-        case "PENDING":
+        case c.MEMBERSHIP_STATUS_PENDING:
             return render(request,
                           "dashboard/group/memberships/group_members_list.html",
                           {
-                              "membership_list": GroupJoinRequest.objects.filter(
-                                  group_id=group_id, status=c.REQUEST_STATUS_PENDING
+                              "membership_list": Membership.objects.filter(
+                                  group_id=group_id, status=c.MEMBERSHIP_STATUS_PENDING
                               ),
                               "membership_list_view": membership_list_view,
                               "group_id": group_id,
                           })
 
-        case "MEMBERS":
+        case c.MEMBERSHIP_STATUS_CURRENT:
             return render(request,
                           "dashboard/group/memberships/group_members_list.html",
                           {
-                              "membership_list": GroupJoinRequest.objects.filter(
-                                  group_id=group_id, status=c.REQUEST_STATUS_APPROVED
+                              "membership_list": Membership.objects.filter(
+                                  group_id=group_id, status=c.MEMBERSHIP_STATUS_CURRENT
                               ),
                               "membership_list_view": membership_list_view,
                               "group_id": group_id,
                           })
 
-        case "DENIED":
+        case c.MEMBERSHIP_STATUS_IGNORED:
             return render(request,
                           "dashboard/group/memberships/group_members_list.html",
                           {
-                              "membership_list": GroupJoinRequest.objects.filter(
-                                  group_id=group_id, status=c.REQUEST_STATUS_DENIED
+                              "membership_list": Membership.objects.filter(
+                                  group_id=group_id, status=c.MEMBERSHIP_STATUS_IGNORED
                               ),
                               "membership_list_view": membership_list_view,
                               "group_id": group_id,
                           })
 
+        case c.MEMBERSHIP_STATUS_REMOVED:
+            return render(request,
+                          "dashboard/group/memberships/group_members_list.html",
+                          {
+                              "membership_list": Membership.objects.filter(
+                                  group_id=group_id, status=c.MEMBERSHIP_STATUS_REMOVED
+                              ),
+                              "membership_list_view": membership_list_view,
+                              "group_id": group_id,
+                          })
         case "HIDE":
             return HttpResponse("")
 
@@ -377,18 +312,19 @@ def htmx_membership_selector(request, group_id, membership_id, membership_list_v
     # CASE 1: Removing an agency - Update the shortlist (in session), render the response
     if membership_id in selected_memberships:
         selected_memberships.remove(membership_id)
-        request.session['selected_memberships'] = selected_memberships
-        if len(selected_memberships) > 0:
+        if len(selected_memberships) == 0:
             print(selected_memberships)
+            del request.session['selected_memberships']
+            return HttpResponse("")
+        else:
+            print(selected_memberships)
+            request.session['selected_memberships'] = selected_memberships
             return render(request,
                           "dashboard/group/memberships/group_members_action_bar.html", {
                               "selected_memberships": len(selected_memberships),
                               "membership_list_view": membership_list_view,
                               "group_id": group_id,
                           })
-        else:
-            print(selected_memberships)
-            return HttpResponse("")
 
     # CASE 2: Adding an agency to the shortlist - Update the shortlist (in session), render the response
     else:
@@ -416,14 +352,15 @@ def htmx_membership_handler(request, group_id, action, membership_list_view):
     """
 
     # TODO - Transaction atomic
+    # TODO: Do logic and object updates first, so that we can cut down on the amount of code and avoid repetition
 
-    # Grab the current list, or return None is there isnt one
+    # Grab the current list, or return None is there isn't one
     if not (selected_memberships := request.session.get('selected_memberships', None)):
         return None
 
     group = Group.objects.get(pk=group_id)
 
-    if action == "CLEAR":
+    if action == c.MEMBERSHIP_ACTION_CLEAR_SELECTION:
         # Get the ids (so that we can 'uncheck' the checkboxes on front end)
         check_box_ids = [f"checkbox_for_{membership_id}" for membership_id in request.session['selected_memberships']]
 
@@ -434,81 +371,85 @@ def htmx_membership_handler(request, group_id, action, membership_list_view):
                       "dashboard/group/memberships/template_js/uncheck_membership_tickboxes.html",
                       {"check_box_ids": check_box_ids})
 
-    elif action == "APPROVE":
+    elif action == c.MEMBERSHIP_ACTION_APPROVE:
         # Get the memberships and mark them as approved
-        GroupJoinRequest.objects.filter(id__in=selected_memberships).update(
-            status=c.REQUEST_STATUS_APPROVED,
-            handled_by=request.user,
-            handled_date=timezone.now()
+        Membership.objects.filter(id__in=selected_memberships).update(
+            status=c.MEMBERSHIP_STATUS_CURRENT,
+            updated_by=request.user,
         )
-
-        # Add the users to the group
-        users = User.objects.filter(group_join_requests_made__in=selected_memberships)
-
-        for user in users:
-            group.members.add(user)
 
         # Remove the list from session
         del request.session['selected_memberships']
 
         # Get new queryset
+        # TODO: Can we filter by status=membership_list_view to make this work with much less code
         match membership_list_view:
-            case "PENDING":
-                membership_list = GroupJoinRequest.objects.filter(
-                    group_id=group_id, status=c.REQUEST_STATUS_PENDING
+
+            case c.MEMBERSHIP_STATUS_PENDING:
+                membership_list = Membership.objects.filter(
+                    group_id=group_id, status=c.MEMBERSHIP_STATUS_PENDING
                 )
-            case "MEMBERS":
-                membership_list = GroupJoinRequest.objects.filter(
-                    group_id=group_id, status=c.REQUEST_STATUS_APPROVED
+            case c.MEMBERSHIP_STATUS_CURRENT:
+                membership_list = Membership.objects.filter(
+                    group_id=group_id, status=c.MEMBERSHIP_STATUS_CURRENT
                 )
 
-            case "DENIED":
-                membership_list = GroupJoinRequest.objects.filter(
-                    group_id=group_id, status=c.REQUEST_STATUS_DENIED
+            case c.MEMBERSHIP_STATUS_IGNORED:
+                membership_list = Membership.objects.filter(
+                    group_id=group_id, status=c.MEMBERSHIP_STATUS_IGNORED
                 )
 
+            case c.MEMBERSHIP_STATUS_REMOVED:
+                membership_list = Membership.objects.filter(
+                    group_id=group_id, status=c.MEMBERSHIP_STATUS_REMOVED
+                )
             case _:
-                membership_list = GroupJoinRequest.objects.none()
+                membership_list = Membership.objects.none()
 
         return render(request, "dashboard/group/memberships/group_members_list.html",
                       {
                           "membership_list": membership_list,
                           "membership_list_view": membership_list_view,
                           "group_id": group_id,
-                          "new_member_count": group.members.all().count(),
-                          "new_subscriber_count": group.subscribers.all().count(),
-                          "new_admin_count": group.admins.all().count(),
+                          "new_member_count": group.memberships.all().filter(status=c.MEMBERSHIP_STATUS_CURRENT).count(),
+                          "new_subscriber_count": group.memberships.all().filter(is_subscribed=True).count(),
+                          "new_admin_count": group.memberships.all().filter(is_admin=True).count(),
                       })
 
-    elif action == "IGNORE":
+    elif action ==c.MEMBERSHIP_ACTION_IGNORE:
         # Get the memberships and mark them as ignored
-        GroupJoinRequest.objects.filter(id__in=selected_memberships).update(
-            status=c.REQUEST_STATUS_DENIED,
-            handled_by=request.user,
-            handled_date=timezone.now()
+        Membership.objects.filter(id__in=selected_memberships).update(
+            status=c.MEMBERSHIP_STATUS_IGNORED,
+            updated_by=request.user,
         )
 
         # Remove the list from session
         del request.session['selected_memberships']
 
         # Get new queryset
+        # TODO: Can we filter by status=membership_list_view to make this work with much less code
         match membership_list_view:
-            case "PENDING":
-                membership_list = GroupJoinRequest.objects.filter(
-                    group_id=group_id, status=c.REQUEST_STATUS_PENDING
+
+            case c.MEMBERSHIP_STATUS_PENDING:
+                membership_list = Membership.objects.filter(
+                    group_id=group_id, status=c.MEMBERSHIP_STATUS_PENDING
                 )
-            case "MEMBERS":
-                membership_list = GroupJoinRequest.objects.filter(
-                    group_id=group_id, status=c.REQUEST_STATUS_APPROVED
+            case c.MEMBERSHIP_STATUS_CURRENT:
+                membership_list = Membership.objects.filter(
+                    group_id=group_id, status=c.MEMBERSHIP_STATUS_CURRENT
                 )
 
-            case "DENIED":
-                membership_list = GroupJoinRequest.objects.filter(
-                    group_id=group_id, status=c.REQUEST_STATUS_DENIED
+            case c.MEMBERSHIP_STATUS_IGNORED:
+                membership_list = Membership.objects.filter(
+                    group_id=group_id, status=c.MEMBERSHIP_STATUS_IGNORED
                 )
 
+            case c.MEMBERSHIP_STATUS_REMOVED:
+                membership_list = Membership.objects.filter(
+                    group_id=group_id, status=c.MEMBERSHIP_STATUS_REMOVED
+                )
             case _:
-                membership_list = GroupJoinRequest.objects.none()
+                membership_list = Membership.objects.none()
 
         return render(request, "dashboard/group/memberships/group_members_list.html",
                       {
@@ -517,48 +458,47 @@ def htmx_membership_handler(request, group_id, action, membership_list_view):
                           "group_id": group_id,
                       })
 
-    elif action == "REMOVE":
+    elif action == c.MEMBERSHIP_ACTION_REMOVE:
         # Get the memberships and mark them as ignored
-        GroupJoinRequest.objects.filter(id__in=selected_memberships).update(
-            status=c.REQUEST_STATUS_DENIED,
-            handled_by=request.user,
-            handled_date=timezone.now()
+        Membership.objects.filter(id__in=selected_memberships).update(
+            status=c.MEMBERSHIP_STATUS_REMOVED,
+            updated_by=request.user,
         )
-
-        # Add the users to the group
-        users = User.objects.filter(group_join_requests_made__in=selected_memberships)
-
-        for user in users:
-            group.members.remove(user)
 
         # Remove the list from session
         del request.session['selected_memberships']
 
         # Get new queryset
+        # TODO: Can we filter by status=membership_list_view to make this work with much less code
         match membership_list_view:
-            case "PENDING":
-                membership_list = GroupJoinRequest.objects.filter(
-                    group_id=group_id, status=c.REQUEST_STATUS_PENDING
+
+            case c.MEMBERSHIP_STATUS_PENDING:
+                membership_list = Membership.objects.filter(
+                    group_id=group_id, status=c.MEMBERSHIP_STATUS_PENDING
                 )
-            case "MEMBERS":
-                membership_list = GroupJoinRequest.objects.filter(
-                    group_id=group_id, status=c.REQUEST_STATUS_APPROVED
+            case c.MEMBERSHIP_STATUS_CURRENT:
+                membership_list = Membership.objects.filter(
+                    group_id=group_id, status=c.MEMBERSHIP_STATUS_CURRENT
                 )
 
-            case "DENIED":
-                membership_list = GroupJoinRequest.objects.filter(
-                    group_id=group_id, status=c.REQUEST_STATUS_DENIED
+            case c.MEMBERSHIP_STATUS_IGNORED:
+                membership_list = Membership.objects.filter(
+                    group_id=group_id, status=c.MEMBERSHIP_STATUS_IGNORED
                 )
 
+            case c.MEMBERSHIP_STATUS_REMOVED:
+                membership_list = Membership.objects.filter(
+                    group_id=group_id, status=c.MEMBERSHIP_STATUS_REMOVED
+                )
             case _:
-                membership_list = GroupJoinRequest.objects.none()
+                membership_list = Membership.objects.none()
 
         return render(request, "dashboard/group/memberships/group_members_list.html",
                       {
                           "membership_list": membership_list,
                           "membership_list_view": membership_list_view,
                           "group_id": group_id,
-                          "new_member_count": group.members.all().count(),
-                          "new_subscriber_count": group.subscribers.all().count(),
-                          "new_admin_count": group.admins.all().count(),
+                          "new_member_count": group.memberships.all().filter(status=c.MEMBERSHIP_STATUS_CURRENT).count(),
+                          "new_subscriber_count": group.memberships.all().filter(is_subscribed=True).count(),
+                          "new_admin_count": group.memberships.all().filter(is_admin=True).count(),
                       })
