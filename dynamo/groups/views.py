@@ -246,52 +246,19 @@ def htmx_membership_view_handler(request, group_id):
     if request.session.get('selected_memberships', None):
         del request.session['selected_memberships']
 
-    match membership_list_view:
-        case c.MEMBERSHIP_STATUS_PENDING:
-            return render(request,
-                          "dashboard/group/memberships/group_members_list.html",
-                          {
-                              "membership_list": Membership.objects.filter(
-                                  group_id=group_id, status=c.MEMBERSHIP_STATUS_PENDING
-                              ),
-                              "membership_list_view": membership_list_view,
-                              "group_id": group_id,
-                          })
-
-        case c.MEMBERSHIP_STATUS_CURRENT:
-            return render(request,
-                          "dashboard/group/memberships/group_members_list.html",
-                          {
-                              "membership_list": Membership.objects.filter(
-                                  group_id=group_id, status=c.MEMBERSHIP_STATUS_CURRENT
-                              ),
-                              "membership_list_view": membership_list_view,
-                              "group_id": group_id,
-                          })
-
-        case c.MEMBERSHIP_STATUS_IGNORED:
-            return render(request,
-                          "dashboard/group/memberships/group_members_list.html",
-                          {
-                              "membership_list": Membership.objects.filter(
-                                  group_id=group_id, status=c.MEMBERSHIP_STATUS_IGNORED
-                              ),
-                              "membership_list_view": membership_list_view,
-                              "group_id": group_id,
-                          })
-
-        case c.MEMBERSHIP_STATUS_REMOVED:
-            return render(request,
-                          "dashboard/group/memberships/group_members_list.html",
-                          {
-                              "membership_list": Membership.objects.filter(
-                                  group_id=group_id, status=c.MEMBERSHIP_STATUS_REMOVED
-                              ),
-                              "membership_list_view": membership_list_view,
-                              "group_id": group_id,
-                          })
-        case "HIDE":
-            return HttpResponse("")
+    # TODO: test
+    if membership_list_view in c.MEMBERSHIP_STATUS_CHOICES:
+        return render(request,
+                      "dashboard/group/memberships/group_members_list.html",
+                      {
+                          "membership_list": Membership.objects.filter(
+                              group_id=group_id, status=membership_list_view
+                          ),
+                          "membership_list_view": membership_list_view,
+                          "group_id": group_id,
+                      })
+    else:
+        return HttpResponse("")
 
 
 @login_required()
@@ -344,15 +311,12 @@ def htmx_membership_handler(request, group_id, action, membership_list_view):
     """
     HTMX VIEW - Allows admins process memberships stored in session
 
-    The same view is used for approving/ignoring/clearing - the method is provided in the htmx attributes on
+    The same view is used for approving/ignoring/clearing/removing - the method is provided in the htmx attributes on
     the template
 
     The view responds with a partial that contains javascript update state on the front end. (eg. update member
     count or check/uncheck boxes)
     """
-
-    # TODO - Transaction atomic
-    # TODO: Do logic and object updates first, so that we can cut down on the amount of code and avoid repetition
 
     # Grab the current list, or return None is there isn't one
     if not (selected_memberships := request.session.get('selected_memberships', None)):
@@ -378,127 +342,37 @@ def htmx_membership_handler(request, group_id, action, membership_list_view):
             updated_by=request.user,
         )
 
-        # Remove the list from session
-        del request.session['selected_memberships']
-
-        # Get new queryset
-        # TODO: Can we filter by status=membership_list_view to make this work with much less code
-        match membership_list_view:
-
-            case c.MEMBERSHIP_STATUS_PENDING:
-                membership_list = Membership.objects.filter(
-                    group_id=group_id, status=c.MEMBERSHIP_STATUS_PENDING
-                )
-            case c.MEMBERSHIP_STATUS_CURRENT:
-                membership_list = Membership.objects.filter(
-                    group_id=group_id, status=c.MEMBERSHIP_STATUS_CURRENT
-                )
-
-            case c.MEMBERSHIP_STATUS_IGNORED:
-                membership_list = Membership.objects.filter(
-                    group_id=group_id, status=c.MEMBERSHIP_STATUS_IGNORED
-                )
-
-            case c.MEMBERSHIP_STATUS_REMOVED:
-                membership_list = Membership.objects.filter(
-                    group_id=group_id, status=c.MEMBERSHIP_STATUS_REMOVED
-                )
-            case _:
-                membership_list = Membership.objects.none()
-
-        return render(request, "dashboard/group/memberships/group_members_list.html",
-                      {
-                          "membership_list": membership_list,
-                          "membership_list_view": membership_list_view,
-                          "group_id": group_id,
-                          "new_member_count": group.memberships.all().filter(status=c.MEMBERSHIP_STATUS_CURRENT).count(),
-                          "new_subscriber_count": group.memberships.all().filter(is_subscribed=True).count(),
-                          "new_admin_count": group.memberships.all().filter(is_admin=True).count(),
-                      })
-
-    elif action ==c.MEMBERSHIP_ACTION_IGNORE:
+    elif action == c.MEMBERSHIP_ACTION_IGNORE:
         # Get the memberships and mark them as ignored
         Membership.objects.filter(id__in=selected_memberships).update(
             status=c.MEMBERSHIP_STATUS_IGNORED,
             updated_by=request.user,
         )
 
-        # Remove the list from session
-        del request.session['selected_memberships']
-
-        # Get new queryset
-        # TODO: Can we filter by status=membership_list_view to make this work with much less code
-        match membership_list_view:
-
-            case c.MEMBERSHIP_STATUS_PENDING:
-                membership_list = Membership.objects.filter(
-                    group_id=group_id, status=c.MEMBERSHIP_STATUS_PENDING
-                )
-            case c.MEMBERSHIP_STATUS_CURRENT:
-                membership_list = Membership.objects.filter(
-                    group_id=group_id, status=c.MEMBERSHIP_STATUS_CURRENT
-                )
-
-            case c.MEMBERSHIP_STATUS_IGNORED:
-                membership_list = Membership.objects.filter(
-                    group_id=group_id, status=c.MEMBERSHIP_STATUS_IGNORED
-                )
-
-            case c.MEMBERSHIP_STATUS_REMOVED:
-                membership_list = Membership.objects.filter(
-                    group_id=group_id, status=c.MEMBERSHIP_STATUS_REMOVED
-                )
-            case _:
-                membership_list = Membership.objects.none()
-
-        return render(request, "dashboard/group/memberships/group_members_list.html",
-                      {
-                          "membership_list": membership_list,
-                          "membership_list_view": membership_list_view,
-                          "group_id": group_id,
-                      })
-
     elif action == c.MEMBERSHIP_ACTION_REMOVE:
-        # Get the memberships and mark them as ignored
+        # Get the memberships and mark them as removed
         Membership.objects.filter(id__in=selected_memberships).update(
             status=c.MEMBERSHIP_STATUS_REMOVED,
             updated_by=request.user,
         )
 
-        # Remove the list from session
-        del request.session['selected_memberships']
+    # Remove the list from session
+    del request.session['selected_memberships']
 
-        # Get new queryset
-        # TODO: Can we filter by status=membership_list_view to make this work with much less code
-        match membership_list_view:
+    # TODO: test
+    if membership_list_view in c.MEMBERSHIP_STATUS_CHOICES:
+        membership_list = Membership.objects.filter(
+            group_id=group_id, status=membership_list_view
+        )
+    else:
+        membership_list = Membership.objects.none()
 
-            case c.MEMBERSHIP_STATUS_PENDING:
-                membership_list = Membership.objects.filter(
-                    group_id=group_id, status=c.MEMBERSHIP_STATUS_PENDING
-                )
-            case c.MEMBERSHIP_STATUS_CURRENT:
-                membership_list = Membership.objects.filter(
-                    group_id=group_id, status=c.MEMBERSHIP_STATUS_CURRENT
-                )
-
-            case c.MEMBERSHIP_STATUS_IGNORED:
-                membership_list = Membership.objects.filter(
-                    group_id=group_id, status=c.MEMBERSHIP_STATUS_IGNORED
-                )
-
-            case c.MEMBERSHIP_STATUS_REMOVED:
-                membership_list = Membership.objects.filter(
-                    group_id=group_id, status=c.MEMBERSHIP_STATUS_REMOVED
-                )
-            case _:
-                membership_list = Membership.objects.none()
-
-        return render(request, "dashboard/group/memberships/group_members_list.html",
-                      {
-                          "membership_list": membership_list,
-                          "membership_list_view": membership_list_view,
-                          "group_id": group_id,
-                          "new_member_count": group.memberships.all().filter(status=c.MEMBERSHIP_STATUS_CURRENT).count(),
-                          "new_subscriber_count": group.memberships.all().filter(is_subscribed=True).count(),
-                          "new_admin_count": group.memberships.all().filter(is_admin=True).count(),
-                      })
+    return render(request, "dashboard/group/memberships/group_members_list.html",
+                  {
+                      "membership_list": membership_list,
+                      "membership_list_view": membership_list_view,
+                      "group_id": group_id,
+                      "new_member_count": group.memberships.all().filter(status=c.MEMBERSHIP_STATUS_CURRENT).count(),
+                      "new_subscriber_count": group.memberships.all().filter(is_subscribed=True).count(),
+                      "new_admin_count": group.memberships.all().filter(is_admin=True).count(),
+                  })
