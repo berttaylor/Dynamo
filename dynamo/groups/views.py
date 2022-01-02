@@ -246,8 +246,7 @@ def htmx_membership_view_handler(request, group_id):
     if request.session.get('selected_memberships', None):
         del request.session['selected_memberships']
 
-    # TODO: test
-    if membership_list_view in c.MEMBERSHIP_STATUS_CHOICES:
+    if membership_list_view in c.MEMBERSHIP_STATUS_CHOICES_DICT:
         return render(request,
                       "dashboard/group/memberships/group_members_list.html",
                       {
@@ -359,8 +358,7 @@ def htmx_membership_handler(request, group_id, action, membership_list_view):
     # Remove the list from session
     del request.session['selected_memberships']
 
-    # TODO: test
-    if membership_list_view in c.MEMBERSHIP_STATUS_CHOICES:
+    if membership_list_view in c.MEMBERSHIP_STATUS_CHOICES_DICT:
         membership_list = Membership.objects.filter(
             group_id=group_id, status=membership_list_view
         )

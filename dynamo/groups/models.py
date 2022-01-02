@@ -91,7 +91,7 @@ class Membership(TimeStampedSoftDeleteBase):
     """
 
     # # Default manager, unedited.
-    # objects = models.Manager()
+    objects = models.Manager()
     custom_manager = (
         # Custom manager with helper methods for filtering by status
         MembershipManager()
