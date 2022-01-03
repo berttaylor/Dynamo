@@ -17,8 +17,8 @@ Including another URLconf
 from django.urls import path
 
 from collaborations.views import CollaborationCreateView, CollaborationDetailView, CollaborationUpdateView, \
-    CollaborationDeleteView, task_create_view, milestone_create_view, TaskUpdateView, MilestoneUpdateView, task_delete_view, \
-    milestone_delete_view, CollaborationListView
+    CollaborationDeleteView, TaskUpdateView, MilestoneUpdateView, CollaborationListView
+from .views_htmx import task_create_view, milestone_create_view, task_delete_view, milestone_delete_view
 
 urlpatterns = [
     # We use long URLs here because collaborations are created within groups and this probably make more sense

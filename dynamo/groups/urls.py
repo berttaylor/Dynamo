@@ -23,10 +23,8 @@ from groups.views import (
     GroupDeleteView,
     group_join_view,
     group_leave_view,
-    htmx_membership_selector,
-    htmx_membership_handler,
-    htmx_membership_view_handler,
 )
+from .views_htmx import htmx_membership_list, htmx_membership_selector, htmx_membership_handler
 
 urlpatterns = [
     path(
@@ -67,9 +65,9 @@ urlpatterns = [
 
     # Views for the membership section of the group detail page.
     path(
-        "htmx_membership_view_handler/<group_id>/",
-        htmx_membership_view_handler,
-        name="htmx_membership_view_handler",
+        "htmx_membership_list/<group_id>/",
+        htmx_membership_list,
+        name="htmx_membership_list",
     ),
     path(
         "htmx_membership_selector/<group_id>/<membership_id>/<membership_list_view>/",

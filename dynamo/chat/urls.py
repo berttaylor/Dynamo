@@ -16,7 +16,7 @@ Including another URLconf
 
 from django.urls import path
 
-from chat.views import group_message_create_view, collaboration_message_create_view, group_message_delete_view, \
+from .views_htmx import group_message_create_view, collaboration_message_create_view, group_message_delete_view, \
     collaboration_message_delete_view
 
 urlpatterns = [
