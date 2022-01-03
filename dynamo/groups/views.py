@@ -149,7 +149,7 @@ class GroupDeleteView(DeleteView):
 
 
 @login_required()
-def GroupJoinView(request, slug):
+def group_join_view(request, slug):
     """
     FUNCTIONAL VIEW - Allows users to request to join groups.
     """
@@ -187,7 +187,7 @@ def GroupJoinView(request, slug):
 
 
 @login_required()
-def GroupLeaveView(request, slug):
+def group_leave_view(request, slug):
     """
     FUNCTIONAL VIEW - Allows users to leave groups
     """

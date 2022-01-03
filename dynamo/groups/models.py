@@ -193,9 +193,9 @@ class GroupAnnouncement(TimeStampedSoftDeleteBase):
         related_name="group_announcements",
     )
 
-    title = models.TextField(help_text="The question")
+    title = models.TextField(help_text="The title of the announcement")
 
-    body = models.TextField(help_text="The message itself")
+    body = models.TextField(help_text="The announcement itself")
 
     def __str__(self):
         return f"{self.group}'s announcement: '{self.title}'"

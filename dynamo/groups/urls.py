@@ -21,8 +21,8 @@ from groups.views import (
     GroupCreateView,
     GroupUpdateView,
     GroupDeleteView,
-    GroupJoinView,
-    GroupLeaveView,
+    group_join_view,
+    group_leave_view,
     htmx_membership_selector,
     htmx_membership_handler,
     htmx_membership_view_handler,
@@ -56,12 +56,12 @@ urlpatterns = [
     ),
     path(
         "<slug>/join/",
-        GroupJoinView,
+        group_join_view,
         name="group-join",
     ),
     path(
         "<slug>/leave/",
-        GroupLeaveView,
+        group_leave_view,
         name="group-leave",
     ),
 
