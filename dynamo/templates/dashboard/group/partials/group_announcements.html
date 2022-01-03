@@ -14,9 +14,10 @@
             </a>
         </div>
     </div>
+
     {% for message in announcements %}
 
-        <div class="p-4 bg-white rounded shadow-sm">
+        <div class="p-4 bg-white rounded shadow-sm my-3">
             <h5>{{ message.title }}</h5>
             <p class="font-italic mb-0">{{ message.body }}</p>
             <div class="justify-content-end">
