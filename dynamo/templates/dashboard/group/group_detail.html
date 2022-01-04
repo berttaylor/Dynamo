@@ -1,13 +1,6 @@
 {% extends "dashboard/dashboard_base.html" %}
 {% block body_content %}
 
-
-
-
-
-
-
-
     <!-- Profile widget -->
     <div class="bg-white shadow rounded overflow-hidden text-center mb-0">
         <div class="p-4 bg-dark text-center text-white">
@@ -51,15 +44,15 @@
     </div>
 
     {% if user_is_admin %}
-        {% include "dashboard/group/memberships/group_members.html" with membership_list=membership_list group_id=group.pk %}
+        {% include "dashboard/group/memberships/group_members.html" with group_id=group.pk %}
     {% endif %}
 
     <div id="group_announcements">
-        {% include "dashboard/group/partials/group_announcements.html" %}
+        {% include "dashboard/group/announcements/group_announcements.html" with group_id=group.pk %}
     </div>
 
     <div id="group_collaborations">
-        {% include "dashboard/group/partials/group_collaborations.html" %}
+        {% include "dashboard/group/collaborations/group_collaborations.html" with group_id=group.pk %}
     </div>
 
     <div id="group_chat">

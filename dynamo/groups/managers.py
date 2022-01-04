@@ -1,5 +1,5 @@
 from django.db import models
-from django.utils import timezone
+
 import groups.constants as c
 
 """

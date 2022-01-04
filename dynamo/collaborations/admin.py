@@ -18,6 +18,8 @@ class CollaborationAdmin(admin.ModelAdmin):
         "name",
         "slug",
         "related_group",
+        "number_of_tasks",
+        "number_of_tasks_completed",
     )
 
     list_filter = ("created_at", "related_group")

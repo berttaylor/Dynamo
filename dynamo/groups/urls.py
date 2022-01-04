@@ -24,7 +24,8 @@ from groups.views import (
     group_join_view,
     group_leave_view,
 )
-from .views_htmx import htmx_membership_list, htmx_membership_selector, htmx_membership_handler
+from .views_htmx import htmx_membership_list, htmx_membership_selector, htmx_membership_handler, htmx_announcement_list, \
+    htmx_collaboration_list
 
 urlpatterns = [
     path(
@@ -63,7 +64,7 @@ urlpatterns = [
         name="group-leave",
     ),
 
-    # Views for the membership section of the group detail page.
+    # HTMX views for the membership section of the group detail page.
     path(
         "htmx_membership_list/<group_id>/",
         htmx_membership_list,
@@ -79,4 +80,19 @@ urlpatterns = [
         htmx_membership_handler,
         name="htmx_membership_handler",
     ),
+
+    # HTMX views for the announcement section of the group detail page.
+    path(
+        "htmx_announcement_list/<group_id>/",
+        htmx_announcement_list,
+        name="htmx_announcement_list",
+    ),
+
+    # HTMX views for the collaboration section of the group detail page.
+    path(
+        "htmx_collaboration_list/<group_id>/",
+        htmx_collaboration_list,
+        name="htmx_collaboration_list",
+    ),
+
 ]

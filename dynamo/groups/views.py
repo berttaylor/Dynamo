@@ -1,7 +1,6 @@
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
-from django.http import HttpResponseRedirect, HttpResponse
-from django.shortcuts import render
+from django.http import HttpResponseRedirect
 from django.urls import reverse_lazy, reverse
 from django.utils.decorators import method_decorator
 from django.views.generic import (
@@ -31,10 +30,13 @@ class GroupListView(ListView):
 
 
 class GroupDetailView(FormMixin, DetailView):
+
     """
-    Shows all information regarding a group, as well as
-        - Chat Messages
-        - Join Requests
+    Shows all information regarding a group, as well as populating the initial state for the below page sections
+    (which are then updated through htmx)
+        - Message Board
+        - Memberships
+        - Announcements
         - Collaborations
     """
 
@@ -50,21 +52,23 @@ class GroupDetailView(FormMixin, DetailView):
         context = super(GroupDetailView, self).get_context_data(**kwargs)
 
         group = self.get_object()
+
         user_is_admin = True if group.memberships.filter(user=self.request.user, group=group, is_admin=True) else False
 
         context.update(
             {
-
-                "chat_messages": Message.objects.filter(group=group),
-                "collaborations": Collaboration.objects.filter(related_group=group),
-                "chat_form": GroupMessageForm(initial={"group": group}),
-                "announcements": GroupAnnouncement.objects.filter(group=group),
-                "membership_list_view": c.MEMBERSHIP_STATUS_PENDING,
-                "membership_list": group.memberships.filter(status=c.MEMBERSHIP_STATUS_PENDING),
                 "user_is_admin": user_is_admin,
+                "chat_form": GroupMessageForm(initial={"group": group}),
+                "chat_messages": Message.objects.filter(group=group),
                 "member_count": Membership.custom_manager.current().filter(group=group).count(),
                 "admin_count": Membership.custom_manager.admin().filter(group=group).count(),
-                "subscriber_count": Membership.custom_manager.subscribers().filter(group=group).count()
+                "subscriber_count": Membership.custom_manager.subscribers().filter(group=group).count(),
+                "collaboration_list_view": c.COLLABORATION_STATUS_ALL,
+                "collaboration_list": Collaboration.objects.filter(related_group=group),
+                "announcement_list_view": c.ANNOUNCEMENTS_LIST_VIEW_LATEST,
+                "announcement_list": GroupAnnouncement.objects.filter(group=group)[:1],
+                "membership_list_view": c.MEMBERSHIP_STATUS_PENDING,
+                "membership_list": group.memberships.filter(status=c.MEMBERSHIP_STATUS_PENDING)
             },
         )
 

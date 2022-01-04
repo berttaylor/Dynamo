@@ -1,16 +1,16 @@
-
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse
 from django.shortcuts import render
-
+from django.db.models import IntegerField, Case, When, Count, Q
 import groups.constants as c
-from groups.models import Group, Membership
+from collaborations.models import Collaboration
+from groups.models import Group, Membership, GroupAnnouncement
 
 
 @login_required()
 def htmx_membership_list(request, group_id):
     """
-    HTMX VIEW - Sends back list of memberships of the specified type - set by select object on front end
+    HTMX VIEW - Populates list of memberships of the specified type - set by select object on front end
     """
 
     # if the filter is not set, we send back only pending membership requests
@@ -20,7 +20,7 @@ def htmx_membership_list(request, group_id):
     if request.session.get('selected_memberships', None):
         del request.session['selected_memberships']
 
-    if membership_list_view in c.MEMBERSHIP_STATUS_CHOICES_DICT:
+    if membership_list_view in c.MEMBERSHIP_LIST_VIEWS:
         return render(request,
                       "dashboard/group/memberships/group_members_list.html",
                       {
@@ -132,7 +132,7 @@ def htmx_membership_handler(request, group_id, action, membership_list_view):
     # Remove the list from session
     del request.session['selected_memberships']
 
-    if membership_list_view in c.MEMBERSHIP_STATUS_CHOICES_DICT:
+    if membership_list_view in c.MEMBERSHIP_LIST_VIEWS:
         membership_list = Membership.objects.filter(
             group_id=group_id, status=membership_list_view
         )
@@ -147,4 +147,79 @@ def htmx_membership_handler(request, group_id, action, membership_list_view):
                       "new_member_count": group.memberships.all().filter(status=c.MEMBERSHIP_STATUS_CURRENT).count(),
                       "new_subscriber_count": group.memberships.all().filter(is_subscribed=True).count(),
                       "new_admin_count": group.memberships.all().filter(is_admin=True).count(),
+                  })
+
+
+@login_required()
+def htmx_announcement_list(request, group_id):
+    """
+    HTMX VIEW - Populates the list of announcements - either Latest, All, or None
+    """
+
+    # if the filter is not set, we send back only pending membership requests
+    announcement_list_filter = request.GET.get('announcement_list_filter', 'HIDE')
+
+    if announcement_list_filter == 'HIDE':
+        return HttpResponse("")
+
+    match announcement_list_filter:
+        case c.ANNOUNCEMENTS_LIST_VIEW_LATEST:
+            announcements = GroupAnnouncement.objects.filter(group=group_id)[:1]
+        case c.ANNOUNCEMENTS_LIST_VIEW_ALL:
+            announcements = GroupAnnouncement.objects.filter(group=group_id)
+        case _:
+            announcements = GroupAnnouncement.objects.none()
+
+    print(announcement_list_filter)
+    print(announcements)
+
+    return render(request,
+                  "dashboard/group/announcements/group_announcements_list.html", {
+                      "announcement_list": announcements
+                  })
+
+
+@login_required()
+def htmx_collaboration_list(request, group_id):
+    """
+    HTMX VIEW - Populates the list of collaborations - either All, Planning, ongoing,
+    """
+
+    # Get filter parameter - if not set, send back a 'hidden' response (Empty HTML string)
+    collaboration_list_filter = request.GET.get('collaboration_list_filter', 'HIDE')
+    if collaboration_list_filter == 'HIDE':
+        return HttpResponse("")
+
+    # Annotate the group's collaborations with the number of complete/incomplete tasks,
+    group_collaborations = Collaboration.objects.filter(
+        related_group=group_id,
+    ).annotate(
+        tasks_complete=Count(
+            Case(When(Q(tasks__completed_at__isnull=False), then=1),
+                 output_field=IntegerField(),
+                 )
+        ),
+        tasks_incomplete=Count(
+            Case(When(Q(tasks__completed_at__isnull=True), then=1),
+                 output_field=IntegerField(),
+                 )
+        ),
+    )
+
+    # Filter the collaborations, depending on the filter parameter chosen
+    match collaboration_list_filter:
+        case c.COLLABORATION_STATUS_ALL:
+            collaborations = group_collaborations
+        case c.COLLABORATION_STATUS_PLANNING:
+            collaborations = group_collaborations.filter(tasks_complete=0)
+        case c.COLLABORATION_STATUS_ONGOING:
+            collaborations = group_collaborations.filter(tasks_incomplete__gt=0).exclude(tasks_complete=0)
+        case c.COLLABORATION_STATUS_COMPLETED:
+            collaborations = group_collaborations.filter(tasks_incomplete=0).exclude(tasks_complete=0)
+        case _:
+            collaborations = Collaboration.objects.none()
+
+    return render(request,
+                  "dashboard/group/collaborations/group_collaborations_list.html", {
+                      "collaboration_list": collaborations
                   })

@@ -7,11 +7,10 @@
         <div class="d-flex">
 
             <select class="form-select fmxw-150 pe-5" id="inlineFormCustomSelectMessages"
-                    aria-label="Messages select example"
+                    aria-label="select membership view"
                     name="membership_list_view"
                     hx-get={% url 'htmx_membership_list' group_id=group_id %}
                     hx-target="#list_of_members"
-{#                    hx-indicator=".htmx-indicator"#}
             >
 
 
