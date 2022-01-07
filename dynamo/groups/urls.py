@@ -21,12 +21,11 @@ from groups.views import (
     GroupCreateView,
     GroupUpdateView,
     GroupDeleteView,
-    GroupJoinView,
-    GroupLeaveView,
-    htmx_membership_selector,
-    htmx_membership_handler,
-    htmx_membership_view_handler,
+    group_join_view,
+    group_leave_view, AnnouncementCreateView,
 )
+from .views_htmx import htmx_membership_list, htmx_membership_selector, htmx_membership_handler, htmx_announcement_list, \
+    htmx_collaboration_list, htmx_announcement_delete
 
 urlpatterns = [
     path(
@@ -56,20 +55,20 @@ urlpatterns = [
     ),
     path(
         "<slug>/join/",
-        GroupJoinView,
+        group_join_view,
         name="group-join",
     ),
     path(
         "<slug>/leave/",
-        GroupLeaveView,
+        group_leave_view,
         name="group-leave",
     ),
 
-    # Views for the membership section of the group detail page.
+    # HTMX views for the membership section of the group detail page.
     path(
-        "htmx_membership_view_handler/<group_id>/",
-        htmx_membership_view_handler,
-        name="htmx_membership_view_handler",
+        "htmx_membership_list/<group_id>/",
+        htmx_membership_list,
+        name="htmx_membership_list",
     ),
     path(
         "htmx_membership_selector/<group_id>/<membership_id>/<membership_list_view>/",
@@ -81,4 +80,29 @@ urlpatterns = [
         htmx_membership_handler,
         name="htmx_membership_handler",
     ),
+
+    # HTMX views for the announcement section of the group detail page.
+    path(
+        "htmx_announcement_list/<group_id>/",
+        htmx_announcement_list,
+        name="htmx_announcement_list",
+    ),
+    path(
+        "<group_slug>/announcement/",
+        AnnouncementCreateView.as_view(),
+        name="announcement_create",
+    ),
+    path(
+        "<group_slug>/announcement/<announcement_id>/delete",
+        htmx_announcement_delete,
+        name="htmx_announcement_delete",
+    ),
+
+    # HTMX views for the collaboration section of the group detail page.
+    path(
+        "htmx_collaboration_list/<group_id>/",
+        htmx_collaboration_list,
+        name="htmx_collaboration_list",
+    ),
+
 ]

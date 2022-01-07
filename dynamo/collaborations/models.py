@@ -61,15 +61,33 @@ class Collaboration(TimeStampedSoftDeleteBase):
             return c.COLLABORATION_STATUS_ONGOING
 
     @property
+    def number_of_tasks(self) -> int:
+        """
+        Gets the total number of tasks
+        """
+        return CollaborationTask.objects.filter(collaboration=self).count()
+
+    @property
+    def number_of_tasks_completed(self) -> int:
+        """
+        Gets the total number of tasks completed
+        """
+        return CollaborationTask.objects.filter(collaboration=self, completed_at__isnull=False).count()
+
+    @property
+    def number_of_milestones(self) -> int:
+        """
+        Gets the total number of milestones
+        """
+        return CollaborationMilestone.objects.filter(collaboration=self).count()
+
+    @property
     def number_of_elements(self) -> int:
         """
-        Gets the total number of  tasks and milestones
+        Gets the total number of tasks and milestones
         IMPORTANT: Used for ordering
         """
-        return (
-                CollaborationTask.objects.filter(collaboration=self).count()
-                + CollaborationMilestone.objects.filter(collaboration=self).count()
-        )
+        return self.number_of_tasks + self.number_of_milestones
 
     @property
     def percent_completed(self) -> int:
@@ -118,6 +136,7 @@ class Collaboration(TimeStampedSoftDeleteBase):
             models.Index(fields=["name"]),
             models.Index(fields=["slug"]),
         ]
+        ordering = ["name"]
 
 
 class CollaborationTask(TimeStampedSoftDeleteBase):

@@ -7,6 +7,7 @@
 
     {% if user.is_authenticated %}
 
+                        {% if membership_level == "Admin" or membership_level == "Current" %}
         <form class="pb-3 m-2">{% csrf_token %}
             <div class="input-group">
                 {{ chat_form.message }}
@@ -16,6 +17,10 @@
                 </button>
             </div>
         </form>
+
+
+                {% endif %}
+
 
     {% endif %}
 

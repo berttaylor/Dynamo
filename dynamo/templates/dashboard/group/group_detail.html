@@ -3,30 +3,35 @@
 
 
 
-
-
-
-
-
     <!-- Profile widget -->
     <div class="bg-white shadow rounded overflow-hidden text-center mb-0">
-        <div class="p-4 bg-dark text-center text-white">
+        <div hx-boost="true" class="p-4 bg-dark text-center text-white">
 
             <img src="/compiled/img/eagle_labs_outside.png"
                  class="organic-radius img-fluid" alt="Joseph Avatar">
             <h1 class="m-4">{{ group.name }}</h1>
-        <p class="lead ">{{ group.description }}</p>
+            <p class="lead ">{{ group.description }}</p>
+
             <p class="mt-4 mb-0">
-                {% if user in group.members.all %}
+                {% if membership_level == MEMBERSHIP_STATUS_ADMIN or membership_level == MEMBERSHIP_STATUS_CURRENT %}
                     <a href="{% url 'group-leave' slug=group.slug %}">Leave</a>
-                {% else %}
+                {% elif not membership_level == MEMBERSHIP_STATUS_PENDING %}
                     <a href="{% url 'group-join' slug=group.slug %}">Join</a>
                 {% endif %}
-                {% if user in group.admins.all %}
+                {% if membership_level == "Admin" %}
                     | <a href="{% url 'group-update' slug=group.slug %}">Edit</a> |
                     <a href="{% url 'group-delete' slug=group.slug %}">Delete</a>
                 {% endif %}
             </p>
+
+                    {% if messages %}
+                <ul hx-get="{% url 'clear' %}" hx-swap="outerHTML" hx-trigger="load delay:3s" class="pt-3 m-0" style="list-style-type: none">
+                {% for message in messages %}
+                    <li>{{ message|safe }}</li>
+                {% endfor %}
+                </ul>
+            {% endif %}
+
 
         </div>
 
@@ -36,30 +41,35 @@
     <div class="bg-light p-4 d-flex justify-content-end text-center">
         <ul class="list-inline mb-0">
             <li class="list-inline-item">
-                <h5 id="h5_admin_count" class="font-weight-bold mb-0 d-block">{{ group.admins.count }}</h5><small class="text-muted"> <i
+                <h5 id="h5_admin_count" class="font-weight-bold mb-0 d-block">{{ membership_count.admin }}</h5><small
+                    class="text-muted"> <i
                     class="fa fa-picture-o mr-1"></i>Admins</small>
             </li>
             <li class="list-inline-item">
-                <h5 id="h5_member_count" class="font-weight-bold mb-0 d-block">{{ group.members.count }}</h5><small class="text-muted"> <i
-                    class="fa fa-user-circle-o mr-1"></i>Members</small>
+                <h5 id="h5_member_count" class="font-weight-bold mb-0 d-block">{{ membership_count.member }}</h5><small
+                    class="text-muted"> <i
+                    class="fa fa-user-circle-o mr-1"></i>Total Members</small>
             </li>
             <li class="list-inline-item">
-                <h5 id="h5_subscriber_count" class="font-weight-bold mb-0 d-block">{{ group.subscribers.count }}</h5><small class="text-muted">
+                <h5 id="h5_subscriber_count" class="font-weight-bold mb-0 d-block">{{ membership_count.subscriber }}</h5><small
+                    class="text-muted">
                 <i class="fa fa-user-circle-o mr-1"></i>Subscribers</small>
             </li>
         </ul>
     </div>
 
-    {% if user in group.admins.all %}
-        {% include "dashboard/group/memberships/group_members.html" with membership_list=membership_list group_id=group.pk %}
+    {% if membership_level == MEMBERSHIP_STATUS_ADMIN %}
+        <div id="group_member_section">
+        {% include "dashboard/group/memberships/group_members.html" with group_id=group.pk %}
+        </div>
     {% endif %}
 
     <div id="group_announcements">
-        {% include "dashboard/group/partials/group_announcements.html" %}
+        {% include "dashboard/group/announcements/group_announcements.html" with group_id=group.pk %}
     </div>
 
     <div id="group_collaborations">
-        {% include "dashboard/group/partials/group_collaborations.html" %}
+        {% include "dashboard/group/collaborations/group_collaborations.html" with group_id=group.pk %}
     </div>
 
     <div id="group_chat">
@@ -67,5 +77,8 @@
     </div>
 
 {% endblock %}
+
+
+
 
 

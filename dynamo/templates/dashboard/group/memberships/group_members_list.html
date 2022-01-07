@@ -1,22 +1,19 @@
 {% for membership in membership_list %}
 
 
-    <div class="card border-gray-300 m-1 pt-3">
+    <div class="card border-gray-300 mt-2 pt-3">
 
         <div class="card-body d-flex flex-wrap flex-lg-nowrap py-0 justify-content-between">
 
             <div class="col-auto col-4 d-flex">
 
-                {% if membership.user == request.user %}
+                {% if membership.status == MEMBERSHIP_STATUS_ADMIN %}
                     <span class="fas fa-star text-warning d-flex pe-3 mt-1"></span>
 
 
                 {% else %}
 
                     <div class="form-check inbox-check mb-0 me-2">
-
-
-
 
                     <input class="form-check-input" type="checkbox" value="" id="checkbox_for_{{ membership.id }}"
                            hx-post="{% url 'htmx_membership_selector' group_id=group_id membership_id=membership.id membership_list_view=membership_list_view %}"

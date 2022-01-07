@@ -17,6 +17,8 @@ from django.contrib import admin
 from django.urls import path, include
 from django.views.generic import TemplateView
 
+from dynamo.base.views import empty_html_string
+
 urlpatterns = [
     # ADMIN
     path("admin/", admin.site.urls),
@@ -32,4 +34,7 @@ urlpatterns = [
     path("chat/", include("chat.urls")),
     # Collaborations
     path("", include("collaborations.urls")),
+
+    # Generics
+    path("clear", empty_html_string, name="clear"),
 ]
