@@ -5,7 +5,6 @@ from django.db.models import F
 from django.db.models import Value, CharField
 from django.db.models.expressions import Window
 from django.db.models.functions import Rank
-from django.shortcuts import render
 from django.urls import reverse_lazy
 from django.utils.decorators import method_decorator
 from django.views.generic import CreateView, DetailView, ListView
@@ -16,7 +15,8 @@ from chat.models import Message
 from collaborations.forms import MilestoneForm, TaskForm
 from collaborations.models import Collaboration, CollaborationTask, CollaborationMilestone
 from groups.models import Group
-from users.models import User
+from groups.views import get_membership_level
+
 
 
 def get_all_elements(collaboration):
@@ -110,8 +110,16 @@ class CollaborationDetailView(FormMixin, DetailView):
 
         collaboration = self.get_object()
 
+        group = collaboration.related_group
+
+        if self.request.user.is_authenticated:
+            membership_level = get_membership_level(self.request.user, group)
+        else:
+            membership_level = None
+
         context.update(
             {
+                "membership_level": membership_level,
                 "chat_messages": Message.objects.filter(collaboration=collaboration),
                 "chat_form": CollaborationMessageForm(
                     initial={"collaboration": collaboration}

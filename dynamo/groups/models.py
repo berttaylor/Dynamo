@@ -86,7 +86,7 @@ class Group(TimeStampedSoftDeleteBase):
 
 class Membership(TimeStampedSoftDeleteBase):
     """
-    Membership are created when a user requests to join a group.
+    Memberships are created when a user requests to join a group.
     They can be approved/denied by the administrators of the relevant group.
     """
 
