@@ -1,10 +1,11 @@
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.db.models import IntegerField, Case, When, Count, Q
 import groups.constants as c
 from collaborations.models import Collaboration
 from groups.models import Group, Membership, GroupAnnouncement
+from groups.views import get_membership_count
 
 
 @login_required()
@@ -122,12 +123,16 @@ def htmx_membership_handler(request, group_id, action, membership_list_view):
             updated_by=request.user,
         )
 
-    elif action == c.MEMBERSHIP_ACTION_REMOVE:
-        # Get the memberships and mark them as removed
+    elif action == c.MEMBERSHIP_ACTION_MAKE_ADMIN:
+        # Get the memberships and make admin
         Membership.objects.filter(id__in=selected_memberships).update(
-            status=c.MEMBERSHIP_STATUS_REMOVED,
+            status=c.MEMBERSHIP_STATUS_ADMIN,
             updated_by=request.user,
         )
+
+    elif action == c.MEMBERSHIP_ACTION_REMOVE:
+        # Get the memberships and delete them
+        Membership.objects.filter(id__in=selected_memberships).delete()
 
     # Remove the list from session
     del request.session['selected_memberships']
@@ -139,14 +144,15 @@ def htmx_membership_handler(request, group_id, action, membership_list_view):
     else:
         membership_list = Membership.objects.none()
 
-    return render(request, "dashboard/group/memberships/group_members_list.html",
+    return render(request, "dashboard/group/memberships/group_members.html",
                   {
                       "membership_list": membership_list,
                       "membership_list_view": membership_list_view,
+                      "membership_count": get_membership_count(group),
                       "group_id": group_id,
                       "new_member_count": group.memberships.all().filter(status=c.MEMBERSHIP_STATUS_CURRENT).count(),
                       "new_subscriber_count": group.memberships.all().filter(is_subscribed=True).count(),
-                      "new_admin_count": group.memberships.all().filter(is_admin=True).count(),
+                      "new_admin_count": group.memberships.all().filter(status=c.MEMBERSHIP_STATUS_ADMIN).count(),
                   })
 
 
@@ -169,9 +175,6 @@ def htmx_announcement_list(request, group_id):
             announcements = GroupAnnouncement.objects.filter(group=group_id)
         case _:
             announcements = GroupAnnouncement.objects.none()
-
-    print(announcement_list_filter)
-    print(announcements)
 
     return render(request,
                   "dashboard/group/announcements/group_announcements_list.html", {
@@ -222,4 +225,23 @@ def htmx_collaboration_list(request, group_id):
     return render(request,
                   "dashboard/group/collaborations/group_collaborations_list.html", {
                       "collaboration_list": collaborations
+                  })
+
+
+@login_required()
+def htmx_announcement_delete(request, group_slug, announcement_id):
+    """
+    HTMX VIEW - Allows announcements to be deleted
+    """
+
+    # TODO: Secure and set methods
+
+    announcement = GroupAnnouncement.objects.get(pk=announcement_id)
+    announcement.delete()
+
+    announcements = GroupAnnouncement.objects.filter(group__slug=group_slug)[:1]
+
+    return render(request,
+                  "dashboard/group/announcements/group_announcements_list.html", {
+                      "announcement_list": announcements
                   })

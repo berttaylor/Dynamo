@@ -47,7 +47,6 @@ class MembershipAdmin(admin.ModelAdmin):
         "created_at",
         "user",
         "group",
-        "is_admin",
         "status",
     )
 
@@ -57,7 +56,7 @@ class MembershipAdmin(admin.ModelAdmin):
     )
 
     fieldsets = (
-        ("Membership details", {"fields": (("user", "group"), "status", "is_admin", 'is_subscribed')}),
+        ("Membership details", {"fields": (("user", "group"), "status", 'is_subscribed')}),
         ("Handling", {"fields": ("updated_by",)}),
         (
             "Database",

@@ -12,10 +12,11 @@
                 <option value="{{ ANNOUNCEMENTS_LIST_VIEW_ALL }}">{{ ANNOUNCEMENTS_LIST_VIEW_ALL }}</option>
                 <option value="HIDE">Hide All</option>
             </select>
-
-            <a>
+            {% if membership_level == "Admin" %}
+            <a href="{% url 'announcement_create' group_slug=group.slug %}">
                 <button class="btn btn-tertiary ms-2">New</button>
             </a>
+            {% endif %}
         </div>
     </div>
 

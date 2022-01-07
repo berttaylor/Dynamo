@@ -23,29 +23,25 @@ COLLABORATION_LIST_VIEWS: dict = {
 }
 
 """GROUP MEMBERSHIPS"""
-
+MEMBERSHIP_STATUS_ADMIN: str = "Admin"
 MEMBERSHIP_STATUS_PENDING: str = "Pending"
 MEMBERSHIP_STATUS_CURRENT: str = "Current"
 MEMBERSHIP_STATUS_IGNORED: str = "Ignored"
-MEMBERSHIP_STATUS_REMOVED: str = "Removed"
-MEMBERSHIP_STATUS_LEFT: str = "Left"
 
 # One version in a tuple form - to be used as the 'choices' for a text field
 MEMBERSHIP_STATUS_CHOICES: tuple = (
+    (MEMBERSHIP_STATUS_ADMIN, "Admin"),
     (MEMBERSHIP_STATUS_PENDING, "Pending"),
     (MEMBERSHIP_STATUS_CURRENT, "Current"),
     (MEMBERSHIP_STATUS_IGNORED, "Ignored"),
-    (MEMBERSHIP_STATUS_REMOVED, "Removed"),
-    (MEMBERSHIP_STATUS_LEFT, "Left"),
 )
 
 # We use an extra version, in dictionary form, which to greatly simplifies the view logic - see use in .views_htmx.py
 MEMBERSHIP_LIST_VIEWS: dict = {
+    MEMBERSHIP_STATUS_ADMIN: "Admin",
     MEMBERSHIP_STATUS_PENDING: "Pending",
     MEMBERSHIP_STATUS_CURRENT: "Current",
     MEMBERSHIP_STATUS_IGNORED: "Ignored",
-    MEMBERSHIP_STATUS_REMOVED: "Removed",
-    MEMBERSHIP_STATUS_LEFT: "Left",
 }
 
 MEMBERSHIP_ACTION_APPROVE: str = "Approve"

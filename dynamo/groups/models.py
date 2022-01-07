@@ -117,11 +117,6 @@ class Membership(TimeStampedSoftDeleteBase):
         max_length=100,
     )
 
-    is_admin = models.BooleanField(
-        help_text="Whether the user has admin rights",
-        default=False,
-    )
-
     is_subscribed = models.BooleanField(
         help_text="Whether the user gets email updates",
         default=False,

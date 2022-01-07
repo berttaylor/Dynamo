@@ -22,10 +22,10 @@ from groups.views import (
     GroupUpdateView,
     GroupDeleteView,
     group_join_view,
-    group_leave_view,
+    group_leave_view, AnnouncementCreateView,
 )
 from .views_htmx import htmx_membership_list, htmx_membership_selector, htmx_membership_handler, htmx_announcement_list, \
-    htmx_collaboration_list
+    htmx_collaboration_list, htmx_announcement_delete
 
 urlpatterns = [
     path(
@@ -86,6 +86,16 @@ urlpatterns = [
         "htmx_announcement_list/<group_id>/",
         htmx_announcement_list,
         name="htmx_announcement_list",
+    ),
+    path(
+        "<group_slug>/announcement/",
+        AnnouncementCreateView.as_view(),
+        name="announcement_create",
+    ),
+    path(
+        "<group_slug>/announcement/<announcement_id>/delete",
+        htmx_announcement_delete,
+        name="htmx_announcement_delete",
     ),
 
     # HTMX views for the collaboration section of the group detail page.

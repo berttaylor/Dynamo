@@ -7,7 +7,7 @@
 
             <div class="col-auto col-4 d-flex">
 
-                {% if membership.user == request.user %}
+                {% if membership.status == MEMBERSHIP_STATUS_ADMIN %}
                     <span class="fas fa-star text-warning d-flex pe-3 mt-1"></span>
 
 

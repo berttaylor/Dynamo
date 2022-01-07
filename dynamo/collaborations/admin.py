@@ -8,6 +8,33 @@ from .models import (
     CollaborationTaskTag,
 )
 
+"""
+Inlines
+"""
+
+
+class CollaborationTaskInline(admin.TabularInline):
+    model = CollaborationTask
+    extra = 0
+    fields = (
+        "reference",
+        "name",
+        "position",
+        "assigned_to",
+        "completed_at",
+        "completed_by"
+    )
+
+
+class CollaborationMilestoneInline(admin.TabularInline):
+    model = CollaborationMilestone
+    extra = 0
+
+
+"""
+Admin Classes
+"""
+
 
 @admin.register(Collaboration)
 class CollaborationAdmin(admin.ModelAdmin):
@@ -40,6 +67,11 @@ class CollaborationAdmin(admin.ModelAdmin):
             },
         ),
     )
+
+    inlines = [
+        CollaborationTaskInline,
+        CollaborationMilestoneInline
+    ]
 
     readonly_fields = (
         "created_at",

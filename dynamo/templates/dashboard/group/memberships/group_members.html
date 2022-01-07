@@ -1,4 +1,3 @@
-
 <div class="mb-4 p-4 bg-white rounded shadow-sm">
     <div class="d-flex align-items-center justify-content-between">
         <h5 class="mb-0">Members</h5>
@@ -10,16 +9,37 @@
                     aria-label="select membership view"
                     name="membership_list_view"
                     hx-get={% url 'htmx_membership_list' group_id=group_id %}
-                    hx-target="#list_of_members"
+                            hx-target="#list_of_members"
             >
+                <option
+                        {% if membership_list_view == MEMBERSHIP_STATUS_PENDING %}
+                            selected
+                        {% endif %}
+                            value="{{ MEMBERSHIP_STATUS_PENDING }}">{{ MEMBERSHIP_STATUS_PENDING }}
+                    ({{ membership_count.pending }})
+                </option>
 
-
-
-                <option value="{{ MEMBERSHIP_STATUS_PENDING }}">{{ MEMBERSHIP_STATUS_PENDING }}</option>
-                <option value="{{ MEMBERSHIP_STATUS_CURRENT }}">{{ MEMBERSHIP_STATUS_CURRENT }}</option>
-                <option value="{{ MEMBERSHIP_STATUS_IGNORED }}">{{ MEMBERSHIP_STATUS_IGNORED }}</option>
-                <option value="{{ MEMBERSHIP_STATUS_REMOVED }}">{{ MEMBERSHIP_STATUS_REMOVED }}</option>
-
+                <option
+                        {% if membership_list_view == MEMBERSHIP_STATUS_CURRENT %}
+                            selected
+                        {% endif %}
+                            value="{{ MEMBERSHIP_STATUS_CURRENT }}">{{ MEMBERSHIP_STATUS_CURRENT }}
+                    ({{ membership_count.member }})
+                </option>
+                <option
+                        {% if membership_list_view == MEMBERSHIP_STATUS_ADMIN %}
+                            selected
+                        {% endif %}
+                            value="{{ MEMBERSHIP_STATUS_ADMIN }}">{{ MEMBERSHIP_STATUS_ADMIN }}
+                    ({{ membership_count.admin }})
+                </option>
+                <option
+                        {% if membership_list_view == MEMBERSHIP_STATUS_IGNORED %}
+                            selected
+                        {% endif %}
+                            value="{{ MEMBERSHIP_STATUS_IGNORED }}">{{ MEMBERSHIP_STATUS_IGNORED }}
+                    ({{ membership_count.ignored }})
+                </option>
                 <option value="HIDE">Hide All</option>
 
 
@@ -27,8 +47,8 @@
         </div>
     </div>
 
-<div id="list_of_members">
-    {% include "dashboard/group/memberships/group_members_list.html" %}
-</div>
+    <div id="list_of_members">
+        {% include "dashboard/group/memberships/group_members_list.html" %}
+    </div>
 
 </div>
