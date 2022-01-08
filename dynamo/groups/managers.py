@@ -21,14 +21,8 @@ class MembershipQuerySet(models.QuerySet):
     def ignored(self):
         return self.filter(status=c.MEMBERSHIP_STATUS_IGNORED)
 
-    def removed(self):
-        return self.filter(status=c.MEMBERSHIP_STATUS_REMOVED)
-
-    def left(self):
-        return self.filter(status=c.MEMBERSHIP_STATUS_LEFT)
-
     def admin(self):
-        return self.filter(is_admin=True)
+        return self.filter(status=c.MEMBERSHIP_STATUS_ADMIN)
 
     def subscribers(self):
         return self.filter(is_subscribed=True)
@@ -54,12 +48,6 @@ class MembershipManager(models.Manager):
 
     def ignored(self):
         return self.get_queryset().ignored()
-
-    def removed(self):
-        return self.get_queryset().removed()
-
-    def left(self):
-        return self.get_queryset().left()
 
     def admin(self):
         return self.get_queryset().admin()
