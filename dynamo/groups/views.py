@@ -1,6 +1,7 @@
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseRedirect
+from django.shortcuts import get_object_or_404
 from django.urls import reverse_lazy, reverse
 from django.utils.decorators import method_decorator
 from django.views.generic import (
@@ -145,7 +146,7 @@ def group_join_view(request, slug):
     """
 
     # Get  variables
-    user, group = request.user, Group.objects.get(slug=slug)
+    user, group = request.user, get_object_or_404(Group, slug=slug)
 
     # If the user is already a member, send an error
     if Membership.objects.filter(user=user, group=group):
@@ -179,7 +180,7 @@ def group_leave_view(request, slug):
     """
 
     # Get  variables
-    user, group = request.user, Group.objects.get(slug=slug)
+    user, group = request.user, get_object_or_404(Group, slug=slug)
 
     # If the user is not in the group , send an error
     if user not in group.members.all():
@@ -193,7 +194,7 @@ def group_leave_view(request, slug):
 
     else:
         # get membership
-        membership = Membership.objects.get(user=user, group=group)
+        membership = get_object_or_404(Membership, user=user, group=group)
 
         # If the user is last admin of the group, send error
         if membership.status==c.MEMBERSHIP_STATUS_ADMIN and not group.memberships.filter(status=c.MEMBERSHIP_STATUS_ADMIN).exclude(pk=membership.pk).exists():
@@ -233,12 +234,12 @@ class AnnouncementCreateView(CreateView):
     )
 
     def get_initial(self):
-        group = Group.objects.get(slug=self.kwargs.get("group_slug"))
+        group = get_object_or_404(Group, slug=self.kwargs.get("group_slug"))
         return {"related_group": group}
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context["group"] = Group.objects.get(slug=self.kwargs.get("group_slug"))
+        context["group"] = get_object_or_404(Group, slug=self.kwargs.get("group_slug"))
         return context
 
     def form_valid(self, form):
@@ -252,8 +253,8 @@ class AnnouncementCreateView(CreateView):
             raise PermissionError
 
         form.instance.user = user
-        form.instance.group = Group.objects.get(
-            slug=self.kwargs.get("group_slug")
+        form.instance.group = get_object_or_404(
+            Group, slug=self.kwargs.get("group_slug")
         )
 
         return super(AnnouncementCreateView, self).form_valid(form)

@@ -44,12 +44,12 @@ urlpatterns = [
         name="collaboration-delete",
     ),
     path(
-        "collaboration/<collaboration_uuid>/create-task",
+        "collaboration/<collaboration_id>/create-task",
         task_create_view,
         name="task-create",
     ),
     path(
-        "collaboration/<collaboration_uuid>/create-milesteone",
+        "collaboration/<collaboration_id>/create-milesteone",
         milestone_create_view,
         name="milestone-create",
     ),

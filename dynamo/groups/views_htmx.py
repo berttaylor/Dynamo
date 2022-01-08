@@ -1,7 +1,7 @@
 from django.contrib.auth.decorators import login_required
 from django.db.models import IntegerField, Case, When, Count, Q
 from django.http import HttpResponse
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
 
 import groups.constants as c
 from collaborations.models import Collaboration
@@ -55,11 +55,9 @@ def htmx_membership_selector(request, group_id, membership_id, membership_filter
     if membership_id in selected_memberships:
         selected_memberships.remove(membership_id)
         if len(selected_memberships) == 0:
-            print(selected_memberships)
             del request.session['selected_memberships']
             return HttpResponse("")
         else:
-            print(selected_memberships)
             request.session['selected_memberships'] = selected_memberships
             return render(request,
                           "app/group/partials/memberships/action_bar.html", {
@@ -72,7 +70,6 @@ def htmx_membership_selector(request, group_id, membership_id, membership_filter
     else:
         selected_memberships.append(membership_id)
         request.session['selected_memberships'] = selected_memberships
-        print(selected_memberships)
         return render(request,
                       "app/group/partials/memberships/action_bar.html", {
                           "selected_memberships": len(selected_memberships),
@@ -97,7 +94,7 @@ def htmx_membership_handler(request, group_id, action, membership_filter):
     if not (selected_memberships := request.session.get('selected_memberships', None)):
         return None
 
-    group = Group.objects.get(pk=group_id)
+    group = get_object_or_404(Group, id=group_id)
 
     if action == c.MEMBERSHIP_ACTION_CLEAR_SELECTION:
         # Get the ids (so that we can 'uncheck' the checkboxes on front end)
@@ -237,7 +234,7 @@ def htmx_announcement_delete(request, group_slug, announcement_id):
 
     # TODO: Secure and set methods
 
-    announcement = GroupAnnouncement.objects.get(pk=announcement_id)
+    announcement = get_object_or_404(GroupAnnouncement, pk=announcement_id)
     announcement.delete()
 
     announcements = GroupAnnouncement.objects.filter(group__slug=group_slug)[:1]

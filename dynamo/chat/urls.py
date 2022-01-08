@@ -31,7 +31,7 @@ urlpatterns = [
         name="group-message-delete",
     ),
     path(
-        "collaboration/<collaboration_uuid>",
+        "collaboration/<collaboration_id>",
         collaboration_message_create_view,
         name="collaboration-chat",
     ),

@@ -12,7 +12,7 @@
                 <div class="input-group">
                     {{ chat_form.message }}
 
-                    <button hx-post="{% url 'collaboration-chat' collaboration_uuid=collaboration.pk %}"
+                    <button hx-post="{% url 'collaboration-chat' collaboration_id=collaboration.pk %}"
                             hx-target="#collaboration_chat" type="submit" class="btn btn-outline-primary">Send
                     </button>
                 </div>

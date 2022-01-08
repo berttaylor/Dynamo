@@ -9,7 +9,7 @@
     </div>
 
     <button class="col-12 col-md-2 my-1 py-2 btn btn-tertiary"
-            hx-post="{% url 'milestone-create' collaboration_uuid=collaboration.id %}"
+            hx-post="{% url 'milestone-create' collaboration_id=collaboration.id %}"
             hx-target="#collaboration_elements"
             type="submit">Add
     </button>

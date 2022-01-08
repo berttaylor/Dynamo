@@ -62,7 +62,7 @@ def group_message_delete_view(request, message_id):
 
 
 @login_required()
-def collaboration_message_create_view(request, collaboration_uuid):
+def collaboration_message_create_view(request, collaboration_id):
     """
     HTMX VIEW - Allows chat messages to be added
     """
@@ -72,7 +72,7 @@ def collaboration_message_create_view(request, collaboration_uuid):
     message = str(request.POST["message"])
 
     user = request.user
-    collaboration = Collaboration.objects.get(id=collaboration_uuid)
+    collaboration = Collaboration.objects.get(id=collaboration_id)
 
     Message.objects.create(collaboration=collaboration, user=user, message=message)
     messages = Message.objects.filter(collaboration=collaboration)
