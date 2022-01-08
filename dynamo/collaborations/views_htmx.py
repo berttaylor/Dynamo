@@ -93,15 +93,19 @@ def milestone_create_view(request, collaboration_uuid):
                       "collaboration": collaboration,
                   })
 
+
 @login_required()
 def task_delete_view(request, pk):
     """
     HTMX VIEW - Allows delete without refresh
     """
 
-    task = CollaborationTask.objects.filter(pk=pk, collaboration__related_group__admins=request.user).first()
+    if not (task := CollaborationTask.objects.filter(pk=pk).first()):
+        return None
 
     collaboration = task.collaboration
+
+
 
     task.delete()
 
