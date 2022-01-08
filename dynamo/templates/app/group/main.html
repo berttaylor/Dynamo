@@ -24,11 +24,12 @@
                 {% endif %}
             </p>
 
-                    {% if messages %}
-                <ul hx-get="{% url 'clear' %}" hx-swap="outerHTML" hx-trigger="load delay:3s" class="pt-3 m-0" style="list-style-type: none">
-                {% for message in messages %}
-                    <li>{{ message|safe }}</li>
-                {% endfor %}
+            {% if messages %}
+                <ul hx-get="{% url 'clear' %}" hx-swap="outerHTML" hx-trigger="load delay:3s" class="pt-3 m-0"
+                    style="list-style-type: none">
+                    {% for message in messages %}
+                        <li>{{ message|safe }}</li>
+                    {% endfor %}
                 </ul>
             {% endif %}
 
@@ -51,7 +52,8 @@
                     class="fa fa-user-circle-o mr-1"></i>Total Members</small>
             </li>
             <li class="list-inline-item">
-                <h5 id="h5_subscriber_count" class="font-weight-bold mb-0 d-block">{{ membership_count.subscriber }}</h5><small
+                <h5 id="h5_subscriber_count"
+                    class="font-weight-bold mb-0 d-block">{{ membership_count.subscriber }}</h5><small
                     class="text-muted">
                 <i class="fa fa-user-circle-o mr-1"></i>Subscribers</small>
             </li>
@@ -60,7 +62,7 @@
 
     {% if membership_level == MEMBERSHIP_STATUS_ADMIN %}
         <div id="group_member_section">
-        {% include "app/group/partials/memberships/main.html" with group_id=group.pk %}
+            {% include "app/group/partials/memberships/main.html" with group_id=group.pk %}
         </div>
     {% endif %}
 

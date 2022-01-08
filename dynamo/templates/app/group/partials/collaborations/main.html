@@ -18,10 +18,10 @@
                 <option value="HIDE">Hide All</option>
             </select>
 
-                        {% if membership_level == "Admin" %}
-            <a href="{% url 'collaboration-create' group_slug=group.slug %}">
-                <button class="btn btn-tertiary ms-2">New</button>
-            </a>
+            {% if membership_level == "Admin" %}
+                <a href="{% url 'collaboration-create' group_slug=group.slug %}">
+                    <button class="btn btn-tertiary ms-2">New</button>
+                </a>
             {% endif %}
 
 

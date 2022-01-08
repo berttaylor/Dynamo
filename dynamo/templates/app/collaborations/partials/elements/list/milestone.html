@@ -18,7 +18,10 @@
                 <div class="dropdown-menu py-0"><a class="dropdown-item rounded-top"
                                                    href={% url 'milestone-update' milestone.id %}><span
                         class="fas fa-edit me-2"></span>Edit</a>
-                    <a class="dropdown-item text-danger rounded-bottom" hx-delete="{% url 'milestone-delete' milestone.id %}" hx-target="#collaboration_elements" hx-confirm="Delete Milestone '{{ milestone.name }}'?"><span class="fa fa-trash me-2" aria-hidden="true"></span>Delete</a>
+                    <a class="dropdown-item text-danger rounded-bottom"
+                       hx-delete="{% url 'milestone-delete' milestone.id %}" hx-target="#collaboration_elements"
+                       hx-confirm="Delete Milestone '{{ milestone.name }}'?"><span class="fa fa-trash me-2"
+                                                                                   aria-hidden="true"></span>Delete</a>
                 </div>
             </div>
         </div>
