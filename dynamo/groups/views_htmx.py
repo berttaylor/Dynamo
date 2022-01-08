@@ -15,20 +15,20 @@ def htmx_membership_list(request, group_id):
     """
 
     # if the filter is not set, we send back only pending membership requests
-    membership_list_view = request.GET.get('membership_list_view', c.MEMBERSHIP_STATUS_PENDING)
+    membership_filter = request.GET.get('membership_filter', c.MEMBERSHIP_STATUS_PENDING)
 
     # Clear the session, if it is being used
     if request.session.get('selected_memberships', None):
         del request.session['selected_memberships']
 
-    if membership_list_view in c.MEMBERSHIP_LIST_VIEWS:
+    if membership_filter in c.MEMBERSHIP_FILTERS:
         return render(request,
                       "dashboard/group/memberships/group_members_list.html",
                       {
                           "membership_list": Membership.objects.filter(
-                              group_id=group_id, status=membership_list_view
+                              group_id=group_id, status=membership_filter
                           ),
-                          "membership_list_view": membership_list_view,
+                          "membership_filter": membership_filter,
                           "group_id": group_id,
                       })
     else:
@@ -36,7 +36,7 @@ def htmx_membership_list(request, group_id):
 
 
 @login_required()
-def htmx_membership_selector(request, group_id, membership_id, membership_list_view):
+def htmx_membership_selector(request, group_id, membership_id, membership_filter):
     """
     HTMX VIEW - Allows admins to select memberships in order to process in bulk
 
@@ -63,7 +63,7 @@ def htmx_membership_selector(request, group_id, membership_id, membership_list_v
             return render(request,
                           "dashboard/group/memberships/group_members_action_bar.html", {
                               "selected_memberships": len(selected_memberships),
-                              "membership_list_view": membership_list_view,
+                              "membership_filter": membership_filter,
                               "group_id": group_id,
                           })
 
@@ -75,13 +75,13 @@ def htmx_membership_selector(request, group_id, membership_id, membership_list_v
         return render(request,
                       "dashboard/group/memberships/group_members_action_bar.html", {
                           "selected_memberships": len(selected_memberships),
-                          "membership_list_view": membership_list_view,
+                          "membership_filter": membership_filter,
                           "group_id": group_id,
                       })
 
 
 @login_required()
-def htmx_membership_handler(request, group_id, action, membership_list_view):
+def htmx_membership_handler(request, group_id, action, membership_filter):
     """
     HTMX VIEW - Allows admins process memberships stored in session
 
@@ -137,9 +137,9 @@ def htmx_membership_handler(request, group_id, action, membership_list_view):
     # Remove the list from session
     del request.session['selected_memberships']
 
-    if membership_list_view in c.MEMBERSHIP_LIST_VIEWS:
+    if membership_filter in c.MEMBERSHIP_FILTERS:
         membership_list = Membership.objects.filter(
-            group_id=group_id, status=membership_list_view
+            group_id=group_id, status=membership_filter
         )
     else:
         membership_list = Membership.objects.none()
@@ -147,7 +147,7 @@ def htmx_membership_handler(request, group_id, action, membership_list_view):
     return render(request, "dashboard/group/memberships/group_members.html",
                   {
                       "membership_list": membership_list,
-                      "membership_list_view": membership_list_view,
+                      "membership_filter": membership_filter,
                       "membership_count": get_membership_count(group),
                       "group_id": group_id,
                       "new_member_count": group.memberships.all().filter(status=c.MEMBERSHIP_STATUS_CURRENT).count(),
@@ -169,9 +169,9 @@ def htmx_announcement_list(request, group_id):
         return HttpResponse("")
 
     match announcement_list_filter:
-        case c.ANNOUNCEMENTS_LIST_VIEW_LATEST:
+        case c.ANNOUNCEMENTS_FILTER_LATEST:
             announcements = GroupAnnouncement.objects.filter(group=group_id)[:1]
-        case c.ANNOUNCEMENTS_LIST_VIEW_ALL:
+        case c.ANNOUNCEMENTS_FILTER_ALL:
             announcements = GroupAnnouncement.objects.filter(group=group_id)
         case _:
             announcements = GroupAnnouncement.objects.none()

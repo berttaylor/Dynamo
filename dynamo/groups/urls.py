@@ -71,12 +71,12 @@ urlpatterns = [
         name="htmx_membership_list",
     ),
     path(
-        "htmx_membership_selector/<group_id>/<membership_id>/<membership_list_view>/",
+        "htmx_membership_selector/<group_id>/<membership_id>/<membership_filter>/",
         htmx_membership_selector,
         name="htmx_membership_selector",
     ),
     path(
-        "htmx_membership_handler/<group_id>/<action>/<membership_list_view>/",
+        "htmx_membership_handler/<group_id>/<action>/<membership_filter>/",
         htmx_membership_handler,
         name="htmx_membership_handler",
     ),

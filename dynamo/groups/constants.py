@@ -3,19 +3,19 @@ from collaborations.constants import COLLABORATION_STATUS_PLANNING, COLLABORATIO
 
 """GROUP ANNOUNCEMENTS"""
 
-ANNOUNCEMENTS_LIST_VIEW_LATEST: str = "Latest"
-ANNOUNCEMENTS_LIST_VIEW_ALL: str = "All"
+ANNOUNCEMENTS_FILTER_LATEST: str = "Latest"
+ANNOUNCEMENTS_FILTER_ALL: str = "All"
 
-ANNOUNCEMENTS_LIST_VIEWS: dict = {
-    ANNOUNCEMENTS_LIST_VIEW_LATEST: "Latest",
-    ANNOUNCEMENTS_LIST_VIEW_ALL: "All",
+ANNOUNCEMENTS_FILTERS: dict = {
+    ANNOUNCEMENTS_FILTER_LATEST: "Latest",
+    ANNOUNCEMENTS_FILTER_ALL: "All",
 }
 
 """GROUP COLLABORATIONS"""
 
 # Note: These are set in collaborations.constants and imported here for use as a view filter
 
-COLLABORATION_LIST_VIEWS: dict = {
+COLLABORATION_FILTERS: dict = {
     COLLABORATION_STATUS_PLANNING: "Planning",
     COLLABORATION_STATUS_ONGOING: "Ongoing",
     COLLABORATION_STATUS_COMPLETED: "Completed",
@@ -37,7 +37,7 @@ MEMBERSHIP_STATUS_CHOICES: tuple = (
 )
 
 # We use an extra version, in dictionary form, which to greatly simplifies the view logic - see use in .views_htmx.py
-MEMBERSHIP_LIST_VIEWS: dict = {
+MEMBERSHIP_FILTERS: dict = {
     MEMBERSHIP_STATUS_ADMIN: "Admin",
     MEMBERSHIP_STATUS_PENDING: "Pending",
     MEMBERSHIP_STATUS_CURRENT: "Current",

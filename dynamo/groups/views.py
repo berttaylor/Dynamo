@@ -96,11 +96,11 @@ class GroupDetailView(FormMixin, DetailView):
                 "membership_count": get_membership_count(group),
                 "chat_form": GroupMessageForm(initial={"group": group}),
                 "chat_messages": Message.objects.filter(group=group),
-                "collaboration_list_view": c.COLLABORATION_STATUS_ALL,
+                "collaboration_filter": c.COLLABORATION_STATUS_ALL,
                 "collaboration_list": Collaboration.objects.filter(related_group=group),
-                "announcement_list_view": c.ANNOUNCEMENTS_LIST_VIEW_LATEST,
+                "announcement_filter": c.ANNOUNCEMENTS_FILTER_LATEST,
                 "announcement_list": GroupAnnouncement.objects.filter(group=group)[:1],
-                "membership_list_view": c.MEMBERSHIP_STATUS_PENDING,
+                "membership_filter": c.MEMBERSHIP_STATUS_PENDING,
                 "membership_list": group.memberships.filter(status=c.MEMBERSHIP_STATUS_PENDING)
             },
         )
