@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+
+{% block head %}
+    {% include 'base/head.html' %}
+{% endblock %}
+
+<body>
+
+<!-- Section -->
+
+{% block global_header %}
+    {% include 'app/base/top_nav.html' %}
+{% endblock %}
+
+{% block body %}
+    <div class="section section-lg pt-5 pt-md-7 bg-gray-200">
+        <div class="container">
+            <div class="row pt-5 pt-md-0">
+                {% block sidenav %}
+                    {% include 'app/base/side_nav.html' %}
+
+                {% endblock %}
+                <div class="col-12 col-lg-8">
+                    {% block body_content %}
+
+                    {% endblock %}
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}
+
+
+
+{% block global_footer %}
+    {% include 'base/footer.html' %}
+{% endblock %}
+
+
+{% block global_scripts %}
+    {% include 'base/scripts.html' %}
+    {% block extra_scripts %}
+
+    {% endblock %}
+{% endblock %}
+</body>
+
+</html>

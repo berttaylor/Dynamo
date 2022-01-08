@@ -25,7 +25,7 @@ urlpatterns = [
     # AUTH
     path("accounts/", include("users.urls")),
     # Home
-    path("", TemplateView.as_view(template_name="static_site/landing.html"), name="home"),
+    path("", TemplateView.as_view(template_name="landing/landing.html"), name="home"),
     # FAQ / Support
     path("support/", include("support.urls")),
     # Groups

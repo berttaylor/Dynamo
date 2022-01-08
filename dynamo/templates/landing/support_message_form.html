@@ -1,0 +1,54 @@
+{% extends "landing/static_base.html" %}
+{% block body %}
+
+                <div class="mt-6 bg-white shadow-soft border rounded border-gray-300 p-4 p-lg-5 w-100 fmxw-500">
+                    <div class="text-center text-md-center mt-md-0">
+                        <h1 class="mb-0 h3">Contact Us</h1>
+                    </div>
+
+                    {% if form.errors %}
+                        <div id="form_errors" class="f-errors mt-2">
+                            {% for key, value in form.errors.items %}
+                                <strong>{{ value }}</strong>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                    <form method="post" class="mt-4">
+                        {% csrf_token %}
+
+                        <div class="form-group mb-4">
+                            <label for="email">Your Name</label>
+                            <div class="input-group">
+                                        <span class="input-group-text" id="basic-addon1"><span
+                                                class="fas fa-user"></span></span>
+                                {{ form.name }}
+
+                            </div>
+                        </div>
+                        <!-- Form -->
+                        <div class="form-group mb-4">
+                            <label for="email">Your Email</label>
+                            <div class="input-group">
+                                        <span class="input-group-text" id="basic-addon1"><span
+                                                class="fas fa-envelope"></span></span>
+                                {{ form.email }}
+
+                            </div>
+                        </div>
+                        <!-- End of Form -->
+                        <div class="form-group">
+                            <!-- Form -->
+                        <div class="form-group mb-4">
+                            <label for="email">Your Message</label>
+                            <div class="input-group">
+                                {{ form.message }}
+
+                            </div>
+                        <div class="d-grid pt-2">
+                            <button type="submit" class="btn btn-primary">Send Message</button>
+                        </div>
+                    </form>
+                </div>
+
+
+{% endblock body %}

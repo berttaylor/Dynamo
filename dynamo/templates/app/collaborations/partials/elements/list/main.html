@@ -1,0 +1,13 @@
+{% for element in elements %}
+    {% if element.type == "Task" %}
+
+        {% include "app/collaborations/partials/elements/list/collaboration_element_task.html" with task=element %}
+
+    {% else %}
+
+        {% include "app/collaborations/partials/elements/list/collaboration_element_milestone.html" with milestone=element %}
+
+    {% endif %}
+{% endfor %}
+
+

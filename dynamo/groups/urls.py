@@ -16,7 +16,6 @@ Including another URLconf
 
 from django.urls import path
 from groups.views import (
-    GroupListView,
     GroupDetailView,
     GroupCreateView,
     GroupUpdateView,
@@ -28,11 +27,6 @@ from .views_htmx import htmx_membership_list, htmx_membership_selector, htmx_mem
     htmx_collaboration_list, htmx_announcement_delete
 
 urlpatterns = [
-    path(
-        "",
-        GroupListView.as_view(),
-        name="group-list",
-    ),
     path(
         "create/",
         GroupCreateView.as_view(),

@@ -6,16 +6,9 @@ from django.db.models import Value, CharField
 from django.db.models.expressions import Window
 from django.db.models.functions import Rank
 from django.shortcuts import render
-from django.urls import reverse_lazy
-from django.utils.decorators import method_decorator
-from django.views.generic import CreateView, DetailView, ListView
-from django.views.generic.edit import FormMixin, UpdateView, DeleteView
 
-from chat.forms import CollaborationMessageForm
-from chat.models import Message
 from collaborations.forms import MilestoneForm, TaskForm
 from collaborations.models import Collaboration, CollaborationTask, CollaborationMilestone
-from groups.models import Group
 from users.models import User
 
 
@@ -61,7 +54,7 @@ def task_create_view(request, collaboration_uuid):
     CollaborationTask.objects.create(collaboration=collaboration, name=name, assigned_to=assigned_to)
 
     return render(request,
-                  "dashboard/collaborations/partials/collaboration_elements.html", {
+                  "app/collaborations/partials/elements/main.html", {
                       "task_form": TaskForm(
                           initial={"collaboration": collaboration},
                       ),
@@ -89,7 +82,7 @@ def milestone_create_view(request, collaboration_uuid):
     CollaborationMilestone.objects.create(collaboration=collaboration, name=name, target_date=target_date)
 
     return render(request,
-                  "dashboard/collaborations/partials/collaboration_elements.html", {
+                  "app/collaborations/partials/elements/main.html", {
                       "task_form": TaskForm(
                           initial={"collaboration": collaboration},
                       ),
@@ -113,7 +106,7 @@ def task_delete_view(request, pk):
     task.delete()
 
     return render(request,
-                  "dashboard/collaborations/partials/collaboration_elements.html", {
+                  "app/collaborations/partials/elements/main.html", {
                       "task_form": TaskForm(
                           initial={"collaboration": collaboration},
                       ),
@@ -137,7 +130,7 @@ def milestone_delete_view(request, pk):
     milestone.delete()
 
     return render(request,
-                  "dashboard/collaborations/partials/collaboration_elements.html", {
+                  "app/collaborations/partials/elements/main.html", {
                       "task_form": TaskForm(
                           initial={"collaboration": collaboration},
                       ),

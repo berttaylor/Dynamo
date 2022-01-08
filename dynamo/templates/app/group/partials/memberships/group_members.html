@@ -1,0 +1,54 @@
+<div class="mb-4 p-4 bg-white rounded shadow-sm">
+    <div class="d-flex align-items-center justify-content-between">
+        <h5 class="mb-0">Members</h5>
+
+
+        <div class="d-flex">
+
+            <select class="form-select fmxw-150 pe-5" id="inlineFormCustomSelectMessages"
+                    aria-label="select membership view"
+                    name="membership_filter"
+                    hx-get={% url 'htmx_membership_list' group_id=group_id %}
+                            hx-target="#list_of_members"
+            >
+                <option
+                        {% if membership_filter == MEMBERSHIP_STATUS_PENDING %}
+                            selected
+                        {% endif %}
+                            value="{{ MEMBERSHIP_STATUS_PENDING }}">{{ MEMBERSHIP_STATUS_PENDING }}
+                    ({{ membership_count.pending }})
+                </option>
+
+                <option
+                        {% if membership_filter == MEMBERSHIP_STATUS_CURRENT %}
+                            selected
+                        {% endif %}
+                            value="{{ MEMBERSHIP_STATUS_CURRENT }}">{{ MEMBERSHIP_STATUS_CURRENT }}
+                    ({{ membership_count.member }})
+                </option>
+                <option
+                        {% if membership_filter == MEMBERSHIP_STATUS_ADMIN %}
+                            selected
+                        {% endif %}
+                            value="{{ MEMBERSHIP_STATUS_ADMIN }}">{{ MEMBERSHIP_STATUS_ADMIN }}
+                    ({{ membership_count.admin }})
+                </option>
+                <option
+                        {% if membership_filter == MEMBERSHIP_STATUS_IGNORED %}
+                            selected
+                        {% endif %}
+                            value="{{ MEMBERSHIP_STATUS_IGNORED }}">{{ MEMBERSHIP_STATUS_IGNORED }}
+                    ({{ membership_count.ignored }})
+                </option>
+                <option value="HIDE">Hide All</option>
+
+
+            </select>
+        </div>
+    </div>
+
+    <div id="list_of_members">
+        {% include "app/group/partials/memberships/group_members_list.html" %}
+    </div>
+
+</div>

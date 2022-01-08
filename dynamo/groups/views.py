@@ -4,7 +4,6 @@ from django.http import HttpResponseRedirect
 from django.urls import reverse_lazy, reverse
 from django.utils.decorators import method_decorator
 from django.views.generic import (
-    ListView,
     DetailView,
     CreateView,
     UpdateView,
@@ -17,16 +16,6 @@ from chat.forms import GroupMessageForm
 from chat.models import Message
 from collaborations.models import Collaboration
 from groups.models import Group, GroupAnnouncement, Membership
-
-
-class GroupListView(ListView):
-    """
-    List of all groups, allowing a user to search, and find causes that appeal to them
-    """
-
-    model = Group
-    template_name = "dashboard/group/group_search.html"
-    paginate_by = 30
 
 
 def get_membership_level(user, group):
@@ -72,7 +61,7 @@ class GroupDetailView(FormMixin, DetailView):
         - Collaborations
     """
 
-    template_name = "dashboard/group/group_detail.html"
+    template_name = "app/group/main.html"
     model = Group
     form_class = GroupMessageForm
 
@@ -118,7 +107,7 @@ class GroupCreateView(CreateView):
     Allows users to create a new group
     """
 
-    template_name = "dashboard/group/group_create.html"
+    template_name = "app/auxiliary/group/create.html"
     model = Group
     fields = (
         "name",
@@ -158,7 +147,7 @@ class GroupUpdateView(UpdateView):
     Allows the user to update multiple fields on a group which they are the admin/creator of.
     """
 
-    template_name = "dashboard/group/group_update.html"
+    template_name = "app/auxiliary/group/update.html"
     model = Group
     fields = [
         "name",
@@ -174,7 +163,7 @@ class GroupUpdateView(UpdateView):
 
 @method_decorator(login_required, name="dispatch")
 class GroupDeleteView(DeleteView):
-    template_name = "dashboard/group/group_delete.html"
+    template_name = "app/auxiliary/group/delete.html"
     model = Group
 
     def get_success_url(self):
@@ -268,7 +257,7 @@ class AnnouncementCreateView(CreateView):
     Allows users to create a new announcement
     """
 
-    template_name = "dashboard/group/announcements/announcement_create.html"
+    template_name = "app/auxiliary/announcement/create.html"
     model = GroupAnnouncement
     fields = (
         "title",

@@ -25,7 +25,7 @@ def group_message_create_view(request, group_uuid):
     messages = Message.objects.filter(group=group)
     membership_level = get_membership_level(request.user, group)
 
-    return render(request, "dashboard/group/partials/group_chat.html", {
+    return render(request, "app/group/partials/chat/main.html", {
         'membership_level': membership_level,
         "chat_messages": messages,
         "group": group,
@@ -52,7 +52,7 @@ def group_message_delete_view(request, message_id):
 
     membership_level = get_membership_level(request.user, group)
 
-    return render(request, "dashboard/group/partials/group_chat.html", {
+    return render(request, "app/group/partials/chat/main.html", {
         'membership_level': membership_level,
         "chat_messages": messages,
         "group": group,
@@ -79,7 +79,7 @@ def collaboration_message_create_view(request, collaboration_uuid):
 
     membership_level = get_membership_level(request.user, collaboration.related_group)
 
-    return render(request, "dashboard/collaborations/partials/collaboration_chat.html", {
+    return render(request, "app/collaborations/partials/chat/main.html", {
         'membership_level': membership_level,
         "chat_messages": messages,
         "collaboration": collaboration,
@@ -106,7 +106,7 @@ def collaboration_message_delete_view(request, message_id):
 
     membership_level = get_membership_level(request.user, collaboration.related_group)
 
-    return render(request, "dashboard/collaborations/partials/collaboration_chat.html", {
+    return render(request, "app/collaborations/partials/chat/main.html", {
         'membership_level': membership_level,
         "chat_messages": messages,
         "collaboration": collaboration,
