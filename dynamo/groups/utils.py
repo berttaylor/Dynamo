@@ -1,4 +1,4 @@
-import constants as c
+import groups.constants as c
 
 
 def get_membership_level(user, group):
