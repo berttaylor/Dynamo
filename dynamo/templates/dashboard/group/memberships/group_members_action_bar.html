@@ -1,50 +1,50 @@
-{% if membership_list_view == MEMBERSHIP_STATUS_PENDING %}
+{% if membership_filter == MEMBERSHIP_STATUS_PENDING %}
 
     <div class="text-center mt-4">
         <p>{{ selected_memberships }} selected.
             <a
-                    hx-post="{% url 'htmx_membership_handler' group_id=group_id action=MEMBERSHIP_ACTION_APPROVE membership_list_view=membership_list_view %}"
+                    hx-post="{% url 'htmx_membership_handler' group_id=group_id action=MEMBERSHIP_ACTION_APPROVE membership_filter=membership_filter %}"
                     hx-target="#group_member_section"
             >{{ MEMBERSHIP_ACTION_APPROVE }}</a> |
             <a
-                    hx-post="{% url 'htmx_membership_handler' group_id=group_id action=MEMBERSHIP_ACTION_IGNORE membership_list_view=membership_list_view %}"
+                    hx-post="{% url 'htmx_membership_handler' group_id=group_id action=MEMBERSHIP_ACTION_IGNORE membership_filter=membership_filter %}"
                     hx-target="#group_member_section"
             >{{ MEMBERSHIP_ACTION_IGNORE }}</a> |
             <a
-                    hx-post="{% url 'htmx_membership_handler' group_id=group_id action=MEMBERSHIP_ACTION_CLEAR_SELECTION membership_list_view=membership_list_view %}"
+                    hx-post="{% url 'htmx_membership_handler' group_id=group_id action=MEMBERSHIP_ACTION_CLEAR_SELECTION membership_filter=membership_filter %}"
                     hx-target="#requests_action_bar"
             >{{ MEMBERSHIP_ACTION_CLEAR_SELECTION }}</a>
         </p>
     </div>
 
-{% elif membership_list_view == MEMBERSHIP_STATUS_CURRENT %}
+{% elif membership_filter == MEMBERSHIP_STATUS_CURRENT %}
     <div class="text-center mt-4">
         <p>{{ selected_memberships }} selected.
             <a
-                    hx-post="{% url 'htmx_membership_handler' group_id=group_id action=MEMBERSHIP_ACTION_REMOVE membership_list_view=membership_list_view %}"
+                    hx-post="{% url 'htmx_membership_handler' group_id=group_id action=MEMBERSHIP_ACTION_REMOVE membership_filter=membership_filter %}"
                     hx-target="#group_member_section"
             >{{ MEMBERSHIP_ACTION_REMOVE }}</a> |
             <a
-                    hx-post="{% url 'htmx_membership_handler' group_id=group_id action=MEMBERSHIP_ACTION_MAKE_ADMIN membership_list_view=membership_list_view %}"
+                    hx-post="{% url 'htmx_membership_handler' group_id=group_id action=MEMBERSHIP_ACTION_MAKE_ADMIN membership_filter=membership_filter %}"
                     hx-target="#group_member_section"
             >{{ MEMBERSHIP_ACTION_MAKE_ADMIN }}</a> |
             <a
-                    hx-post="{% url 'htmx_membership_handler' group_id=group_id action=MEMBERSHIP_ACTION_CLEAR_SELECTION membership_list_view=membership_list_view %}"
+                    hx-post="{% url 'htmx_membership_handler' group_id=group_id action=MEMBERSHIP_ACTION_CLEAR_SELECTION membership_filter=membership_filter %}"
                     hx-target="#requests_action_bar"
             >{{ MEMBERSHIP_ACTION_CLEAR_SELECTION }}</a>
         </p>
     </div>
 
-{% elif membership_list_view == MEMBERSHIP_STATUS_IGNORED %}
+{% elif membership_filter == MEMBERSHIP_STATUS_IGNORED %}
 
     <div class="text-center mt-4">
         <p>{{ selected_memberships }} selected.
             <a
-                    hx-post="{% url 'htmx_membership_handler' group_id=group_id action=MEMBERSHIP_ACTION_APPROVE membership_list_view=membership_list_view %}"
+                    hx-post="{% url 'htmx_membership_handler' group_id=group_id action=MEMBERSHIP_ACTION_APPROVE membership_filter=membership_filter %}"
                     hx-target="#group_member_section"
             >{{ MEMBERSHIP_ACTION_APPROVE }}</a> |
             <a
-                    hx-post="{% url 'htmx_membership_handler' group_id=group_id action=MEMBERSHIP_ACTION_CLEAR_SELECTION membership_list_view=membership_list_view %}"
+                    hx-post="{% url 'htmx_membership_handler' group_id=group_id action=MEMBERSHIP_ACTION_CLEAR_SELECTION membership_filter=membership_filter %}"
                     hx-target="#requests_action_bar"
             >{{ MEMBERSHIP_ACTION_CLEAR_SELECTION }}</a>
         </p>
