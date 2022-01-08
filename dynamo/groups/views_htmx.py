@@ -24,7 +24,7 @@ def htmx_membership_list(request, group_id):
 
     if membership_filter in c.MEMBERSHIP_FILTERS:
         return render(request,
-                      "app/group/partials/memberships/group_members_list.html",
+                      "app/group/partials/memberships/list.html",
                       {
                           "membership_list": Membership.objects.filter(
                               group_id=group_id, status=membership_filter
@@ -62,7 +62,7 @@ def htmx_membership_selector(request, group_id, membership_id, membership_filter
             print(selected_memberships)
             request.session['selected_memberships'] = selected_memberships
             return render(request,
-                          "app/group/partials/memberships/group_members_action_bar.html", {
+                          "app/group/partials/memberships/action_bar.html", {
                               "selected_memberships": len(selected_memberships),
                               "membership_filter": membership_filter,
                               "group_id": group_id,
@@ -74,7 +74,7 @@ def htmx_membership_selector(request, group_id, membership_id, membership_filter
         request.session['selected_memberships'] = selected_memberships
         print(selected_memberships)
         return render(request,
-                      "app/group/partials/memberships/group_members_action_bar.html", {
+                      "app/group/partials/memberships/action_bar.html", {
                           "selected_memberships": len(selected_memberships),
                           "membership_filter": membership_filter,
                           "group_id": group_id,
@@ -145,7 +145,7 @@ def htmx_membership_handler(request, group_id, action, membership_filter):
     else:
         membership_list = Membership.objects.none()
 
-    return render(request, "app/group/partials/memberships/group_members.html",
+    return render(request, "app/group/partials/memberships/main.html",
                   {
                       "membership_list": membership_list,
                       "membership_filter": membership_filter,
