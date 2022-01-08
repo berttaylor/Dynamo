@@ -6,9 +6,14 @@
     <!-- Profile widget -->
     <div class="bg-white shadow rounded overflow-hidden text-center mb-0">
         <div hx-boost="true" class="p-4 bg-dark text-center text-white">
+{% if group.profile_image %}
+<img src="{{ group.profile_image.url }}" class="organic-radius img-fluid" alt="Joseph Avatar">
+{% endif %}
 
-            <img src="/compiled/img/eagle_labs_outside.png"
-                 class="organic-radius img-fluid" alt="Joseph Avatar">
+
+
+
+
             <h1 class="m-4">{{ group.name }}</h1>
             <p class="lead ">{{ group.description }}</p>
 

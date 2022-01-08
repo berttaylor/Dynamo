@@ -1,6 +1,9 @@
+import os
 import time
 
 from django.db import models
+from django.db.models.signals import pre_save
+from django.dispatch import receiver
 from django.template.defaultfilters import slugify
 
 from dynamo.storages import group_based_upload_to
@@ -48,12 +51,18 @@ class Group(TimeStampedSoftDeleteBase):
         blank=True,
     )
 
+    __saved_profile_image = None
+
     profile_image = models.FileField(
         upload_to=group_based_upload_to,
         help_text="Profile Image for the group. Please aim to keep this below 1mb in size.",
         null=True,
         blank=True,
     )
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.__saved_profile_image = self.profile_image
 
     @property
     def short_description(self):
@@ -74,11 +83,22 @@ class Group(TimeStampedSoftDeleteBase):
         return slug
 
     def save(self, *args, **kwargs) -> None:
-        """Override save to automate creation of some fields"""
+        """
+        Override save to:
+        1) If adding, automate creation of slug
+        2) If changing profile image, delete the old one from storage
+        """
+
         # Use _state.adding to detect if first save
         if self._state.adding:
             self.slug = self.generate_slug(self)
+
         super(Group, self).save(*args, **kwargs)
+
+    def delete(self, using=None, keep_parents=False):
+        """We delete the profile image from storage"""
+        self.profile_image.delete(save=False)
+        super().delete()
 
     def __str__(self):
         return str(self.name)
