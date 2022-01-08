@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from .models import Group, GroupProfileImage, GroupAnnouncement, Membership
+from .models import Group, GroupAnnouncement, Membership
 
 
 @admin.register(Group)
@@ -17,7 +17,7 @@ class GroupAdmin(admin.ModelAdmin):
     list_filter = ("created_at",)
 
     fieldsets = (
-        ("Group details", {"fields": (("name", "slug"), "description")}),
+        ("Group details", {"fields": (("name", "slug"), "description", 'profile_image')}),
         ("Users", {"fields": ("created_by",)}),
         (
             "Database",
@@ -58,35 +58,6 @@ class MembershipAdmin(admin.ModelAdmin):
     fieldsets = (
         ("Membership details", {"fields": (("user", "group"), "status", 'is_subscribed')}),
         ("Handling", {"fields": ("updated_by",)}),
-        (
-            "Database",
-            {
-                "fields": (
-                    ("created_at", "updated_at"),
-                    "deleted_at",
-                )
-            },
-        ),
-    )
-
-    readonly_fields = (
-        "created_at",
-        "updated_at",
-        "deleted_at",
-    )
-
-
-@admin.register(GroupProfileImage)
-class GroupProfileImageAdmin(admin.ModelAdmin):
-    search_fields = ("alt_text",)
-    ordering = ("created_at",)
-
-    list_display = ("alt_text",)
-
-    list_filter = ("created_at",)
-
-    fieldsets = (
-        (None, {"fields": (("user", "group"), "status")}),
         (
             "Database",
             {

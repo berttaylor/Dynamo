@@ -81,6 +81,7 @@ class GroupCreateView(CreateView):
     fields = (
         "name",
         "description",
+        "profile_image"
     )
 
     def form_valid(self, form):
@@ -121,6 +122,7 @@ class GroupUpdateView(UpdateView):
     fields = [
         "name",
         "description",
+        "profile_image"
     ]
 
     def get_success_url(self):
