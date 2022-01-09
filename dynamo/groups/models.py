@@ -166,7 +166,7 @@ class Membership(TimeStampedSoftDeleteBase):
         ordering = ("-created_at", "-updated_at")
 
     def __str__(self):
-        return f"[{self.status}] {self.user.username}"
+        return f"[{self.status}] {self.user.first_name}"
 
 
 # class GroupProfileImage(TimeStampedSoftDeleteBase):
