@@ -1,10 +1,10 @@
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseRedirect
+from django.shortcuts import get_object_or_404
 from django.urls import reverse_lazy, reverse
 from django.utils.decorators import method_decorator
 from django.views.generic import (
-    ListView,
     DetailView,
     CreateView,
     UpdateView,
@@ -17,49 +17,7 @@ from chat.forms import GroupMessageForm
 from chat.models import Message
 from collaborations.models import Collaboration
 from groups.models import Group, GroupAnnouncement, Membership
-
-
-class GroupListView(ListView):
-    """
-    List of all groups, allowing a user to search, and find causes that appeal to them
-    """
-
-    model = Group
-    template_name = "dashboard/group/group_search.html"
-    paginate_by = 30
-
-
-def get_membership_level(user, group):
-    """
-    Simple utility function that return that status of the membership, if one exists.
-    Used to render relevant sections on front end.
-    """
-    if not (membership := group.memberships.filter(user=user, group=group).first()):
-        return None
-
-    return membership.status
-
-
-def get_membership_count(group):
-    """
-    Counts memberships by type in order to provide as context to front end
-    """
-
-    memberships = group.memberships.all()
-
-    admin_count = memberships.filter(status=c.MEMBERSHIP_STATUS_ADMIN).count()
-    member_count = memberships.filter(status=c.MEMBERSHIP_STATUS_CURRENT).count()
-    ignored_count = memberships.filter(status=c.MEMBERSHIP_STATUS_IGNORED).count()
-    pending_count = memberships.filter(status=c.MEMBERSHIP_STATUS_PENDING).count()
-    subscriber_count = memberships.filter(is_subscribed=True).count()
-
-    return {
-        "admin": admin_count,
-        "member": member_count,
-        "ignored": ignored_count,
-        "pending": pending_count,
-        "subscriber": subscriber_count,
-    }
+from groups.utils import get_membership_level, get_membership_count
 
 
 class GroupDetailView(FormMixin, DetailView):
@@ -72,7 +30,7 @@ class GroupDetailView(FormMixin, DetailView):
         - Collaborations
     """
 
-    template_name = "dashboard/group/group_detail.html"
+    template_name = "app/group/main.html"
     model = Group
     form_class = GroupMessageForm
 
@@ -118,11 +76,12 @@ class GroupCreateView(CreateView):
     Allows users to create a new group
     """
 
-    template_name = "dashboard/group/group_create.html"
+    template_name = "app/auxiliary/group/create.html"
     model = Group
     fields = (
         "name",
         "description",
+        "profile_image"
     )
 
     def form_valid(self, form):
@@ -158,11 +117,12 @@ class GroupUpdateView(UpdateView):
     Allows the user to update multiple fields on a group which they are the admin/creator of.
     """
 
-    template_name = "dashboard/group/group_update.html"
+    template_name = "app/auxiliary/group/update.html"
     model = Group
     fields = [
         "name",
         "description",
+        "profile_image"
     ]
 
     def get_success_url(self):
@@ -174,7 +134,7 @@ class GroupUpdateView(UpdateView):
 
 @method_decorator(login_required, name="dispatch")
 class GroupDeleteView(DeleteView):
-    template_name = "dashboard/group/group_delete.html"
+    template_name = "app/auxiliary/group/delete.html"
     model = Group
 
     def get_success_url(self):
@@ -188,7 +148,7 @@ def group_join_view(request, slug):
     """
 
     # Get  variables
-    user, group = request.user, Group.objects.get(slug=slug)
+    user, group = request.user, get_object_or_404(Group, slug=slug)
 
     # If the user is already a member, send an error
     if Membership.objects.filter(user=user, group=group):
@@ -222,7 +182,7 @@ def group_leave_view(request, slug):
     """
 
     # Get  variables
-    user, group = request.user, Group.objects.get(slug=slug)
+    user, group = request.user, get_object_or_404(Group, slug=slug)
 
     # If the user is not in the group , send an error
     if user not in group.members.all():
@@ -236,7 +196,7 @@ def group_leave_view(request, slug):
 
     else:
         # get membership
-        membership = Membership.objects.get(user=user, group=group)
+        membership = get_object_or_404(Membership, user=user, group=group)
 
         # If the user is last admin of the group, send error
         if membership.status==c.MEMBERSHIP_STATUS_ADMIN and not group.memberships.filter(status=c.MEMBERSHIP_STATUS_ADMIN).exclude(pk=membership.pk).exists():
@@ -268,7 +228,7 @@ class AnnouncementCreateView(CreateView):
     Allows users to create a new announcement
     """
 
-    template_name = "dashboard/group/announcements/announcement_create.html"
+    template_name = "app/auxiliary/announcement/create.html"
     model = GroupAnnouncement
     fields = (
         "title",
@@ -276,12 +236,12 @@ class AnnouncementCreateView(CreateView):
     )
 
     def get_initial(self):
-        group = Group.objects.get(slug=self.kwargs.get("group_slug"))
+        group = get_object_or_404(Group, slug=self.kwargs.get("group_slug"))
         return {"related_group": group}
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context["group"] = Group.objects.get(slug=self.kwargs.get("group_slug"))
+        context["group"] = get_object_or_404(Group, slug=self.kwargs.get("group_slug"))
         return context
 
     def form_valid(self, form):
@@ -295,8 +255,8 @@ class AnnouncementCreateView(CreateView):
             raise PermissionError
 
         form.instance.user = user
-        form.instance.group = Group.objects.get(
-            slug=self.kwargs.get("group_slug")
+        form.instance.group = get_object_or_404(
+            Group, slug=self.kwargs.get("group_slug")
         )
 
         return super(AnnouncementCreateView, self).form_valid(form)

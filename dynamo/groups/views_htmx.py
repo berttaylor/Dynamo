@@ -1,7 +1,8 @@
 from django.contrib.auth.decorators import login_required
-from django.http import HttpResponse
-from django.shortcuts import render, redirect
 from django.db.models import IntegerField, Case, When, Count, Q
+from django.http import HttpResponse
+from django.shortcuts import render, get_object_or_404
+
 import groups.constants as c
 from collaborations.models import Collaboration
 from groups.models import Group, Membership, GroupAnnouncement
@@ -23,7 +24,7 @@ def htmx_membership_list(request, group_id):
 
     if membership_filter in c.MEMBERSHIP_FILTERS:
         return render(request,
-                      "dashboard/group/memberships/group_members_list.html",
+                      "app/group/partials/memberships/list.html",
                       {
                           "membership_list": Membership.objects.filter(
                               group_id=group_id, status=membership_filter
@@ -54,14 +55,12 @@ def htmx_membership_selector(request, group_id, membership_id, membership_filter
     if membership_id in selected_memberships:
         selected_memberships.remove(membership_id)
         if len(selected_memberships) == 0:
-            print(selected_memberships)
             del request.session['selected_memberships']
             return HttpResponse("")
         else:
-            print(selected_memberships)
             request.session['selected_memberships'] = selected_memberships
             return render(request,
-                          "dashboard/group/memberships/group_members_action_bar.html", {
+                          "app/group/partials/memberships/action_bar.html", {
                               "selected_memberships": len(selected_memberships),
                               "membership_filter": membership_filter,
                               "group_id": group_id,
@@ -71,9 +70,8 @@ def htmx_membership_selector(request, group_id, membership_id, membership_filter
     else:
         selected_memberships.append(membership_id)
         request.session['selected_memberships'] = selected_memberships
-        print(selected_memberships)
         return render(request,
-                      "dashboard/group/memberships/group_members_action_bar.html", {
+                      "app/group/partials/memberships/action_bar.html", {
                           "selected_memberships": len(selected_memberships),
                           "membership_filter": membership_filter,
                           "group_id": group_id,
@@ -96,7 +94,7 @@ def htmx_membership_handler(request, group_id, action, membership_filter):
     if not (selected_memberships := request.session.get('selected_memberships', None)):
         return None
 
-    group = Group.objects.get(pk=group_id)
+    group = get_object_or_404(Group, id=group_id)
 
     if action == c.MEMBERSHIP_ACTION_CLEAR_SELECTION:
         # Get the ids (so that we can 'uncheck' the checkboxes on front end)
@@ -106,7 +104,7 @@ def htmx_membership_handler(request, group_id, action, membership_filter):
         del request.session['selected_memberships']
 
         return render(request,
-                      "dashboard/group/memberships/template_js/uncheck_membership_tickboxes.html",
+                      "app/group/partials/memberships/template_js/uncheck_membership_tickboxes.html",
                       {"check_box_ids": check_box_ids})
 
     elif action == c.MEMBERSHIP_ACTION_APPROVE:
@@ -144,7 +142,7 @@ def htmx_membership_handler(request, group_id, action, membership_filter):
     else:
         membership_list = Membership.objects.none()
 
-    return render(request, "dashboard/group/memberships/group_members.html",
+    return render(request, "app/group/partials/memberships/main.html",
                   {
                       "membership_list": membership_list,
                       "membership_filter": membership_filter,
@@ -177,7 +175,7 @@ def htmx_announcement_list(request, group_id):
             announcements = GroupAnnouncement.objects.none()
 
     return render(request,
-                  "dashboard/group/announcements/group_announcements_list.html", {
+                  "app/group/partials/announcements/list.html", {
                       "announcement_list": announcements
                   })
 
@@ -223,7 +221,7 @@ def htmx_collaboration_list(request, group_id):
             collaborations = Collaboration.objects.none()
 
     return render(request,
-                  "dashboard/group/collaborations/group_collaborations_list.html", {
+                  "app/group/partials/collaborations/list.html", {
                       "collaboration_list": collaborations
                   })
 
@@ -236,12 +234,12 @@ def htmx_announcement_delete(request, group_slug, announcement_id):
 
     # TODO: Secure and set methods
 
-    announcement = GroupAnnouncement.objects.get(pk=announcement_id)
+    announcement = get_object_or_404(GroupAnnouncement, pk=announcement_id)
     announcement.delete()
 
     announcements = GroupAnnouncement.objects.filter(group__slug=group_slug)[:1]
 
     return render(request,
-                  "dashboard/group/announcements/group_announcements_list.html", {
+                  "app/group/partials/announcements/list.html", {
                       "announcement_list": announcements
                   })

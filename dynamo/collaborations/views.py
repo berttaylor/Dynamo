@@ -1,47 +1,17 @@
-from itertools import chain
-
 from django.contrib.auth.decorators import login_required
-from django.db.models import F
-from django.db.models import Value, CharField
-from django.db.models.expressions import Window
-from django.db.models.functions import Rank
+from django.shortcuts import get_object_or_404
 from django.urls import reverse_lazy
 from django.utils.decorators import method_decorator
-from django.views.generic import CreateView, DetailView, ListView
+from django.views.generic import CreateView, DetailView
 from django.views.generic.edit import FormMixin, UpdateView, DeleteView
 
 from chat.forms import CollaborationMessageForm
 from chat.models import Message
 from collaborations.forms import MilestoneForm, TaskForm
 from collaborations.models import Collaboration, CollaborationTask, CollaborationMilestone
+from collaborations.utils import get_all_elements
 from groups.models import Group
 from groups.views import get_membership_level
-
-
-
-def get_all_elements(collaboration):
-    """
-    This function works in three steps to produce a combined, ordered list of Tasks & Milestones
-    """
-
-    # 1. Get all Tasks, and annotate them with the type ('Task'), and their task number - which is determined by their
-    # position in relation to the other tasks, rather than by their 'position' field, which orders them according to
-    # position with milestones also (and is zero indexed.)
-    tasks = CollaborationTask.objects.filter(collaboration=collaboration).annotate(
-        type=Value('Task', output_field=CharField()), number=Window(
-            expression=Rank(),
-            order_by=F('position').asc()
-        ))
-
-    # 2. Get all Milestones, and annotate them with the type ('Milestone')
-    milestones = CollaborationMilestone.objects.filter(collaboration=collaboration).annotate(
-        type=Value('Milestone', output_field=CharField()))
-
-    # 3. Chain the lists together, and sort them by their position field (in reverse)
-    element_list = sorted(
-        chain(tasks, milestones),
-        key=lambda element: element.position)
-    return element_list
 
 
 @method_decorator(login_required, name="dispatch")
@@ -50,7 +20,7 @@ class CollaborationCreateView(CreateView):
     Allows users to create a new collaboration
     """
 
-    template_name = "dashboard/collaborations/collaboration_create.html"
+    template_name = "app/auxiliary/collaboration/create.html"
     model = Collaboration
     fields = (
         "name",
@@ -58,12 +28,12 @@ class CollaborationCreateView(CreateView):
     )
 
     def get_initial(self):
-        group = Group.objects.get(slug=self.kwargs.get("group_slug"))
+        group = get_object_or_404(Group, slug=self.kwargs.get("group_slug"))
         return {"related_group": group}
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context["group"] = Group.objects.get(slug=self.kwargs.get("group_slug"))
+        context["group"] = get_object_or_404(Group, slug=self.kwargs.get("group_slug"))
         return context
 
     def form_valid(self, form):
@@ -97,7 +67,7 @@ class CollaborationDetailView(FormMixin, DetailView):
         - Tasks /Milestones
     """
 
-    template_name = "dashboard/collaborations/collaboration_detail.html"
+    template_name = "app/collaborations/main.html"
     model = Collaboration
     form_class = CollaborationMessageForm
 
@@ -137,26 +107,18 @@ class CollaborationDetailView(FormMixin, DetailView):
         return context
 
 
-class CollaborationListView(ListView):
-    """
-    Shows all collaborations, adn acts as dashboard home
-    """
-
-    template_name = "dashboard/collaborations/collaboration_list.html"
-    model = Collaboration
-
-
 @method_decorator(login_required, name="dispatch")
 class CollaborationUpdateView(UpdateView):
     """
     Allows the user to update multiple fields on a collaboration which they are the admin/creator of.
     """
 
-    template_name = "dashboard/collaborations/collaboration_update.html"
+    template_name = "app/auxiliary/collaboration/update.html"
     model = Collaboration
     fields = [
         "name",
         "description",
+        "image"
     ]
 
     def get_success_url(self):
@@ -168,7 +130,7 @@ class CollaborationUpdateView(UpdateView):
 
 @method_decorator(login_required, name="dispatch")
 class CollaborationDeleteView(DeleteView):
-    template_name = "dashboard/collaborations/collaboration_delete.html"
+    template_name = "app/auxiliary/collaboration/delete.html"
     model = Collaboration
 
     def get_success_url(self):
@@ -184,7 +146,7 @@ class TaskUpdateView(UpdateView):
     Allows the user to update tasks on a collaboration which they are the admin/creator of.
     """
 
-    template_name = "dashboard/collaborations/collaboration_task_update.html"
+    template_name = "app/auxiliary/task/update.html"
     model = CollaborationTask
     fields = [
         "position",
@@ -210,7 +172,7 @@ class MilestoneUpdateView(UpdateView):
     Allows the user to update milestones on a collaboration which they are the admin/creator of.
     """
 
-    template_name = "dashboard/collaborations/collaboration_milestone_update.html"
+    template_name = "app/auxiliary/milestone/update.html"
     model = CollaborationMilestone
     fields = [
         "position",

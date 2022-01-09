@@ -1,9 +1,8 @@
-from django.forms import ModelForm, HiddenInput, CharField, DateInput, ModelChoiceField, TextInput, Textarea, \
+from django.forms import ModelForm, HiddenInput, CharField, DateInput, ModelChoiceField, Textarea, \
     SelectMultiple
 from django.forms.widgets import Select
 
 from collaborations.models import CollaborationMilestone, CollaborationTask
-
 
 
 class TaskForm(ModelForm):

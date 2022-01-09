@@ -1,0 +1,36 @@
+<div class="py-4 px-4 mb-4 bg-white rounded shadow-sm">
+
+    <div class="d-flex align-items-center justify-content-between">
+        <h5 class="mb-0">Collaborations</h5>
+
+        <div class="d-flex">
+
+            <select class="form-select fmxw-150 pe-5" id="inlineFormCustomSelectMessages"
+                    aria-label="collaborations filter"
+                    name="collaboration_list_filter"
+                    hx-get={% url 'htmx_collaboration_list' group_id=group_id %}
+                            hx-target="#list_of_collaborations"
+            >
+                <option value="{{ COLLABORATION_STATUS_ALL }}">{{ COLLABORATION_STATUS_ALL }}</option>
+                <option value="{{ COLLABORATION_STATUS_PLANNING }}">{{ COLLABORATION_STATUS_PLANNING }}</option>
+                <option value="{{ COLLABORATION_STATUS_ONGOING }}">{{ COLLABORATION_STATUS_ONGOING }}</option>
+                <option value="{{ COLLABORATION_STATUS_COMPLETED }}">{{ COLLABORATION_STATUS_COMPLETED }}</option>
+                <option value="HIDE">Hide All</option>
+            </select>
+
+            {% if membership_level == "Admin" %}
+                <a href="{% url 'collaboration-create' group_slug=group.slug %}">
+                    <button class="btn btn-tertiary ms-2">New</button>
+                </a>
+            {% endif %}
+
+
+        </div>
+
+    </div>
+
+    <div class="row card-deck" id="list_of_collaborations">
+        {% include "app/group/partials/collaborations/list.html" %}
+    </div>
+
+</div>

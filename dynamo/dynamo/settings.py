@@ -17,6 +17,7 @@ from distutils.util import strtobool
 from pathlib import Path
 
 import sentry_sdk
+import storages.backends.s3boto3
 from celery.schedules import crontab
 from sentry_sdk.integrations.django import DjangoIntegration
 
@@ -55,6 +56,7 @@ INSTALLED_APPS = [
     "groups",
     "support",
     "chat",
+    "storages",
     "axes",
 ]
 
@@ -131,6 +133,15 @@ CELERY_RESULT_SERIALIZER = os.environ.get("CELERY_RESULT_SERIALIZER")
 CELERY_RESULT_BACKEND = os.environ.get("CELERY_RESULT_BACKEND", "redis://redis:6379/0")
 CELERY_ACCEPT_CONTENT = ["application/json"]
 CELERY_IMPORTS = ("dynamo.tasks",)
+
+# ADDED: Storage Config
+DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
+AWS_ACCESS_KEY_ID = os.environ.get("AWS_ACCESS_KEY_ID")
+AWS_SECRET_ACCESS_KEY = os.environ.get("AWS_SECRET_ACCESS_KEY")
+AWS_STORAGE_BUCKET_NAME = os.environ.get("AWS_STORAGE_BUCKET_NAME")
+AWS_S3_FILE_OVERWRITE = False
+AWS_S3_REGION_NAME = 'eu-west-2'
+AWS_S3_ADDRESSING_STYLE = "virtual"
 
 AUTH_PASSWORD_VALIDATORS = [
     {

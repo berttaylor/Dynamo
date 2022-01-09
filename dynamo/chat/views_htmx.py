@@ -9,7 +9,7 @@ from groups.views import get_membership_level
 
 
 @login_required()
-def group_message_create_view(request, group_uuid):
+def group_message_create_view(request, group_id):
     """
     HTMX VIEW - Allows chat messages to be added
     """
@@ -19,13 +19,13 @@ def group_message_create_view(request, group_uuid):
     message = str(request.POST["message"])
 
     user = request.user
-    group = Group.objects.get(id=group_uuid)
+    group = Group.objects.get(id=group_id)
 
     Message.objects.create(group=group, user=user, message=message)
     messages = Message.objects.filter(group=group)
     membership_level = get_membership_level(request.user, group)
 
-    return render(request, "dashboard/group/partials/group_chat.html", {
+    return render(request, "app/group/partials/chat/main.html", {
         'membership_level': membership_level,
         "chat_messages": messages,
         "group": group,
@@ -52,7 +52,7 @@ def group_message_delete_view(request, message_id):
 
     membership_level = get_membership_level(request.user, group)
 
-    return render(request, "dashboard/group/partials/group_chat.html", {
+    return render(request, "app/group/partials/chat/main.html", {
         'membership_level': membership_level,
         "chat_messages": messages,
         "group": group,
@@ -62,7 +62,7 @@ def group_message_delete_view(request, message_id):
 
 
 @login_required()
-def collaboration_message_create_view(request, collaboration_uuid):
+def collaboration_message_create_view(request, collaboration_id):
     """
     HTMX VIEW - Allows chat messages to be added
     """
@@ -72,14 +72,14 @@ def collaboration_message_create_view(request, collaboration_uuid):
     message = str(request.POST["message"])
 
     user = request.user
-    collaboration = Collaboration.objects.get(id=collaboration_uuid)
+    collaboration = Collaboration.objects.get(id=collaboration_id)
 
     Message.objects.create(collaboration=collaboration, user=user, message=message)
     messages = Message.objects.filter(collaboration=collaboration)
 
     membership_level = get_membership_level(request.user, collaboration.related_group)
 
-    return render(request, "dashboard/collaborations/partials/collaboration_chat.html", {
+    return render(request, "app/collaborations/partials/chat/main.html", {
         'membership_level': membership_level,
         "chat_messages": messages,
         "collaboration": collaboration,
@@ -106,7 +106,7 @@ def collaboration_message_delete_view(request, message_id):
 
     membership_level = get_membership_level(request.user, collaboration.related_group)
 
-    return render(request, "dashboard/collaborations/partials/collaboration_chat.html", {
+    return render(request, "app/collaborations/partials/chat/main.html", {
         'membership_level': membership_level,
         "chat_messages": messages,
         "collaboration": collaboration,

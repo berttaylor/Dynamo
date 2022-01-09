@@ -1,7 +1,12 @@
+import os
 import time
 
 from django.db import models
+from django.db.models.signals import pre_save
+from django.dispatch import receiver
 from django.template.defaultfilters import slugify
+
+from dynamo.storages import group_based_upload_to
 from groups import constants as c
 from .managers import MembershipManager
 from users.utils import get_sentinel_user
@@ -46,6 +51,19 @@ class Group(TimeStampedSoftDeleteBase):
         blank=True,
     )
 
+    __saved_profile_image = None
+
+    profile_image = models.FileField(
+        upload_to=group_based_upload_to,
+        help_text="Profile Image for the group. Please aim to keep this below 1mb in size.",
+        null=True,
+        blank=True,
+    )
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.__saved_profile_image = self.profile_image
+
     @property
     def short_description(self):
         """Returns the description in a format that is always 75 characters or less"""
@@ -65,11 +83,22 @@ class Group(TimeStampedSoftDeleteBase):
         return slug
 
     def save(self, *args, **kwargs) -> None:
-        """Override save to automate creation of some fields"""
+        """
+        Override save to:
+        1) If adding, automate creation of slug
+        2) If changing profile image, delete the old one from storage
+        """
+
         # Use _state.adding to detect if first save
         if self._state.adding:
             self.slug = self.generate_slug(self)
+
         super(Group, self).save(*args, **kwargs)
+
+    def delete(self, using=None, keep_parents=False):
+        """We delete the profile image from storage"""
+        self.profile_image.delete(save=False)
+        super().delete()
 
     def __str__(self):
         return str(self.name)
@@ -140,31 +169,31 @@ class Membership(TimeStampedSoftDeleteBase):
         return f"[{self.status}] {self.user.username}"
 
 
-class GroupProfileImage(TimeStampedSoftDeleteBase):
-    """
-    Images stored for the Groups' main profile page
-    """
-
-    # TODO : sort file uploads
-    #  related_file = models.FileField(
-    #     # The PrivateAssetStorage class extends the S3Boto with some overrides
-    #     # (Sends to a private, separate DO space)
-    #     storage=PrivateAssetStorage(),
-    #     upload_to=build_image_storage_path,
-    #     help_text="The file of the image. Please aim to keep this below 1mb in size.",
-    #     )
-
-    alt_text = models.CharField(
-        null=False,
-        max_length=100,
-        help_text="The full alt text of the image for accessibility purposes.",
-    )
-
-    def __str__(self):
-        return self.alt_text
-
-    class Meta:
-        verbose_name_plural = "Profile Images"
+# class GroupProfileImage(TimeStampedSoftDeleteBase):
+#     """
+#     Images stored for the Groups' main profile page
+#     """
+#
+#     # TODO : sort file uploads
+#     #  related_file = models.FileField(
+#     #     # The PrivateAssetStorage class extends the S3Boto with some overrides
+#     #     # (Sends to a private, separate DO space)
+#     #     storage=PrivateAssetStorage(),
+#     #     upload_to=build_image_storage_path,
+#     #     help_text="The file of the image. Please aim to keep this below 1mb in size.",
+#     #     )
+#
+#     alt_text = models.CharField(
+#         null=False,
+#         max_length=100,
+#         help_text="The full alt text of the image for accessibility purposes.",
+#     )
+#
+#     def __str__(self):
+#         return self.alt_text
+#
+#     class Meta:
+#         verbose_name_plural = "Profile Images"
 
 
 class GroupAnnouncement(TimeStampedSoftDeleteBase):

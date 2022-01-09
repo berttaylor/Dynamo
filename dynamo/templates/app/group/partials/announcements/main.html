@@ -1,0 +1,27 @@
+<div class="mb-4 p-4 bg-white rounded shadow-sm">
+    <div class="d-flex align-items-center justify-content-between">
+        <h5 class="mb-0">Announcements</h5>
+        <div class="d-flex">
+            <select class="form-select fmxw-150 pe-5" id="inlineFormCustomSelectMessages"
+                    aria-label="announcement filter"
+                    name="announcement_list_filter"
+                    hx-get={% url 'htmx_announcement_list' group_id=group.id %}
+                            hx-target="#list_of_announcements"
+            >
+                <option value="{{ ANNOUNCEMENTS_FILTER_LATEST }}">{{ ANNOUNCEMENTS_FILTER_LATEST }}</option>
+                <option value="{{ ANNOUNCEMENTS_FILTER_ALL }}">{{ ANNOUNCEMENTS_FILTER_ALL }}</option>
+                <option value="HIDE">Hide All</option>
+            </select>
+            {% if membership_level == "Admin" %}
+                <a href="{% url 'announcement_create' group_slug=group.slug %}">
+                    <button class="btn btn-tertiary ms-2">New</button>
+                </a>
+            {% endif %}
+        </div>
+    </div>
+
+    <div id="list_of_announcements">
+        {% include "app/group/partials/announcements/list.html" %}
+    </div>
+
+</div>

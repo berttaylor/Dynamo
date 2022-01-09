@@ -1,0 +1,29 @@
+{% extends "landing/static_base.html" %}
+{% block body %}
+
+
+
+    <!-- Section -->
+
+    <div class="row justify-content-center">
+    <div class="col-12 d-flex align-items-center justify-content-center">
+        <div class="signin-inner my-4 my-lg-0 bg-white shadow-soft border rounded border-gray-300 p-4 p-lg-5 w-100 fmxw-500">
+            <div class="text-center text-md-center mb-4 mt-md-0">
+
+                <h1>Account activated successfully</h1>
+                <p>
+                    Your account has been activated. You can now go ahead and log in.
+                </p>
+                <a href="{% url 'login' %}"><i class="mdi mdi-creation me-1"></i>Log in</a>
+
+
+            </div>
+        </div>
+    </div>
+
+
+
+{% endblock body %}
+
+
+

@@ -1,0 +1,45 @@
+<div class="card border-gray-300 mb-1 p-1 ">
+    <div class="row g-0 align-items-center">
+
+        <div class="card-body py-1 col-12">
+            <div class="col-12 d-flex">
+
+            </div>
+            <h5 class="h6">{{ task.number }}. {{ task.name }}</h5>
+
+
+            {#                <div class="col-12 d-flex">#}
+            {#                    <div class="col-6">#}
+            {#                        {{ task.description }}#}
+            {#                    </div>#}
+            {##}
+            {#                    <div class="col-6">#}
+            {#                        {% for task in task.prerequisites.all %}#}
+            {#                            <li>{{ task.name }}</li>#}
+            {#                        {% endfor %}#}
+            {#                    </div>#}
+            {##}
+            {##}
+            {#                </div>#}
+
+
+            <div class="col d-flex ps-0">
+                                    <span
+                                            class="text-muted font-small me-3"><span
+                                            class="fas fa-user-clock me-2"></span>{{ task.assigned_to }}</span>
+
+                <a class="text-muted font-small me-3"
+                   href="{% url 'task-update' task.id %}"><span
+                        class="fas fa-edit me-2"></span>Edit</a>
+
+                <a class="text-muted font-small me-3" hx-delete="{% url 'task-delete' task.id %}"
+                   hx-target="#collaboration_elements" hx-confirm="Delete Task '{{ task.name }}'?"><span
+                        class="fa fa-trash me-2" aria-hidden="true"></span>Delete</a>
+
+            </div>
+
+
+        </div>
+
+    </div>
+</div>

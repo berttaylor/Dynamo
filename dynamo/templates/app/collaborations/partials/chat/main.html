@@ -1,0 +1,60 @@
+<div class="py-4 px-4 bg-white rounded shadow-sm">
+
+    <div class="d-flex align-items-center justify-content-between mb-3">
+        <h5 class="mb-0">Message Board</h5>
+    </div>
+
+
+    {% if user.is_authenticated %}
+
+        {% if membership_level == "Admin" or membership_level == "Current" %}
+            <form class="pb-3 m-2">{% csrf_token %}
+                <div class="input-group">
+                    {{ chat_form.message }}
+
+                    <button hx-post="{% url 'collaboration-chat' collaboration_id=collaboration.pk %}"
+                            hx-target="#collaboration_chat" type="submit" class="btn btn-outline-primary">Send
+                    </button>
+                </div>
+            </form>
+
+
+        {% endif %}
+
+
+    {% endif %}
+
+    {% for message in chat_messages %}
+
+        {% if message.user == request.user %}
+
+            <div class="row align-items-center m-2 ms-5 py-2 bg-dark rounded">
+                <div class="col text-white"> {{ message.message }}
+                    <div class="small mt-1 text-gray-200"><strong
+                            class="text-gray-200">You </strong>- {{ message.created_at }}
+                        <a class="text-muted font-small me-3"
+                           hx-delete="{% url 'collaboration-message-delete' message_id=message.id %}"
+                           hx-target="#collaboration_chat"
+                           hx-confirm="Delete Message?"><span class="fa fa-trash me-2" aria-hidden="true"> </span></a>
+                    </div>
+                </div>
+            </div>
+
+        {% else %}
+
+
+
+            <div class="row align-items-center m-2 me-5 py-2 bg-gray-200 rounded">
+                <div class="col text-primary"> {{ message.message }}
+                    <div class="small mt-1 text-tertiary"><strong
+                            class="text-primary">{{ message.user.username }} </strong>- {{ message.created_at }}
+
+                    </div>
+                </div>
+            </div>
+        {% endif %}
+    {% empty %}
+        <p class="m-2">No messages yet</p>
+    {% endfor %}
+
+</div>

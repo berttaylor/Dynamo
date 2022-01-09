@@ -1,0 +1,29 @@
+{% for announcement in announcement_list %}
+
+    <div class="p-4 bg-white rounded shadow-sm my-3">
+        <h5>{{ announcement.title }}</h5>
+        <p class="font-italic mb-0">{{ announcement.body }}</p>
+        <div class="justify-content-end">
+            <ul class="list-inline small text-muted mt-3 mb-0">
+                <li class="list-inline-item"><i class="fa fa-comment-o mr-2"></i> Posted by
+                    <strong>{{ announcement.user }} </strong>
+                    <i class="fa fa-heart-o mr-2"></i> on {{ announcement.created_at }}</li>
+
+                {% if announcement.user == request.user %}
+                    <a class="text-muted font-small me-3"
+                       hx-delete="{% url 'htmx_announcement_delete' announcement_id=announcement.id group_slug=announcement.group.slug %}"
+                       hx-target="#list_of_announcements"
+                       hx-confirm="Delete Announcement?"><span class="fa fa-trash me-2" aria-hidden="true"> </span></a>
+
+                {% endif %}
+
+
+            </ul>
+        </div>
+    </div>
+
+{% empty %}
+
+    <p class="font-italic mb-0">There are no announcements yet. Check back soon</p>
+
+{% endfor %}

@@ -1,0 +1,91 @@
+{% extends "app/base/main.html" %}
+{% block body_content %}
+
+
+
+    <!-- Profile widget -->
+    <div class="bg-white shadow rounded overflow-hidden text-center mb-0">
+        <div hx-boost="true" class="p-4 bg-dark text-center text-white">
+{% if group.profile_image %}
+<img src="{{ group.profile_image.url }}" class="organic-radius img-fluid" alt="Joseph Avatar">
+{% endif %}
+
+
+
+
+
+            <h1 class="m-4">{{ group.name }}</h1>
+            <p class="lead ">{{ group.description }}</p>
+
+            <p class="mt-4 mb-0">
+                {% if membership_level == MEMBERSHIP_STATUS_ADMIN or membership_level == MEMBERSHIP_STATUS_CURRENT %}
+                    <a href="{% url 'group-leave' slug=group.slug %}">Leave</a>
+                {% elif not membership_level == MEMBERSHIP_STATUS_PENDING %}
+                    <a href="{% url 'group-join' slug=group.slug %}">Join</a>
+                {% endif %}
+                {% if membership_level == "Admin" %}
+                    | <a href="{% url 'group-update' slug=group.slug %}">Edit</a> |
+                    <a href="{% url 'group-delete' slug=group.slug %}">Delete</a>
+                {% endif %}
+            </p>
+
+            {% if messages %}
+                <ul hx-get="{% url 'clear' %}" hx-swap="outerHTML" hx-trigger="load delay:3s" class="pt-3 m-0"
+                    style="list-style-type: none">
+                    {% for message in messages %}
+                        <li>{{ message|safe }}</li>
+                    {% endfor %}
+                </ul>
+            {% endif %}
+
+
+        </div>
+
+
+    </div>
+
+    <div class="bg-light p-4 d-flex justify-content-end text-center">
+        <ul class="list-inline mb-0">
+            <li class="list-inline-item">
+                <h5 id="h5_admin_count" class="font-weight-bold mb-0 d-block">{{ membership_count.admin }}</h5><small
+                    class="text-muted"> <i
+                    class="fa fa-picture-o mr-1"></i>Admins</small>
+            </li>
+            <li class="list-inline-item">
+                <h5 id="h5_member_count" class="font-weight-bold mb-0 d-block">{{ membership_count.member }}</h5><small
+                    class="text-muted"> <i
+                    class="fa fa-user-circle-o mr-1"></i>Total Members</small>
+            </li>
+            <li class="list-inline-item">
+                <h5 id="h5_subscriber_count"
+                    class="font-weight-bold mb-0 d-block">{{ membership_count.subscriber }}</h5><small
+                    class="text-muted">
+                <i class="fa fa-user-circle-o mr-1"></i>Subscribers</small>
+            </li>
+        </ul>
+    </div>
+
+    {% if membership_level == MEMBERSHIP_STATUS_ADMIN %}
+        <div id="group_member_section">
+            {% include "app/group/partials/memberships/main.html" with group_id=group.pk %}
+        </div>
+    {% endif %}
+
+    <div id="group_announcements">
+        {% include "app/group/partials/announcements/main.html" with group_id=group.pk %}
+    </div>
+
+    <div id="group_collaborations" >
+        {% include "app/group/partials/collaborations/main.html" with group_id=group.pk %}
+    </div>
+
+    <div id="group_chat">
+        {% include "app/group/partials/chat/main.html" %}
+    </div>
+
+{% endblock %}
+
+
+
+
+

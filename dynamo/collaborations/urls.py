@@ -17,7 +17,7 @@ Including another URLconf
 from django.urls import path
 
 from collaborations.views import CollaborationCreateView, CollaborationDetailView, CollaborationUpdateView, \
-    CollaborationDeleteView, TaskUpdateView, MilestoneUpdateView, CollaborationListView
+    CollaborationDeleteView, TaskUpdateView, MilestoneUpdateView
 from .views_htmx import task_create_view, milestone_create_view, task_delete_view, milestone_delete_view
 
 urlpatterns = [
@@ -27,11 +27,6 @@ urlpatterns = [
         "groups/<group_slug>/create-collaboration/",
         CollaborationCreateView.as_view(),
         name="collaboration-create",
-    ),
-    path(
-        "collaborations/",
-        CollaborationListView.as_view(),
-        name="collaboration-list",
     ),
     path(
         "collaborations/<slug>/",
@@ -49,12 +44,12 @@ urlpatterns = [
         name="collaboration-delete",
     ),
     path(
-        "collaboration/<collaboration_uuid>/create-task",
+        "collaboration/<collaboration_id>/create-task",
         task_create_view,
         name="task-create",
     ),
     path(
-        "collaboration/<collaboration_uuid>/create-milesteone",
+        "collaboration/<collaboration_id>/create-milesteone",
         milestone_create_view,
         name="milestone-create",
     ),

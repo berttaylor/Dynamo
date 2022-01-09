@@ -15,7 +15,7 @@ class FAQListView(ListView):
     """
 
     model = FAQ
-    template_name = "static_site/faq_list.html"
+    template_name = "landing/faq_list.html"
     paginate_by = 30
 
 
@@ -26,7 +26,7 @@ class SupportMessageCreateView(CreateView):
 
     model = SupportMessage
     form_class = SupportMessageForm
-    template_name = "static_site/support_message_form.html"
+    template_name = "landing/support_message_form.html"
     success_url = reverse_lazy("support-message-thanks")
 
     def get_initial(self):
@@ -78,4 +78,4 @@ class SupportMessageThanksView(TemplateView):
     Confirms to the user that the message has been sent
     """
 
-    template_name = "static_site/support_message_thanks.html"
+    template_name = "landing/support_message_thanks.html"

@@ -21,7 +21,7 @@ from .views_htmx import group_message_create_view, collaboration_message_create_
 
 urlpatterns = [
     path(
-        "group/<group_uuid>",
+        "group/<group_id>",
         group_message_create_view,
         name="group-chat",
     ),
@@ -31,7 +31,7 @@ urlpatterns = [
         name="group-message-delete",
     ),
     path(
-        "collaboration/<collaboration_uuid>",
+        "collaboration/<collaboration_id>",
         collaboration_message_create_view,
         name="collaboration-chat",
     ),

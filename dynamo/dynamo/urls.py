@@ -13,10 +13,14 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
+from django.conf.urls import url
+from django.conf.urls.static import static
 from django.contrib import admin
 from django.urls import path, include
 from django.views.generic import TemplateView
+from django.views.static import serve
 
+from dynamo import settings
 from dynamo.base.views import empty_html_string
 
 urlpatterns = [
@@ -25,7 +29,7 @@ urlpatterns = [
     # AUTH
     path("accounts/", include("users.urls")),
     # Home
-    path("", TemplateView.as_view(template_name="static_site/landing.html"), name="home"),
+    path("", TemplateView.as_view(template_name="landing/landing.html"), name="home"),
     # FAQ / Support
     path("support/", include("support.urls")),
     # Groups
