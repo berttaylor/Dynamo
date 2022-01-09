@@ -1,13 +1,27 @@
 {% for element in elements %}
-    {% if element.type == "Task" %}
 
-        {% include "app/collaborations/partials/elements/list/task.html" with task=element %}
+    {% if forloop.counter|divisibleby:2 %}
+
+        {% if element.type == "Task" %}
+            {% include "app/collaborations/partials/elements/list/task_right.html" with task=element %}
+        {% else %}
+            {% include "app/collaborations/partials/elements/list/milestone.html" with milestone=element %}
+        {% endif %}
+
+        {% include "app/collaborations/partials/elements/list/linker_right.html" %}
 
     {% else %}
 
-        {% include "app/collaborations/partials/elements/list/milestone.html" with milestone=element %}
+        {% if element.type == "Task" %}
+            {% include "app/collaborations/partials/elements/list/task_left.html" with task=element %}
+        {% else %}
+            {% include "app/collaborations/partials/elements/list/milestone.html" with milestone=element %}
+        {% endif %}
+
+        {% include "app/collaborations/partials/elements/list/linker_left.html" %}
 
     {% endif %}
+
 {% endfor %}
 
 
