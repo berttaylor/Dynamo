@@ -1,7 +1,7 @@
 {% extends "app/base/main.html" %}
 {% block body %}
     <h1>Collaboration Update</h1>
-    <form method="post">{% csrf_token %}
+    <form action="" enctype="multipart/form-data" method="post">{% csrf_token %}
         {{ form.as_p }}
         <input type="submit" value="Save">
     </form>

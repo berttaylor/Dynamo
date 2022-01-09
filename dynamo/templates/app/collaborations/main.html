@@ -4,12 +4,26 @@
     {#    Details #}
 
     <div class="col-12">
-        <div class="card border-gray-300 mb-5 mb-sm-4 p-2">
+        <div class="card border-gray-300 mb-5 mb-sm-4 p-2 rounded-5">
             <div class="row align-items-center">
                 <div class="col-md-5">
-                    <div class="card-image"><a href="#"><img class="img-fluid rounded-left"
-                                                             src="/compiled/pixel/html&css/assets/img/blog/image-1.jpg"
-                                                             alt="Bonnie Portrait"></a></div>
+                    <div class="card-image"><a href="#">
+
+
+                        {% if collaboration.image %}
+
+                            <img class="embed-responsive"  src="{{ collaboration.image.url }}">
+
+
+                        {% else %}
+                            <img class="img-fluid rounded-left"
+                                 src="/compiled/pixel/html&css/assets/img/blog/image-1.jpg" alt="Bonnie Portrait"
+                            >
+
+                        {% endif %}
+
+
+                    </a></div>
                 </div>
                 <div class="col-md-7">
                     <div class="card-body">
@@ -17,8 +31,10 @@
                         <h3 class="card-title">{{ collaboration.name }}</h3>
 
                         <h4 class="h6 text-primary">
-                            <span class="fas fa-handshake text-tertiary me-2"></span><span
-                                class="text-tertiary">{{ collaboration.related_group }}</span>
+                            <a hx-boost="true" href="{% url 'group-detail' slug=collaboration.related_group.slug %}">
+                                <span class="fas fa-handshake text-tertiary me-2"></span>
+                                <span class="text-tertiary">{{ collaboration.related_group }}</span>
+                            </a>
                         </h4>
 
 

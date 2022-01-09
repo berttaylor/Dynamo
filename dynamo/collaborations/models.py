@@ -7,6 +7,8 @@ from django.db import models
 from django.db.models import F
 from django.template.defaultfilters import slugify
 from django.utils import timezone
+
+from dynamo.storages import collaboration_based_upload_to
 from users.utils import get_sentinel_user
 
 from dynamo.base.models import TimeStampedSoftDeleteBase
@@ -48,6 +50,13 @@ class Collaboration(TimeStampedSoftDeleteBase):
         help_text="The Group this collaboration belongs to",
         on_delete=models.CASCADE,
         related_name="collaborations",
+    )
+
+    image = models.FileField(
+        upload_to=collaboration_based_upload_to,
+        help_text="Image for the collaboration. Please aim to keep this below 1mb in size.",
+        null=True,
+        blank=True,
     )
 
     @property

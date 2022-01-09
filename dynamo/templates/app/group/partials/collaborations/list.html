@@ -1,9 +1,17 @@
 {% for collaboration in collaboration_list %}
 
-    <div class="col-12 col-md-6 col-lg-6 mt-3">
-        <div class="card border-gray-300 my-2"><a href="{% url 'collaboration-detail' slug=collaboration.slug %}"><img
-                src="/compiled/pixel/html&css/assets/img/blog/image-1.jpg"
-                class="card-img-top rounded-top" alt="Office"></a>
+    <div class="col-12 col-md-6 col-lg-6 mt-3 ">
+        <div class="card border-gray-300 my-2 rounded-3">
+
+            <a href="{% url 'collaboration-detail' slug=collaboration.slug %}">
+                {% if collaboration.image %}
+                    <img src="{{ collaboration.image.url }}" class="collaboration-card-img"
+                         alt="{{ collaboration.image }}">
+                {% else %}
+                    <img src="/compiled/pixel/html&css/assets/img/blog/image-1.jpg"
+                         class="collaboration-card-img" alt="Office">
+                {% endif %}
+            </a>
 
             <div class="card-body">
                 <div class="media d-flex align-items-center justify-content-between">
@@ -25,13 +33,19 @@
 
                 </div>
 
-                <a href="{% url 'collaboration-detail' slug=collaboration.slug %}"><h3
+                <a hx-boost="true" href="{% url 'collaboration-detail' slug=collaboration.slug %}"><h3
                         class="h5 card-title mt-4">{{ collaboration.name }}</h3></a>
                 <p class="card-text">{{ collaboration.description }}</p>
 
-                {% include "app/snippets/progress_bar.html" with percent_completed=collaboration.percent_completed %}
+
 
             </div>
+
+
+                        <div class="collaboration-card-footer">
+                    {% include "app/snippets/progress_bar.html" with percent_completed=collaboration.percent_completed %}
+                </div>
+
         </div>
     </div>
 

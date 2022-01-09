@@ -54,7 +54,7 @@ class CollaborationAdmin(admin.ModelAdmin):
     fieldsets = (
         (
             "Collaboration details",
-            {"fields": (("name", "slug"), "description", "related_group")},
+            {"fields": (("name", "slug"), "description", 'image', "related_group")},
         ),
         ("Users", {"fields": ("created_by",)}),
         (

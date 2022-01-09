@@ -118,6 +118,7 @@ class CollaborationUpdateView(UpdateView):
     fields = [
         "name",
         "description",
+        "image"
     ]
 
     def get_success_url(self):
