@@ -4,6 +4,8 @@ from django.contrib.auth.models import AbstractUser
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 
+from users.managers import CustomUserManager
+
 
 class User(AbstractUser):
     """
@@ -13,20 +15,26 @@ class User(AbstractUser):
     come with their own additional fields such as is_active and last_login.
     """
 
+    USERNAME_FIELD = "email"
+    REQUIRED_FIELDS = []
+    objects = CustomUserManager()
+
+    username = None
+
     # Replace the ID field with a UUID for better security
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
 
-    first_name = None
-    last_name = None
+    first_name = models.CharField(_('first name'), max_length=150, blank=True)
+    last_name = models.CharField(_('last name'), max_length=150, blank=True)
 
     email = models.EmailField(_("email address"), unique=True)
 
     def __str__(self):
-        return str(self.username)
+        return str(self.first_name + " " + self.last_name)
 
     class Meta:
         verbose_name_plural = "Users"
         indexes = [
             models.Index(fields=["email"]),
-            models.Index(fields=["username"]),
+            models.Index(fields=["first_name"]),
         ]

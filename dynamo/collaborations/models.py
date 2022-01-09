@@ -386,7 +386,7 @@ class CollaborationTask(TimeStampedSoftDeleteBase):
             return f" ☒ {self.name}"
 
         # If not, check if assigned to anyone, and return an appropriate string.
-        assigned_to = string.capwords(self.assigned_to.username) if self.assigned_to else None
+        assigned_to = string.capwords(self.assigned_to.first_name) if self.assigned_to else None
         if assigned_to:
             return f" ☐ {self.name} ({assigned_to})"
         else:

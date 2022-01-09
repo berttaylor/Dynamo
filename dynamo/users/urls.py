@@ -46,7 +46,6 @@ urlpatterns = [
             html_email_template_name="templated_email/password_reset.email",
             subject_template_name="registration/password_reset_subject.txt",
             success_url=reverse_lazy("password_reset_requested"),
-
             extra_email_context={
                 "site_url": str(s.SITE_PROTOCOL + s.SITE_DOMAIN),
             },

@@ -9,10 +9,10 @@ def sign_up_view(request):
         form = SignUpForm(request.POST)
         if form.is_valid():
             form.save()
-            username = form.cleaned_data.get("username")
+            email = form.cleaned_data.get("email")
             raw_password = form.cleaned_data.get("password1")
             user = authenticate(
-                username=username, password=raw_password, request=request
+                email=email, password=raw_password, request=request
             )
             login(request, user)
             return redirect("login")

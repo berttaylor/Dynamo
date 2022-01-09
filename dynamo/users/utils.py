@@ -7,5 +7,5 @@ def get_sentinel_user():
     foreign key relationships with another models is deleted
     """
     return get_user_model().objects.get_or_create(
-        username="deleted", email="deleted@deleted.com"
+        email="deleted@deleted.com"
     )[0]

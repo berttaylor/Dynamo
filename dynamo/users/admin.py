@@ -5,12 +5,13 @@ from .models import User
 
 @admin.register(User)
 class UserAdmin(admin.ModelAdmin):
-    search_fields = ("email", "username")
+    search_fields = ("email", "first_name")
     ordering = ("email",)
 
     list_display = (
         "email",
-        "username",
+        "first_name",
+        "last_name",
         "is_staff",
         "is_active",
     )
@@ -28,8 +29,9 @@ class UserAdmin(admin.ModelAdmin):
             None,
             {
                 "fields": (
+                    "first_name",
+                    "last_name",
                     "email",
-                    "username",
                     "password",
                 )
             },
