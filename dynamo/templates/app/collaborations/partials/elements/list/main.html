@@ -5,23 +5,31 @@
         {% if element.type == "Task" %}
             {% include "app/collaborations/partials/elements/list/task_right.html" with task=element %}
         {% else %}
-            {% include "app/collaborations/partials/elements/list/milestone.html" with milestone=element %}
+            {% include "app/collaborations/partials/elements/list/milestone_right.html" with milestone=element %}
         {% endif %}
 
-        {% include "app/collaborations/partials/elements/list/linker_right.html" %}
+        {% include "app/collaborations/partials/elements/list/linker_right.html" with element=element %}
 
     {% else %}
 
         {% if element.type == "Task" %}
             {% include "app/collaborations/partials/elements/list/task_left.html" with task=element %}
         {% else %}
-            {% include "app/collaborations/partials/elements/list/milestone.html" with milestone=element %}
+            {% include "app/collaborations/partials/elements/list/milestone_left.html" with milestone=element %}
         {% endif %}
 
-        {% include "app/collaborations/partials/elements/list/linker_left.html" %}
+        {% include "app/collaborations/partials/elements/list/linker_left.html" with element=element %}
 
     {% endif %}
 
 {% endfor %}
+
+{% if completion_percentage_update %}
+    {% include "app/collaborations/partials/elements/template_js/update_completion_percentage.html" %}
+{% endif %}
+
+{% if task_completion_notes_required %}
+    {% include "app/collaborations/partials/elements/template_js/update_completion_percentage.html" %}
+{% endif %}
 
 

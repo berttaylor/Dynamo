@@ -370,6 +370,12 @@ class CollaborationTask(TimeStampedSoftDeleteBase):
             # For simple edits (no reordering), we just return super().save
             return super(CollaborationTask, self).save(*args, **kwargs)
 
+    def is_complete(self, *args, **kwargs) -> bool:
+        """
+        Checks if task is complete
+        """
+        return bool(self.completed_at)
+
     def __str__(self):
         """
         We have quite a detailed str representation, to avoid needing to do anything more on the front end.
@@ -521,6 +527,26 @@ class CollaborationMilestone(TimeStampedSoftDeleteBase):
         self.prerequisites.set(tasks)
 
         return
+
+    def tasks_outstanding(self, *args, **kwargs) -> None:
+        """
+        Logic to count the number of tasks remaining
+        """
+
+        return self.prerequisites.filter(completed_at__isnull=True).count()
+
+    def tasks_completed(self, *args, **kwargs) -> None:
+        """
+        Logic to count the number of tasks completed
+        """
+
+        return self.prerequisites.filter(completed_at__isnull=False).count()
+
+    def is_complete(self, *args, **kwargs) -> bool:
+        """
+        Checks if milestone is reached
+        """
+        return self.status == c.MILESTONE_STATUS_REACHED
 
     def save(self, *args, **kwargs) -> None:
         """

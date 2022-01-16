@@ -1,5 +1,20 @@
-<div class="row timeline-inner">
+{% if element.is_complete %}
+
+    <div class="row timeline-inner">
+    <div class="col-md-2" style="margin-top: 1px">
+        <div class="corner right-bottom" style="border-color: #0f5132"></div>
+    </div>
+    <div class="col-md-8">
+        <hr style="border-color: #0f5132">
+    </div>
     <div class="col-md-2">
+        <div class="corner top-left" style="border-color: #0f5132"></div>
+    </div>
+</div>
+
+    {% else %}
+    <div class="row timeline-inner">
+    <div class="col-md-2" style="margin-top: 1px">
         <div class="corner right-bottom"></div>
     </div>
     <div class="col-md-8">
@@ -9,3 +24,9 @@
         <div class="corner top-left"></div>
     </div>
 </div>
+{% endif %} 
+
+
+
+
+

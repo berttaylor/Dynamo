@@ -1,68 +1,11 @@
 {% extends "app/base/main.html" %}
 {% block body_content %}
 
-    {#    Details #}
-
     <div class="col-12">
-        <div class="card border-gray-300 mb-5 mb-sm-4 p-2 rounded-5">
-            <div class="row align-items-center">
-                <div class="col-md-5">
-                    <div class="card-image"><a href="#">
 
-
-                        {% if collaboration.image %}
-
-                            <img class="collaboration-card-img"  src="{{ collaboration.image.url }}">
-
-
-                        {% else %}
-                            <img class="img-fluid rounded-left"
-                                 src="/compiled/pixel/html&css/assets/img/blog/image-1.jpg" alt="Bonnie Portrait"
-                            >
-
-                        {% endif %}
-
-
-                    </a></div>
-                </div>
-                <div class="col-md-7">
-                    <div class="card-body">
-
-                        <h3 class="card-title">{{ collaboration.name }}</h3>
-
-                        <h4 class="h6 text-primary">
-                            <a hx-boost="true" href="{% url 'group-detail' slug=collaboration.related_group.slug %}">
-                                <span class="fas fa-handshake text-tertiary me-2"></span>
-                                <span class="text-tertiary">{{ collaboration.related_group }}</span>
-                            </a>
-                        </h4>
-
-
-                        <p class="card-description">{{ collaboration.description }}</p>
-
-                        <div class="d-flex justify-content-between mb-2">
-                            <div class="col ps-0"><span class="small d-block">Creator</span> <span
-                                    class="h6 text-dark fw-bold">{{ collaboration.created_by }}</span></div>
-                            <div class="col"><span class="small d-block">Status</span>
-                                <span class="h6 text-dark fw-bold">{{ collaboration.status }}</span>
-                            </div>
-                            <div class="col me-0">
-                                <span class="small d-block">Progress</span>
-                                <span
-                                        class="h6 text-dark fw-bold">{{ collaboration.percent_completed }}%</span></div>
-                        </div>
-
-                        {% if user in collaboration.related_group.admins.all %}
-                            <a href="{% url 'collaboration-update' slug=collaboration.slug %}">Edit</a> |
-                            <a href="{% url 'collaboration-delete' slug=collaboration.slug %}">Delete</a>
-                        {% endif %}
-                    </div>
-
-
-                </div>
-            </div>
+        <div id="collaboration_header">
+            {% include "app/collaborations/partials/header/main.html" %}
         </div>
-
 
         <div id="collaboration_elements">
             {% include "app/collaborations/partials/elements/main.html" %}
@@ -72,8 +15,8 @@
             {% include "app/collaborations/partials/chat/main.html" %}
         </div>
 
-
     </div>
+
 {% endblock %}
 
 {% block extra_scripts %}

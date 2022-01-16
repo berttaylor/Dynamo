@@ -1,0 +1,8 @@
+<button class="shape border-0 btn-outline-secondary d-flex align-items-center justify-content-center organic-radius icon-shape-gray-500 icon-lg"
+        hx-post="{% url 'htmx-task-status-update' pk=task.pk action=COMPLETE_TASK %}"
+        hx-trigger="click"
+        hx-target="#element_list"
+        hx-swap="innerHTML"
+>
+    <span class="fas fa-times-circle fa-2x"></span>
+</button>

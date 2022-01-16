@@ -18,7 +18,8 @@ from django.urls import path
 
 from collaborations.views import CollaborationCreateView, CollaborationDetailView, CollaborationUpdateView, \
     CollaborationDeleteView, TaskUpdateView, MilestoneUpdateView
-from .views_htmx import task_create_view, milestone_create_view, task_delete_view, milestone_delete_view
+from .views_htmx import task_create_view, milestone_create_view, task_delete_view, milestone_delete_view, \
+    htmx_task_status_update_view
 
 urlpatterns = [
     # We use long URLs here because collaborations are created within groups and this probably make more sense
@@ -57,6 +58,11 @@ urlpatterns = [
         "task/<pk>/update",
         TaskUpdateView.as_view(),
         name="task-update",
+    ),
+    path(
+        "task-status/<pk>/<action>",
+        htmx_task_status_update_view,
+        name="htmx-task-status-update",
     ),
     path(
         "milestone/<pk>/update",

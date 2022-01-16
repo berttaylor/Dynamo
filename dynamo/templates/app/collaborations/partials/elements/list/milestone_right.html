@@ -1,0 +1,38 @@
+<div class="row align-items-center justify-content-end vertical-timeline">
+
+    <div class="col-md-10 text-right">
+
+       </div>
+
+
+        <div class="col-md-10 text-right">
+        <h2 class="h6">{{ milestone.name }} ( {{ milestone.tasks_completed }} / {{ milestone.prerequisites.count }} Tasks Complete)</h2>
+
+                <div class="task_action_bar pt-1">
+            <a class="text-muted font-small me-3" href="{% url 'milestone-update' milestone.id %}">
+                <span class="fas fa-edit me-2"></span>
+                Edit
+            </a>
+
+            <a class="text-muted font-small me-3" hx-delete="{% url 'milestone-delete' milestone.id %}"
+               hx-target="#collaboration_elements" hx-confirm="Delete Milestone '{{ milestone.name }}'?">
+                <span class="fa fa-times-circle me-2" aria-hidden="true"></span>
+                Delete
+            </a>
+        </div>
+            </div>
+
+    <div class="col-md-2 text-center full">
+        {% if milestone.is_complete %}
+
+            {% include "app/collaborations/partials/elements/list/milestone_complete_symbol.html" %}
+
+        {% else %}
+
+            {% include "app/collaborations/partials/elements/list/milestone_incomplete_symbol.html" %}
+
+        {% endif %}
+    </div>
+
+
+</div>

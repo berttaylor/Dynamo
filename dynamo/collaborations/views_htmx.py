@@ -1,6 +1,8 @@
+from datetime import datetime
+
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, get_object_or_404
-
+import collaborations.constants as c
 from collaborations.forms import MilestoneForm, TaskForm
 from collaborations.models import Collaboration, CollaborationTask, CollaborationMilestone
 from collaborations.utils import get_all_elements
@@ -110,4 +112,34 @@ def milestone_delete_view(request, pk):
                       ),
                       "elements": get_all_elements(collaboration),
                       "collaboration": collaboration,
+                  })
+
+
+@login_required()
+def htmx_task_status_update_view(request, pk, action):
+    """
+    HTMX VIEW - Allows delete without refresh
+    """
+
+    task = get_object_or_404(CollaborationTask, pk=pk)
+
+    collaboration = task.collaboration
+
+    match action:
+        case c.COMPLETE_TASK:
+            task.completed_at = datetime.now()
+            task.completed_by = request.user
+            task.save()
+        case c.UNDO_COMPLETE_TASK:
+            task.completed_at = None
+            task.completed_by = None
+            task.save()
+        case _:
+            pass
+
+    return render(request,
+                  "app/collaborations/partials/elements/list/main.html", {
+                      "elements": get_all_elements(collaboration),
+                      "completion_percentage": collaboration.percent_completed,
+                      "completion_percentage_update": True,
                   })
