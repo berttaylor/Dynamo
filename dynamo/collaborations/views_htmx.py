@@ -6,6 +6,7 @@ import collaborations.constants as c
 from collaborations.forms import MilestoneForm, TaskForm
 from collaborations.models import Collaboration, CollaborationTask, CollaborationMilestone
 from collaborations.utils import get_all_elements
+from modals.forms import TaskCompleteForm
 from users.models import User
 
 
@@ -118,7 +119,7 @@ def milestone_delete_view(request, pk):
 @login_required()
 def htmx_task_status_update_view(request, pk, action):
     """
-    HTMX VIEW - Allows delete without refresh
+    HTMX VIEW - Allows completion of tasks with one click and no reload
     """
 
     task = get_object_or_404(CollaborationTask, pk=pk)
@@ -142,4 +143,21 @@ def htmx_task_status_update_view(request, pk, action):
                       "elements": get_all_elements(collaboration),
                       "completion_percentage": collaboration.percent_completed,
                       "completion_percentage_update": True,
+                      "task_completion_notes_required": True if task.completed_at else False,
+                      "form": TaskCompleteForm(instance=task),
+                  })
+
+
+@login_required()
+def htmx_get_element_list_view(request, collaboration_pk):
+    """
+    HTMX VIEW - Sends back html list of elements
+    """
+
+    collaboration = get_object_or_404(Collaboration, pk=collaboration_pk)
+
+    return render(request,
+                  "app/collaborations/partials/elements/list/main.html", {
+                      "elements": get_all_elements(collaboration),
+                      "completion_percentage": collaboration.percent_completed,
                   })

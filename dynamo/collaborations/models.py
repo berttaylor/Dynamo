@@ -8,7 +8,7 @@ from django.db.models import F
 from django.template.defaultfilters import slugify
 from django.utils import timezone
 
-from dynamo.storages import collaboration_based_upload_to
+from dynamo.storages import collaboration_based_upload_to, collaboration_file_upload_to
 from users.utils import get_sentinel_user
 
 from dynamo.base.models import TimeStampedSoftDeleteBase
@@ -239,6 +239,13 @@ class CollaborationTask(TimeStampedSoftDeleteBase):
         null=True,
         help_text="Any information relevant to the completion of this task. ",
         max_length=500,
+    )
+
+    file = models.FileField(
+        upload_to=collaboration_file_upload_to,
+        help_text="File related to the task. Please aim to keep this below 5mb in size.",
+        null=True,
+        blank=True,
     )
 
     @staticmethod

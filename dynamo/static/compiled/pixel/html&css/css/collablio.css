@@ -14,3 +14,17 @@
     border-bottom-right-radius: .3rem!important;
     border-bottom-left-radius: .3rem!important;
 }
+
+.htmx-added {
+    opacity: 0;
+}
+
+.htmx-settling {
+    opacity: 1;
+    transition: opacity 0.2s ease-out;
+}
+
+.htmx-swapping {
+    opacity: 0;
+    transition: opacity 0.2s ease-out;
+}

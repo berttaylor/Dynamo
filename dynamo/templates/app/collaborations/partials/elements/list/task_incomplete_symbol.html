@@ -2,7 +2,7 @@
         hx-post="{% url 'htmx-task-status-update' pk=task.pk action=COMPLETE_TASK %}"
         hx-trigger="click"
         hx-target="#element_list"
-        hx-swap="innerHTML"
+        hx-swap="innerHTML swap:0.1s"
 >
     <span class="fas fa-times-circle fa-2x"></span>
 </button>

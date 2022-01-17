@@ -38,7 +38,8 @@ urlpatterns = [
     path("chat/", include("chat.urls")),
     # Collaborations
     path("", include("collaborations.urls")),
-
+    # Modals
+    path("modals/", include("modals.urls")),
     # Generics
     path("clear", empty_html_string, name="clear"),
 ]

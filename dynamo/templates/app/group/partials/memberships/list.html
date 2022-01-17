@@ -18,6 +18,7 @@
                         <input class="form-check-input" type="checkbox" value="" id="checkbox_for_{{ membership.id }}"
                                hx-post="{% url 'htmx_membership_selector' group_id=group_id membership_id=membership.id membership_filter=membership_filter %}"
                                hx-target="#requests_action_bar"
+                               hx-swap="innerHTML swap:0.1s"
                         >
                         <label class="form-check-label" for="defaultCheck1"></label>
                     </div>
