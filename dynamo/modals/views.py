@@ -3,11 +3,13 @@ from django.http import HttpResponseRedirect
 from django.shortcuts import get_object_or_404
 from django.urls import reverse_lazy
 
-from collaborations.models import CollaborationTask
+from collaborations.forms import TaskForm
+from collaborations.models import CollaborationTask, Collaboration
 from modals.forms import TaskCompleteForm
 from modals.utils import get_repr, get_field
 
 TASK_COMPLETION_NOTES_MODAL = "Task Completion Notes Modal"
+TASK_CREATION_MODAL = "Task Creation Modal"
 
 MODAL_SETTINGS = {
     TASK_COMPLETION_NOTES_MODAL: {
@@ -16,7 +18,15 @@ MODAL_SETTINGS = {
         'form': TaskCompleteForm,
         'success_url_redirect': "htmx-get-element-list",
         'success_url_required_key': "collaboration_pk",
-        'target_element': "collaboration_pk",
+        'success_url_required_value_path': 'collaboration.id'
+    },
+    TASK_CREATION_MODAL: {
+        'model': CollaborationTask,
+        'parent_model': Collaboration,
+        'template': 'app/collaborations/partials/elements/modals/task_creation_modal.html',
+        'form': TaskForm,
+        'success_url_redirect': "htmx-get-element-list",
+        'success_url_required_key': "collaboration_pk",
         'success_url_required_value_path': 'collaboration.id'
     }
 }
@@ -25,7 +35,7 @@ MODAL_SETTINGS = {
 @login_required()
 def update_from_modal_view(request, modal, instance_pk):
     """
-    HTMX VIEW - Allows completion of tasks with one click and no reload
+    HTMX VIEW - Allows modal submission with state update and no reload
     """
 
     model = MODAL_SETTINGS[modal]['model']
@@ -46,6 +56,3 @@ def update_from_modal_view(request, modal, instance_pk):
             kwargs={MODAL_SETTINGS[modal]['success_url_required_key']: success_url_required_value},
         )
     )
-
-
-

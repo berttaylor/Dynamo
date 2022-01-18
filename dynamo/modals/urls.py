@@ -19,11 +19,6 @@ from django.urls import path
 from modals.views import update_from_modal_view
 
 urlpatterns = [
-    # path(
-    #     "<modal>/get",
-    #     get_modal,
-    #     name="get-modal",
-    # ),
     path(
         "<modal>/<instance_pk>/submit",
         update_from_modal_view,

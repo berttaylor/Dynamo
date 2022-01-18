@@ -1,7 +1,10 @@
 from datetime import datetime
 
 from django.contrib.auth.decorators import login_required
+from django.http import HttpResponseRedirect
 from django.shortcuts import render, get_object_or_404
+from django.urls import reverse_lazy
+
 import collaborations.constants as c
 from collaborations.forms import MilestoneForm, TaskForm
 from collaborations.models import Collaboration, CollaborationTask, CollaborationMilestone
@@ -143,7 +146,7 @@ def htmx_task_status_update_view(request, pk, action):
                       "elements": get_all_elements(collaboration),
                       "completion_percentage": collaboration.percent_completed,
                       "completion_percentage_update": True,
-                      "task_completion_notes_required": True if task.completed_at else False,
+                      "task_completion_notes_required": True if task.completed_at and task.prompt_for_details_on_completion else False,
                       "form": TaskCompleteForm(instance=task),
                   })
 
@@ -161,3 +164,22 @@ def htmx_get_element_list_view(request, collaboration_pk):
                       "elements": get_all_elements(collaboration),
                       "completion_percentage": collaboration.percent_completed,
                   })
+
+
+@login_required()
+def htmx_task_move_view(request, pk, position):
+    """
+    HTMX VIEW - Allows reordering of tasks.
+    """
+
+    task = get_object_or_404(CollaborationTask, pk=pk)
+
+    if 0 <= int(position) < task.collaboration.number_of_elements:
+        task.position = int(position)
+        task.save()
+
+    return HttpResponseRedirect(
+        reverse_lazy('htmx-get-element-list',
+                     kwargs={'collaboration_pk': task.collaboration.pk},
+                     )
+    )

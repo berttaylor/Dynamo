@@ -248,6 +248,11 @@ class CollaborationTask(TimeStampedSoftDeleteBase):
         blank=True,
     )
 
+    prompt_for_details_on_completion = models.BooleanField(
+        help_text="Whether the user who completes the task should be prompted to enter further details",
+        default=False,
+    )
+
     @staticmethod
     def generate_ref(length) -> str:
         """Unique reference auto-generation function"""
@@ -303,6 +308,7 @@ class CollaborationTask(TimeStampedSoftDeleteBase):
 
         # FOR EDITING
         else:
+
             # IF REPOSITIONING
             if self.position != self.__original_position:
 
@@ -344,32 +350,8 @@ class CollaborationTask(TimeStampedSoftDeleteBase):
                 response = super(CollaborationTask, self).save(*args, **kwargs)
 
                 # Update the prerequisites on the milestones
-                # First we get the next milestone from the old position (if one exists),
-                # and remove the task from its list of prerequisites
-                # TODO - Which one is faster? version 1 (below) - or version 2 (below that)
-                if old_ms := self.collaboration.milestones.filter(
-                        position__gt=self.__original_position
-                ).order_by("position")[0]:
-                    old_ms.prerequisites.remove(self)
-                # Next, we get the milestone from the new position (if one exists),
-                # and add this task to its list of prerequisites
-                if new_ms := self.collaboration.milestones.filter(
-                        position__gt=self.position
-                ).order_by("position")[0]:
-                    new_ms.prerequisites.add(self)
-
-                # version 2
-                # old_ms = self.collaboration.milestones.filter(position__gt=self.__original_position).order_by(
-                #         'position')[0]
-                # new_ms = self.collaboration.milestones.filter(position__gt=self.position).order_by('position')[0]
-                # # If the milestone has changed:
-                # if old_ms != new_ms:
-                #     if old_ms:
-                #         # we remove this task from the old one (if it exists)
-                #         old_ms.prerequisites.remove(self)
-                #     if new_ms:
-                #         # and add it to the new one (if it exists)
-                #         new_ms.prerequisites.add(self)
+                for milestone in self.collaboration.milestones.all():
+                    milestone.set_prerequisites()
 
                 # Return response
                 return response
