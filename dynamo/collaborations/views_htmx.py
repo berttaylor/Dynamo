@@ -145,6 +145,7 @@ def htmx_task_status_update_view(request, pk, action):
                   "app/collaborations/partials/elements/list/main.html", {
                       "elements": get_all_elements(collaboration),
                       "completion_percentage": collaboration.percent_completed,
+                      "completion_status": collaboration.status,
                       "completion_percentage_update": True,
                       "task_completion_notes_required": True if task.completed_at and task.prompt_for_details_on_completion else False,
                       "form": TaskCompleteForm(instance=task),
@@ -181,5 +182,58 @@ def htmx_task_move_view(request, pk, position):
     return HttpResponseRedirect(
         reverse_lazy('htmx-get-element-list',
                      kwargs={'collaboration_pk': task.collaboration.pk},
+                     )
+    )
+
+
+@login_required()
+def htmx_task_remove_view(request, pk):
+    """
+    HTMX VIEW - Allows deletion of tasks with reordering of elements
+    """
+
+    task = get_object_or_404(CollaborationTask, pk=pk)
+    collaboration = task.collaboration
+    task.remove()
+
+    return HttpResponseRedirect(
+        reverse_lazy('htmx-get-element-list',
+                     kwargs={'collaboration_pk': collaboration.pk},
+                     )
+    )
+
+
+@login_required()
+def htmx_milestone_move_view(request, pk, position):
+    """
+    HTMX VIEW - Allows reordering of milestones
+    """
+
+    milestone = get_object_or_404(CollaborationMilestone, pk=pk)
+
+    if 0 <= int(position) < milestone.collaboration.number_of_elements:
+        milestone.position = int(position)
+        milestone.save()
+
+    return HttpResponseRedirect(
+        reverse_lazy('htmx-get-element-list',
+                     kwargs={'collaboration_pk': milestone.collaboration.pk},
+                     )
+    )
+
+
+@login_required()
+def htmx_milestone_remove_view(request, pk):
+    """
+    HTMX VIEW - Allows deletion of milestone with reordering of elements
+    """
+
+    milestone = get_object_or_404(CollaborationMilestone, pk=pk)
+    collaboration = milestone.collaboration
+    milestone.remove()
+
+    return HttpResponseRedirect(
+        reverse_lazy('htmx-get-element-list',
+                     kwargs={'collaboration_pk': collaboration.pk},
                      )
     )

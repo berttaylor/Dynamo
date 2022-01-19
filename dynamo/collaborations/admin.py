@@ -2,7 +2,6 @@ from django.contrib import admin
 
 from .models import (
     Collaboration,
-    CollaborationFile,
     CollaborationMilestone,
     CollaborationTask,
     CollaborationTaskTag,
@@ -194,48 +193,6 @@ class CollaborationTaskTagAdmin(admin.ModelAdmin):
 
     fieldsets = (
         (None, {"fields": ("name",)}),
-        (
-            "Database",
-            {
-                "fields": (
-                    ("created_at", "updated_at"),
-                    "deleted_at",
-                )
-            },
-        ),
-    )
-
-    readonly_fields = (
-        "created_at",
-        "updated_at",
-        "deleted_at",
-    )
-
-
-@admin.register(CollaborationFile)
-class CollaborationFileAdmin(admin.ModelAdmin):
-    ordering = ("name",)
-    search_fields = ("name",)
-
-    list_display = (
-        "created_at",
-        "name",
-        "collaboration",
-        "format",
-    )
-
-    list_filter = ("format",)
-
-    fieldsets = (
-        (
-            None,
-            {
-                "fields": (
-                    "collaboration",
-                    ("name", "format"),
-                )
-            },
-        ),
         (
             "Database",
             {

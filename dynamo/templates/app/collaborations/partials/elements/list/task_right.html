@@ -17,7 +17,7 @@
                 Edit
             </a>
 
-            <a class="text-muted font-small" hx-delete="{% url 'task-delete' task.id %}"
+            <a class="text-muted font-small" hx-delete="{% url 'htmx-task-remove' task.id %}"
                hx-target="#collaboration_elements" hx-confirm="Delete Task '{{ task.name }}'?">
                 <span class="fas fa-times-circle me-2" aria-hidden="true"></span>
                 Delete

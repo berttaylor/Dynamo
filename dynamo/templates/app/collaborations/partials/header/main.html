@@ -2,8 +2,13 @@
 
     <div class="col-lg-8">
 
-        <img src="{{ collaboration.image.url }}" class="rounded-circle img-thumbnail image-lg border-secondary p-2"
-             alt="Joseph Avatar">
+                {% if collaboration.image %}
+                    <img src="{{ collaboration.image.url }}" class="rounded-circle img-thumbnail image-lg border-secondary p-2"
+                         alt="{{ collaboration.image }}">
+                {% else %}
+                    <img src="/compiled/pixel/html&css/assets/img/blog/image-1.jpg"
+                         class="rounded-circle img-thumbnail image-lg border-secondary p-2" alt="Office">
+                {% endif %}
 
         <h1 class="my-4">{{ collaboration.name }}</h1>
 
@@ -22,7 +27,7 @@
         <div class="col ps-0"><span class="small d-block">Creator</span> <span
                 class="h6 text-dark fw-bold">{{ collaboration.created_by }}</span></div>
         <div class="col"><span class="small d-block">Status</span>
-            <span class="h6 text-dark fw-bold">{{ collaboration.status }}</span>
+            <span class="h6 text-dark fw-bold" id="collaboration_status_span">{{ collaboration.status }}</span>
         </div>
         <div class="col me-0">
             <span class="small d-block">Progress</span>

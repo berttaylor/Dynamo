@@ -19,7 +19,8 @@ from django.urls import path
 from collaborations.views import CollaborationCreateView, CollaborationDetailView, CollaborationUpdateView, \
     CollaborationDeleteView, TaskUpdateView, MilestoneUpdateView
 from .views_htmx import task_create_view, milestone_create_view, task_delete_view, milestone_delete_view, \
-    htmx_task_status_update_view, htmx_get_element_list_view, htmx_task_move_view
+    htmx_task_status_update_view, htmx_get_element_list_view, htmx_task_move_view, htmx_milestone_move_view, \
+    htmx_task_remove_view, htmx_milestone_remove_view
 
 urlpatterns = [
     # We use long URLs here because collaborations are created within groups and this probably make more sense
@@ -68,6 +69,21 @@ urlpatterns = [
         "task-move/<pk>/<position>",
         htmx_task_move_view,
         name="htmx-task-move",
+    ),
+    path(
+        "task-remove/<pk>/",
+        htmx_task_remove_view,
+        name="htmx-task-remove",
+    ),
+    path(
+        "milestone-move/<pk>/<position>",
+        htmx_milestone_move_view,
+        name="htmx-milestone-move",
+    ),
+    path(
+        "milestone-remove/<pk>/",
+        htmx_milestone_remove_view,
+        name="htmx-milestone-remove",
     ),
     path(
         "htmx_get_element_list/<collaboration_pk>",

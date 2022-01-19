@@ -24,6 +24,8 @@
 
 {% endfor %}
 
+{% include "app/collaborations/partials/elements/list/finish.html" %}
+
 {% if completion_percentage_update %}
     {% include "app/collaborations/partials/elements/template_js/update_completion_percentage.html" %}
 {% endif %}
