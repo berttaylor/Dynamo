@@ -27,15 +27,15 @@ urlpatterns = [
     path(
         "faq/",
         FAQListView.as_view(),
-        name="faq",
+        name="support-faqs",
     ),
     path(
-        "contact-support/",
+        "message/",
         SupportMessageCreateView.as_view(),
         name="support-message-create",
     ),
     path(
-        "contact-support/thanks/",
+        "message/thanks/",
         SupportMessageThanksView.as_view(),
         name="support-message-thanks",
     ),

@@ -20,7 +20,7 @@
             </select>
 
             {% if membership_level == "Admin" %}
-                <a href="{% url 'collaboration-create' group_slug=group.slug %}">
+                <a href="{% url 'collaboration-create' slug=group.slug %}">
                     <button class="btn btn-tertiary ms-2">New</button>
                 </a>
             {% endif %}

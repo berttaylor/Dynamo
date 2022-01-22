@@ -71,55 +71,6 @@ def milestone_create_view(request, collaboration_id):
 
 
 @login_required()
-def task_delete_view(request, pk):
-    """
-    HTMX VIEW - Allows delete without refresh
-    """
-
-    task = get_object_or_404(CollaborationTask, pk=pk)
-
-    collaboration = task.collaboration
-
-    task.delete()
-
-    return render(request,
-                  "app/collaborations/partials/elements/main.html", {
-                      "task_form": TaskForm(
-                          initial={"collaboration": collaboration},
-                      ),
-                      "milestone_form": MilestoneForm(
-                          initial={"collaboration": collaboration}
-                      ),
-                      "elements": get_all_elements(collaboration),
-                      "collaboration": collaboration,
-                  })
-
-
-@login_required()
-def milestone_delete_view(request, pk):
-    """
-    HTMX VIEW - Allows delete without refresh
-    """
-    milestone = get_object_or_404(CollaborationMilestone, pk=pk)
-
-    collaboration = milestone.collaboration
-
-    milestone.delete()
-
-    return render(request,
-                  "app/collaborations/partials/elements/main.html", {
-                      "task_form": TaskForm(
-                          initial={"collaboration": collaboration},
-                      ),
-                      "milestone_form": MilestoneForm(
-                          initial={"collaboration": collaboration}
-                      ),
-                      "elements": get_all_elements(collaboration),
-                      "collaboration": collaboration,
-                  })
-
-
-@login_required()
 def htmx_task_status_update_view(request, pk, action):
     """
     HTMX VIEW - Allows completion of tasks with one click and no reload
@@ -149,6 +100,7 @@ def htmx_task_status_update_view(request, pk, action):
                       "completion_percentage_update": True,
                       "task_completion_notes_required": True if task.completed_at and task.prompt_for_details_on_completion else False,
                       "form": TaskCompleteForm(instance=task),
+                      "collaboration": collaboration,
                   })
 
 
@@ -164,6 +116,7 @@ def htmx_get_element_list_view(request, collaboration_pk):
                   "app/collaborations/partials/elements/list/main.html", {
                       "elements": get_all_elements(collaboration),
                       "completion_percentage": collaboration.percent_completed,
+                      "collaboration": collaboration,
                   })
 
 

@@ -4,7 +4,6 @@ from .models import (
     Collaboration,
     CollaborationMilestone,
     CollaborationTask,
-    CollaborationTaskTag,
 )
 
 """
@@ -180,32 +179,4 @@ class CollaborationMilestoneAdmin(admin.ModelAdmin):
         "deleted_at",
         "reference",
         "prerequisites",
-    )
-
-
-@admin.register(CollaborationTaskTag)
-class CollaborationTaskTagAdmin(admin.ModelAdmin):
-    ordering = ("name",)
-
-    list_display = ("name",)
-
-    list_filter = ("created_at",)
-
-    fieldsets = (
-        (None, {"fields": ("name",)}),
-        (
-            "Database",
-            {
-                "fields": (
-                    ("created_at", "updated_at"),
-                    "deleted_at",
-                )
-            },
-        ),
-    )
-
-    readonly_fields = (
-        "created_at",
-        "updated_at",
-        "deleted_at",
     )

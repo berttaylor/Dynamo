@@ -212,13 +212,6 @@ class CollaborationTask(TimeStampedSoftDeleteBase):
         blank=True,
     )
 
-    tags = models.ManyToManyField(
-        "CollaborationTaskTag",
-        help_text="Tags showing certain properties that relate to multiple tasks e.g. 'Admin Task'",
-        related_name="tasks",
-        blank=True,
-    )
-
     completed_at = models.DateTimeField(
         null=True,
         blank=True,
@@ -342,6 +335,8 @@ class CollaborationTask(TimeStampedSoftDeleteBase):
             collaboration=self.collaboration,
             position__gt=self.position,
         ).update(position=F("position") - 1)
+
+        self.delete()
 
         return
 
@@ -653,6 +648,8 @@ class CollaborationMilestone(TimeStampedSoftDeleteBase):
             position__gt=self.position,
         ).update(position=F("position") - 1)
 
+        self.delete()
+
         return
 
     def save(self, *args, **kwargs) -> None:
@@ -730,25 +727,3 @@ class CollaborationMilestone(TimeStampedSoftDeleteBase):
             models.Index(fields=["-position"]),
         ]
         ordering = ["collaboration", "position"]
-
-
-class CollaborationTaskTag(TimeStampedSoftDeleteBase):
-    """
-    A CollaborationTaskTag is a marker that can be placed on tasks with certain properties
-    e.g. ‘Difficult’, 'Urgent', 'Needs Car'
-    """
-
-    name = models.CharField(
-        help_text="A name for the Tag e.g. 'Task for Admin'",
-        max_length=50,
-    )
-
-    def __str__(self):
-        return str(self.name)
-
-    class Meta:
-        verbose_name_plural = "Task Tags"
-        indexes = [
-            models.Index(fields=["created_at"]),
-            models.Index(fields=["name"]),
-        ]

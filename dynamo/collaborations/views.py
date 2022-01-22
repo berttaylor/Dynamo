@@ -28,12 +28,12 @@ class CollaborationCreateView(CreateView):
     )
 
     def get_initial(self):
-        group = get_object_or_404(Group, slug=self.kwargs.get("group_slug"))
+        group = get_object_or_404(Group, slug=self.kwargs.get("slug"))
         return {"related_group": group}
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context["group"] = get_object_or_404(Group, slug=self.kwargs.get("group_slug"))
+        context["group"] = get_object_or_404(Group, slug=self.kwargs.get("slug"))
         return context
 
     def form_valid(self, form):
@@ -48,7 +48,7 @@ class CollaborationCreateView(CreateView):
         form.instance.created_by = user
 
         form.instance.related_group = Group.objects.get(
-            slug=self.kwargs.get("group_slug")
+            slug=self.kwargs.get("slug")
         )
 
         return super(CollaborationCreateView, self).form_valid(form)
@@ -102,6 +102,7 @@ class CollaborationDetailView(FormMixin, DetailView):
                 ),
                 "elements": get_all_elements(collaboration),
                 "completion_status": collaboration.status,
+                "collaboration": collaboration,
             },
         )
 

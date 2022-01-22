@@ -16,12 +16,17 @@ Including another URLconf
 
 from django.urls import path
 
-from modals.views import update_from_modal_view
+from modals.views import update_from_modal_view, task_creation_modal_view
 
 urlpatterns = [
     path(
         "<modal>/<instance_pk>/submit",
         update_from_modal_view,
         name="update-from-modal",
+    ),
+    path(
+        "<collaboration_id>/task",
+        task_creation_modal_view,
+        name="task-creation-modal",
     ),
 ]
