@@ -30,12 +30,8 @@ urlpatterns = [
     path("support/", include("support.urls")),
     # Groups
     path("groups/", include("groups.urls")),
-    # Chat
-    path("chat/", include("chat.urls")),
     # Collaborations
     path("", include("collaborations.urls")),
-    # Modals
-    path("modals/", include("modals.urls")),
     # Generics
     path("htmx-empty-string", htmx_empty_string, name="htmx-empty-string"),
 ]

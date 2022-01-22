@@ -15,6 +15,8 @@ Including another URLconf
 """
 
 from django.urls import path
+
+from chat.views_htmx import group_message_create_view, group_message_delete_view
 from groups.views import (
     GroupDetailView,
     GroupCreateView,
@@ -28,7 +30,7 @@ from .views_htmx import htmx_membership_list, htmx_membership_selector, htmx_mem
 
 urlpatterns = [
     path(
-        "create/",
+        "",
         GroupCreateView.as_view(),
         name="group-create",
     ),
@@ -56,6 +58,17 @@ urlpatterns = [
         "<slug>/leave/",
         group_leave_view,
         name="group-leave",
+    ),
+
+    path(
+        "/<slug>/messages",
+        group_message_create_view,
+        name="group-message-create",
+    ),
+    path(
+        "/<slug>/messages/<pk>/delete",
+        group_message_delete_view,
+        name="group-message-delete",
     ),
 
     # HTMX views for the membership section of the group detail page.
@@ -96,7 +109,7 @@ urlpatterns = [
     path(
         "htmx-collaboration-list/<group_id>/",
         htmx_collaboration_list,
-        name="htmx_collaboration_list",
+        name="htmx-collaboration-list",
     ),
 
 ]

@@ -1,4 +1,4 @@
-<div class="modal fade" id="task-create-modal" tabindex="-1" role="dialog" aria-labelledby="modal-notification"
+<div class="modal fade" id="completion-notes-modal" tabindex="-1" role="dialog" aria-labelledby="modal-notification"
      aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content bg-primary text-white">
@@ -14,27 +14,22 @@
                 <div class="modal-body">
 
                     <div class="py-3 text-center">
-                        <span class="modal-icon display-1"><span class="fa fa-plus"></span></span>
-                        <h2 class="h4 modal-title my-3">Add Task</h2>
+                        <span class="modal-icon display-1"><span class="fa fa-check-double"></span></span>
+                        <h2 class="h4 modal-title my-3">Task Complete!</h2>
+                        <p class="px-lg-5">Please add any relevant notes or files below.</p>
                     </div>
 
                     <div class="mx-5">
 
                         <div class=" mb-3">
-                            <label for="id_completion_notes">Task Name</label>
-                            {{ task_form.name }}
+                            <label for="id_completion_notes">Completion Notes (Optional)</label>
+                            {{ form.completion_notes }}
                         </div>
 
                         <div class="mb-3">
-                            <label for="id_file" class="form-label">Description</label>
-                            {{ task_form.description }}
+                            <label for="id_file" class="form-label">Attachment (Optional)</label>
+                            {{ form.file }}
                         </div>
-
-                        <div class="mb-3">
-                            <label for="id_file" class="form-label">Assigned to</label>
-                            {{ task_form.assigned_to }}
-                        </div>
-
                     </div>
 
                 </div>
@@ -43,7 +38,7 @@
 
                     <button type="button" class="btn btn-outline-white" data-bs-dismiss="modal">Close</button>
                     <button
-                        hx-post="{% url 'task-creation-modal' collaboration.pk %}"
+                        hx-post="{% url 'collaboration-task-notes' slug=collaboration.slug pk=task.pk %}"
                         type="submit"
                         class="btn btn-tertiary"
                         data-bs-dismiss="modal"
@@ -59,6 +54,6 @@
 </div>
 
 <script>
-    const myModal = new bootstrap.Modal(document.getElementById("task-create-modal"), {})
+    const myModal = new bootstrap.Modal(document.getElementById("completion-notes-modal"), {})
     myModal.show();
 </script>

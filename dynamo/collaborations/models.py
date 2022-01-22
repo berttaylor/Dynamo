@@ -492,10 +492,10 @@ class CollaborationMilestone(TimeStampedSoftDeleteBase):
         """Determines a milestones status"""
         if all(task.completed_at for task in self.prerequisites.all()):
             return c.MILESTONE_STATUS_REACHED
-        elif self.target_date > timezone.now():
-            return c.MILESTONE_STATUS_ON_TARGET
-        else:
+        elif self.target_date and self.target_date < timezone.now():
             return c.MILESTONE_STATUS_BEHIND_TARGET
+        else:
+            return c.MILESTONE_STATUS_ON_TARGET
 
     @property
     def next_milestone(self):

@@ -9,7 +9,7 @@ from groups.views import get_membership_level
 
 
 @login_required()
-def group_message_create_view(request, group_id):
+def group_message_create_view(request, slug):
     """
     HTMX VIEW - Allows chat messages to be added
     """
@@ -19,7 +19,7 @@ def group_message_create_view(request, group_id):
     message = str(request.POST["message"])
 
     user = request.user
-    group = Group.objects.get(id=group_id)
+    group = Group.objects.get(slug=slug)
 
     Message.objects.create(group=group, user=user, message=message)
     messages = Message.objects.filter(group=group)
@@ -35,7 +35,7 @@ def group_message_create_view(request, group_id):
 
 
 @login_required()
-def group_message_delete_view(request, message_id):
+def group_message_delete_view(request, slug, pk):
     """
     HTMX VIEW - Allows chat messages to be deleted
     """
@@ -43,7 +43,7 @@ def group_message_delete_view(request, message_id):
     # TODO: Secure and set methods
 
     # Get  variables
-    message = Message.objects.get(pk=message_id)
+    message = Message.objects.get(pk=pk)
     user = request.user
 
     group = message.group
@@ -62,7 +62,7 @@ def group_message_delete_view(request, message_id):
 
 
 @login_required()
-def collaboration_message_create_view(request, collaboration_id):
+def collaboration_message_create_view(request, slug):
     """
     HTMX VIEW - Allows chat messages to be added
     """
@@ -72,7 +72,7 @@ def collaboration_message_create_view(request, collaboration_id):
     message = str(request.POST["message"])
 
     user = request.user
-    collaboration = Collaboration.objects.get(id=collaboration_id)
+    collaboration = Collaboration.objects.get(slug=slug)
 
     Message.objects.create(collaboration=collaboration, user=user, message=message)
     messages = Message.objects.filter(collaboration=collaboration)
@@ -89,7 +89,7 @@ def collaboration_message_create_view(request, collaboration_id):
 
 
 @login_required()
-def collaboration_message_delete_view(request, message_id):
+def collaboration_message_delete_view(request, slug, pk):
     """
     HTMX VIEW - Allows chat messages to be deleted
     """
@@ -97,7 +97,7 @@ def collaboration_message_delete_view(request, message_id):
     # TODO: Secure and set methods
 
     # Get  variables
-    message = Message.objects.get(pk=message_id)
+    message = Message.objects.get(pk=pk)
     user = request.user
 
     collaboration = message.collaboration
@@ -113,3 +113,4 @@ def collaboration_message_delete_view(request, message_id):
         "chat_form": CollaborationMessageForm(
             initial={"collaboration": collaboration}
         )})
+

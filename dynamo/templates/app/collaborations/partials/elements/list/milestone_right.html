@@ -10,23 +10,32 @@
             <h1>{{ milestone.position }}</h1>
 
                 <div class="task_action_bar pt-1">
-            <a class="text-muted font-small me-3" href="{% url 'milestone-update' milestone.id %}">
-                <span class="fas fa-edit me-2"></span>
+            <a class="text-muted font-small me-3"
+
+               hx-get="{% url 'collaboration-milestone-update' slug=collaboration.slug pk=milestone.pk %}"
+                hx-target="#element_list"
+                hx-swap="innerHTML"
+
+            >
+                <span class="fas fa-pen me-2"></span>
                 Edit
             </a>
 
-            <a class="text-muted font-small me-3" hx-delete="{% url 'htmx-milestone-remove' milestone.id %}"
-               hx-target="#collaboration_elements" hx-confirm="Delete Milestone '{{ milestone.name }}'?">
+            <a class="text-muted font-small me-3"
+               hx-get="{% url 'collaboration-milestone-delete' slug=collaboration.slug pk=milestone.pk %}"
+                hx-target="#element_list"
+                hx-swap="innerHTML"
+            >
                 <span class="fa fa-times-circle me-2" aria-hidden="true"></span>
                 Delete
             </a>
 
-            <a class="text-muted font-small me-2" hx-post="{% url 'htmx-milestone-move' pk=milestone.pk position=milestone.position|add:"-1" %}"
+            <a class="text-muted font-small me-2" hx-post="{% url 'collaboration-milestone-move' slug=collaboration.slug pk=milestone.pk position=milestone.position|add:"-1" %}"
                hx-target="#element_list"
                hx-swap="innerHTML swap:0.1s"
             ><span class="fa fa-arrow-up m-2"></span></a>
 
-            <a class="text-muted font-small" hx-post="{% url 'htmx-milestone-move' pk=milestone.pk position=milestone.position|add:"1" %}"
+            <a class="text-muted font-small" hx-post="{% url 'collaboration-milestone-move' slug=collaboration.slug pk=milestone.pk position=milestone.position|add:"1" %}"
                hx-target="#element_list"
                hx-swap="innerHTML swap:0.1s"
             ><span class="fa fa-arrow-down m-2"></span></a>

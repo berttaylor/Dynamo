@@ -7,7 +7,6 @@ from django.views.generic.edit import FormMixin, UpdateView, DeleteView
 
 from chat.forms import CollaborationMessageForm
 from chat.models import Message
-from collaborations.forms import MilestoneForm, TaskForm
 from collaborations.models import Collaboration, CollaborationTask, CollaborationMilestone
 from collaborations.utils import get_all_elements
 from groups.models import Group
@@ -94,12 +93,6 @@ class CollaborationDetailView(FormMixin, DetailView):
                 "chat_form": CollaborationMessageForm(
                     initial={"collaboration": collaboration}
                 ),
-                "task_form": TaskForm(
-                    initial={"collaboration": collaboration},
-                ),
-                "milestone_form": MilestoneForm(
-                    initial={"collaboration": collaboration}
-                ),
                 "elements": get_all_elements(collaboration),
                 "collaboration": collaboration,
             },
@@ -138,51 +131,4 @@ class CollaborationDeleteView(DeleteView):
         return reverse_lazy(
             "group-detail",
             kwargs={"slug": self.object.related_group.slug},
-        )
-
-
-@method_decorator(login_required, name="dispatch")
-class TaskUpdateView(UpdateView):
-    """
-    Allows the user to update tasks on a collaboration which they are the admin/creator of.
-    """
-
-    template_name = "app/auxiliary/task/update.html"
-    model = CollaborationTask
-    fields = [
-        "position",
-        "name",
-        "description",
-        "assigned_to",
-        "prerequisites",
-        "tags",
-        "completed_at",
-        "completion_notes"
-    ]
-
-    def get_success_url(self):
-        return reverse_lazy(
-            "collaboration-detail",
-            kwargs={"slug": self.object.collaboration.slug},
-        )
-
-
-@method_decorator(login_required, name="dispatch")
-class MilestoneUpdateView(UpdateView):
-    """
-    Allows the user to update milestones on a collaboration which they are the admin/creator of.
-    """
-
-    template_name = "app/auxiliary/milestone/update.html"
-    model = CollaborationMilestone
-    fields = [
-        "position",
-        "name",
-        "target_date",
-    ]
-
-    def get_success_url(self):
-        return reverse_lazy(
-            "collaboration-detail",
-            kwargs={"slug": self.object.collaboration.slug},
         )

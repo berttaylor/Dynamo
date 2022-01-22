@@ -6,18 +6,9 @@
         <p>When you are ready to complete a task, click the icon beside it.</p>
 
         <hr>
-        <div class="d-flex justify-content-around ">
-            <button class="btn btn-outline-primary btn-sm" type="button"
-                hx-get="{% url 'task-creation-modal' collaboration_id=collaboration.pk %}"
-                hx-target="#element_list"
-                hx-swap="innerHTML"
-                >{% csrf_token %}
 
 
-
-            >+ Task</button>
-            <button class="btn btn-outline-primary btn-sm" type="button">+ Milestone</button>
-        </div>
+{% include "app/collaborations/partials/elements/list/add_element_links.html" %}
     </div>
 
 {% endif %}
@@ -29,10 +20,7 @@
         <p>Click the icon beside tasks to mark them as complete.</p>
 
         <hr>
-        <div class="d-flex justify-content-around ">
-            <button class="btn btn-outline-primary btn-sm" type="button">+ Task</button>
-            <button class="btn btn-outline-primary btn-sm" type="button">+ Milestone</button>
-        </div>
+{% include "app/collaborations/partials/elements/list/add_element_links.html" %}
     </div>
 
 {% endif %}
@@ -43,10 +31,7 @@
         <h4 class="alert-heading">Complete</h4>
         <p>This collaboration has been completed. Great Work!</p>
         <hr>
-        <div class="d-flex justify-content-around ">
-            <button class="btn btn-outline-primary btn-sm" type="button">+ Task</button>
-            <button class="btn btn-outline-primary btn-sm" type="button">+ Milestone</button>
-        </div>
+{% include "app/collaborations/partials/elements/list/add_element_links.html" %}
     </div>
 
 {% endif %}

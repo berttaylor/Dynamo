@@ -12,23 +12,30 @@
                 {{ task.assigned_to.first_name }}
             </span>
 
-            <a class="text-muted font-small me-3" href="{% url 'task-update' task.id %}">
-                <span class="fas fa-edit me-2"></span>
+            <a class="text-muted font-small me-3"
+                           hx-get="{% url 'collaboration-task-update' slug=collaboration.slug pk=task.pk %}"
+                hx-target="#element_list"
+                hx-swap="innerHTML"
+            >
+                <span class="fas fa-pen me-2"></span>
                 Edit
             </a>
 
-            <a class="text-muted font-small" hx-delete="{% url 'htmx-task-remove' task.id %}"
-               hx-target="#collaboration_elements" hx-confirm="Delete Task '{{ task.name }}'?">
+            <a class="text-muted font-small me-3"
+               hx-get="{% url 'collaboration-task-delete' slug=collaboration.slug pk=task.pk %}"
+                hx-target="#element_list"
+                hx-swap="innerHTML"
+            >
                 <span class="fas fa-times-circle me-2" aria-hidden="true"></span>
                 Delete
             </a>
 
-            <a class="text-muted font-small me-2" hx-post="{% url 'htmx-task-move' pk=task.pk position=task.position|add:"-1" %}"
+            <a class="text-muted font-small me-2" hx-post="{% url 'collaboration-task-move' slug=collaboration.slug pk=task.pk position=task.position|add:"-1" %}"
                hx-target="#element_list"
                hx-swap="innerHTML swap:0.1s"
             ><span class="fa fa-arrow-up m-2"></span></a>
 
-            <a class="text-muted font-small" hx-post="{% url 'htmx-task-move' pk=task.pk position=task.position|add:"1" %}"
+            <a class="text-muted font-small" hx-post="{% url 'collaboration-task-move' slug=collaboration.slug pk=task.pk position=task.position|add:"1" %}"
                hx-target="#element_list"
                hx-swap="innerHTML swap:0.1s"
             ><span class="fa fa-arrow-down m-2"></span></a>

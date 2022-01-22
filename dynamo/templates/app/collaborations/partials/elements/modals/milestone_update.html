@@ -1,4 +1,4 @@
-<div class="modal fade" id="completion-notes-modal" tabindex="-1" role="dialog" aria-labelledby="modal-notification"
+<div class="modal fade" id="this-modal" tabindex="-1" role="dialog" aria-labelledby="modal-notification"
      aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content bg-primary text-white">
@@ -14,22 +14,22 @@
                 <div class="modal-body">
 
                     <div class="py-3 text-center">
-                        <span class="modal-icon display-1"><span class="fa fa-check-double"></span></span>
-                        <h2 class="h4 modal-title my-3">Task Complete!</h2>
-                        <p class="px-lg-5">Please add any relevant notes or files below.</p>
+                        <span class="modal-icon display-1"><span class="fas fa-pen"></span></span>
+                        <h2 class="h4 modal-title my-3">Update Milestone</h2>
                     </div>
 
                     <div class="mx-5">
 
-                        <div class=" mb-3">
-                            <label for="id_completion_notes">Completion Notes (Optional)</label>
-                            {{ form.completion_notes }}
-                        </div>
+                        {% for field in form %}
 
-                        <div class="mb-3">
-                            <label for="id_file" class="form-label">Attachment (Optional)</label>
-                            {{ form.file }}
-                        </div>
+                            <div class=" mb-3">
+                                {{ field.label_tag }}
+                                {{ field }}
+                                {{ field.errors }}
+                            </div>
+
+                        {% endfor %}
+
                     </div>
 
                 </div>
@@ -38,7 +38,7 @@
 
                     <button type="button" class="btn btn-outline-white" data-bs-dismiss="modal">Close</button>
                     <button
-                        hx-post="{% url 'update-from-modal' modal=TASK_COMPLETION_NOTES_MODAL instance_pk=form.instance.id %}"
+                        hx-post="{% url 'collaboration-milestone-update' slug=collaboration.slug pk=milestone.pk %}"
                         type="submit"
                         class="btn btn-tertiary"
                         data-bs-dismiss="modal"
@@ -54,6 +54,6 @@
 </div>
 
 <script>
-    const myModal = new bootstrap.Modal(document.getElementById("completion-notes-modal"), {})
+    const myModal = new bootstrap.Modal(document.getElementById("this-modal"), {})
     myModal.show();
 </script>

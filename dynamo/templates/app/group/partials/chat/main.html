@@ -12,7 +12,7 @@
                 <div class="input-group">
                     {{ chat_form.message }}
 
-                    <button hx-post="{% url 'group-chat' group_id=group.id %}"
+                    <button hx-post="{% url 'group-message-create' slug=group.slug %}"
                             hx-target="#group_chat" type="submit" class="btn btn-outline-primary">Send
                     </button>
                 </div>
@@ -33,9 +33,9 @@
                     <div class="small mt-1 text-gray-200"><strong
                             class="text-gray-200">You </strong>- {{ message.created_at }}
                         <a class="text-muted font-small me-3"
-                           hx-delete="{% url 'group-message-delete' message_id=message.id %}" hx-target="#group_chat"
+                           hx-delete="{% url 'group-message-delete' slug=group.slug pk=message.pk %}" hx-target="#group_chat"
                            hx-swap="innerHTML swap:0.1s"
-                           hx-confirm="Delete Message?"><span class="fa fa-times-circle me-2" aria-hidden="true"> </span></a>
+                           ><span class="fa fa-times-circle me-2" aria-hidden="true"> </span></a>
                     </div>
                 </div>
             </div>
