@@ -5,5 +5,5 @@ Generic views needed for front end functionality are kept here.
 """
 
 
-def empty_html_string(request):
-    return HttpResponse('')
+def htmx_empty_string(request):
+    return HttpResponse()

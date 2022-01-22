@@ -11,7 +11,7 @@
 
                 {% if announcement.user == request.user %}
                     <a class="text-muted font-small me-3"
-                       hx-delete="{% url 'htmx_announcement_delete' announcement_id=announcement.id group_slug=announcement.group.slug %}"
+                       hx-delete="{% url 'htmx-announcement-delete' pk=announcement.pk group_id=announcement.group.pk %}"
                        hx-target="#list_of_announcements"
                        hx-swap="innerHTML swap:0.1s"
                        hx-confirm="Delete Announcement?"><span class="fa fa-times-circle me-2" aria-hidden="true"> </span></a>

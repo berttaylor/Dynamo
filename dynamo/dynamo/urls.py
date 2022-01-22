@@ -13,15 +13,11 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
-from django.conf.urls import url
-from django.conf.urls.static import static
+
 from django.contrib import admin
 from django.urls import path, include
 from django.views.generic import TemplateView
-from django.views.static import serve
-
-from dynamo import settings
-from dynamo.base.views import empty_html_string
+from dynamo.base.views import htmx_empty_string
 
 urlpatterns = [
     # ADMIN
@@ -41,5 +37,5 @@ urlpatterns = [
     # Modals
     path("modals/", include("modals.urls")),
     # Generics
-    path("clear", empty_html_string, name="clear"),
+    path("htmx-empty-string", htmx_empty_string, name="htmx-empty-string"),
 ]

@@ -16,7 +16,7 @@
                     <div class="form-check inbox-check mb-0 me-2">
 
                         <input class="form-check-input" type="checkbox" value="" id="checkbox_for_{{ membership.id }}"
-                               hx-post="{% url 'htmx_membership_selector' group_id=group_id membership_id=membership.id membership_filter=membership_filter %}"
+                               hx-post="{% url 'htmx-membership-selector' group_id=group_id membership_id=membership.id membership_filter=membership_filter %}"
                                hx-target="#requests_action_bar"
                                hx-swap="innerHTML swap:0.1s"
                         >
@@ -50,6 +50,5 @@
 
 </div>
 
-{% if new_member_count or new_admin_count or new_subscriber_count %}
-    {% include "app/group/partials/memberships/template_js/update_membership_totals.html" %}
-{% endif %}
+
+{% include "app/group/partials/memberships/template_js/update_membership_totals.html" %}

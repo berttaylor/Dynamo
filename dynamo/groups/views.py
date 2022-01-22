@@ -236,12 +236,12 @@ class AnnouncementCreateView(CreateView):
     )
 
     def get_initial(self):
-        group = get_object_or_404(Group, slug=self.kwargs.get("group_slug"))
+        group = get_object_or_404(Group, slug=self.kwargs.get("slug"))
         return {"related_group": group}
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context["group"] = get_object_or_404(Group, slug=self.kwargs.get("group_slug"))
+        context["group"] = get_object_or_404(Group, slug=self.kwargs.get("slug"))
         return context
 
     def form_valid(self, form):
@@ -256,7 +256,7 @@ class AnnouncementCreateView(CreateView):
 
         form.instance.user = user
         form.instance.group = get_object_or_404(
-            Group, slug=self.kwargs.get("group_slug")
+            Group, slug=self.kwargs.get("slug")
         )
 
         return super(AnnouncementCreateView, self).form_valid(form)

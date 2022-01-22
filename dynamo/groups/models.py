@@ -1,17 +1,13 @@
-import os
 import time
 
 from django.db import models
-from django.db.models.signals import pre_save
-from django.dispatch import receiver
 from django.template.defaultfilters import slugify
 
+from dynamo.base.models import TimeStampedSoftDeleteBase
 from dynamo.storages import group_based_upload_to
 from groups import constants as c
-from .managers import MembershipManager
 from users.utils import get_sentinel_user
-
-from dynamo.base.models import TimeStampedSoftDeleteBase
+from .managers import MembershipManager
 
 
 class Group(TimeStampedSoftDeleteBase):
@@ -63,6 +59,21 @@ class Group(TimeStampedSoftDeleteBase):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.__saved_profile_image = self.profile_image
+
+    @property
+    def member_count(self):
+        """Returns the number of active group members"""
+        return self.memberships.all().filter(status=c.MEMBERSHIP_STATUS_CURRENT).count()
+
+    @property
+    def subscriber_count(self):
+        """Returns the number of group subscribers"""
+        return self.memberships.all().filter(is_subscribed=True).count()
+
+    @property
+    def admin_count(self):
+        """Returns the number of group admins"""
+        return self.memberships.all().filter(status=c.MEMBERSHIP_STATUS_ADMIN).count()
 
     @property
     def short_description(self):

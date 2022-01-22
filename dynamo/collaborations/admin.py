@@ -111,7 +111,8 @@ class CollaborationTaskAdmin(admin.ModelAdmin):
         ),
         (
             "Completion",
-            {"fields": (("completed_at", "completed_by"), "completion_notes", "file", "prompt_for_details_on_completion")},
+            {"fields": (
+            ("completed_at", "completed_by"), "completion_notes", "file", "prompt_for_details_on_completion")},
         ),
         (
             "Database",

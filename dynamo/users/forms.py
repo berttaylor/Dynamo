@@ -1,9 +1,7 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm, PasswordResetForm
-from django.forms import EmailField
 
 from users.models import User
-from django.utils.translation import gettext_lazy as _
 
 
 class SignUpForm(UserCreationForm):

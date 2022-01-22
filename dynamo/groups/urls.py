@@ -60,41 +60,41 @@ urlpatterns = [
 
     # HTMX views for the membership section of the group detail page.
     path(
-        "htmx_membership_list/<group_id>/",
+        "htmx-membership-list/<group_id>/",
         htmx_membership_list,
-        name="htmx_membership_list",
+        name="htmx-membership-list",
     ),
     path(
-        "htmx_membership_selector/<group_id>/<membership_id>/<membership_filter>/",
+        "htmx-membership-selector/<group_id>/<membership_id>/<membership_filter>/",
         htmx_membership_selector,
-        name="htmx_membership_selector",
+        name="htmx-membership-selector",
     ),
     path(
-        "htmx_membership_handler/<group_id>/<action>/<membership_filter>/",
+        "htmx-membership-handler/<group_id>/<action>/<membership_filter>/",
         htmx_membership_handler,
-        name="htmx_membership_handler",
+        name="htmx-membership-handler",
     ),
 
     # HTMX views for the announcement section of the group detail page.
     path(
-        "htmx_announcement_list/<group_id>/",
+        "htmx-announcement-list/<group_id>/",
         htmx_announcement_list,
-        name="htmx_announcement_list",
+        name="htmx-announcement-list",
     ),
     path(
-        "<group_slug>/announcement/",
+        "<slug>/announcement/",
         AnnouncementCreateView.as_view(),
-        name="announcement_create",
+        name="announcement-create",
     ),
     path(
-        "<group_slug>/announcement/<announcement_id>/delete",
+        "htmx-announcement-list/<group_id>/<pk>/delete",
         htmx_announcement_delete,
-        name="htmx_announcement_delete",
+        name="htmx-announcement-delete",
     ),
 
     # HTMX views for the collaboration section of the group detail page.
     path(
-        "htmx_collaboration_list/<group_id>/",
+        "htmx-collaboration-list/<group_id>/",
         htmx_collaboration_list,
         name="htmx_collaboration_list",
     ),

@@ -33,7 +33,7 @@ def htmx_membership_list(request, group_id):
                           "group_id": group_id,
                       })
     else:
-        return HttpResponse("")
+        return HttpResponse()
 
 
 @login_required()
@@ -56,7 +56,7 @@ def htmx_membership_selector(request, group_id, membership_id, membership_filter
         selected_memberships.remove(membership_id)
         if len(selected_memberships) == 0:
             del request.session['selected_memberships']
-            return HttpResponse("")
+            return HttpResponse()
         else:
             request.session['selected_memberships'] = selected_memberships
             return render(request,
@@ -144,13 +144,11 @@ def htmx_membership_handler(request, group_id, action, membership_filter):
 
     return render(request, "app/group/partials/memberships/main.html",
                   {
+                      "group": group,
+                      "group_id": group_id,
                       "membership_list": membership_list,
                       "membership_filter": membership_filter,
                       "membership_count": get_membership_count(group),
-                      "group_id": group_id,
-                      "new_member_count": group.memberships.all().filter(status=c.MEMBERSHIP_STATUS_CURRENT).count(),
-                      "new_subscriber_count": group.memberships.all().filter(is_subscribed=True).count(),
-                      "new_admin_count": group.memberships.all().filter(status=c.MEMBERSHIP_STATUS_ADMIN).count(),
                   })
 
 
@@ -164,7 +162,7 @@ def htmx_announcement_list(request, group_id):
     announcement_list_filter = request.GET.get('announcement_list_filter', 'HIDE')
 
     if announcement_list_filter == 'HIDE':
-        return HttpResponse("")
+        return HttpResponse()
 
     match announcement_list_filter:
         case c.ANNOUNCEMENTS_FILTER_LATEST:
@@ -189,7 +187,7 @@ def htmx_collaboration_list(request, group_id):
     # Get filter parameter - if not set, send back a 'hidden' response (Empty HTML string)
     collaboration_list_filter = request.GET.get('collaboration_list_filter', 'HIDE')
     if collaboration_list_filter == 'HIDE':
-        return HttpResponse("")
+        return HttpResponse()
 
     # Annotate the group's collaborations with the number of complete/incomplete tasks,
     group_collaborations = Collaboration.objects.filter(
@@ -227,17 +225,17 @@ def htmx_collaboration_list(request, group_id):
 
 
 @login_required()
-def htmx_announcement_delete(request, group_slug, announcement_id):
+def htmx_announcement_delete(request, group_id, pk):
     """
     HTMX VIEW - Allows announcements to be deleted
     """
 
     # TODO: Secure and set methods
 
-    announcement = get_object_or_404(GroupAnnouncement, pk=announcement_id)
+    announcement = get_object_or_404(GroupAnnouncement, pk=pk)
     announcement.delete()
 
-    announcements = GroupAnnouncement.objects.filter(group__slug=group_slug)[:1]
+    announcements = GroupAnnouncement.objects.filter(group__pk=group_id)[:1]
 
     return render(request,
                   "app/group/partials/announcements/list.html", {

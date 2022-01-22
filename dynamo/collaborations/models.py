@@ -162,11 +162,7 @@ class CollaborationTask(TimeStampedSoftDeleteBase):
         super().__init__(*args, **kwargs)
         self.__original_position = self.position
 
-    position = models.PositiveSmallIntegerField(
-        help_text="The position of the element (1 = 1st)",
-        blank=True,
-        null=False
-    )
+    position = models.PositiveSmallIntegerField(help_text="The position of the element (1 = 1st)", blank=True)
 
     __original_position = None
 
@@ -447,11 +443,7 @@ class CollaborationMilestone(TimeStampedSoftDeleteBase):
         super().__init__(*args, **kwargs)
         self.__original_position = self.position
 
-    position = models.PositiveSmallIntegerField(
-        help_text="The position of the element (1 = 1st)",
-        blank=True,
-        null=False
-    )
+    position = models.PositiveSmallIntegerField(help_text="The position of the element (1 = 1st)", blank=True)
 
     __original_position = None
 

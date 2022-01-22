@@ -4,7 +4,6 @@ from .models import SupportMessage
 
 
 class SupportMessageForm(ModelForm):
-
     class Meta:
         model = SupportMessage
         fields = [

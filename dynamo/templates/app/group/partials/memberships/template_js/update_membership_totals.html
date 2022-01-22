@@ -1,15 +1,7 @@
 <script>
 
-    {% if new_member_count %}
-        document.getElementById('h5_member_count').innerHTML = '{{ new_member_count }}';
-    {% endif %}
-
-    {% if new_admin_count %}
-        document.getElementById('h5_admin_count').innerHTML = '{{ new_admin_count }}';
-    {% endif %}
-
-    {% if new_subscriber_count %}
-        document.getElementById('h5_subscriber_count').innerHTML = '{{ new_subscriber_count }}';
-    {% endif %}
+    document.getElementById('h5_member_count').innerHTML = '{{ group.member_count }}';
+    document.getElementById('h5_admin_count').innerHTML = '{{ group.admin_count }}';
+    document.getElementById('h5_subscriber_count').innerHTML = '{{ group.subscriber_count }}';
 
 </script>

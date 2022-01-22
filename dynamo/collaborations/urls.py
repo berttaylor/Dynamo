@@ -46,12 +46,12 @@ urlpatterns = [
         name="collaboration-delete",
     ),
     path(
-        "collaboration/<collaboration_id>/create-task",
+        "collaborations/<collaboration_id>/create-task",
         task_create_view,
         name="task-create",
     ),
     path(
-        "collaboration/<collaboration_id>/create-milesteone",
+        "collaborations/<collaboration_id>/create-milesteone",
         milestone_create_view,
         name="milestone-create",
     ),
@@ -86,7 +86,7 @@ urlpatterns = [
         name="htmx-milestone-remove",
     ),
     path(
-        "htmx_get_element_list/<collaboration_pk>",
+        "htmx-get-element-list/<collaboration_pk>",
         htmx_get_element_list_view,
         name="htmx-get-element-list",
     ),
