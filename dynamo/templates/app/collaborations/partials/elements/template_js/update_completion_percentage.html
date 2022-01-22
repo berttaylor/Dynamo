@@ -1,17 +1,20 @@
 <script>
 
-document.getElementById('collaboration_status_span').innerHTML = '{{ completion_status }}';
+document.getElementById('collaboration_status_span').innerHTML = '{{ completion.status }}';
 
 let frame = 0;
 const number_of_frames = 200;
 const easeOutQuad = t => t * ( 2 - t );
 const completion_percentage_span = document.getElementById('completion_percentage_span')
 const collaboration_percentage_finish_bar_span = document.getElementById('finish-bar-completion-percentage')
-const new_value = parseInt( {{completion_percentage}} , 10 );
+const new_value = parseInt( {{collaboration.percent_completed}} , 10 );
 const original_value = parseInt( completion_percentage_span.innerHTML , 10 );
+
 const dif = new_value - original_value
 
-const counter = setInterval( () => {
+if (dif !== 0) {
+
+    const counter = setInterval( () => {
 
 
     // Advance the frame, and calculate a (rounded) updatedValue
@@ -35,6 +38,8 @@ const counter = setInterval( () => {
       clearInterval( counter );
     }
 
-}, 100/120 );
+    }, 100/120 );
+
+}
 
 </script>

@@ -1,4 +1,4 @@
-{% if completion_status == COLLABORATION_STATUS_PLANNING %}
+{% if completion.status == COLLABORATION_STATUS_PLANNING %}
 
     <div class="mb-4 p-4 bg-white rounded shadow-sm text-center">
         <h4 class="alert-heading">Planning</h4>
@@ -22,7 +22,7 @@
 
 {% endif %}
 
-{% if completion_status == COLLABORATION_STATUS_ONGOING %}
+{% if completion.status == COLLABORATION_STATUS_ONGOING %}
 
     <div class="mb-4 p-4 bg-white rounded shadow-sm text-center">
         <h4 class="alert-heading">Ongoing (<span id="finish-bar-completion-percentage">{{ collaboration.percent_completed }}</span>%)</h4>
@@ -37,7 +37,7 @@
 
 {% endif %}
 
-{% if completion_status == COLLABORATION_STATUS_COMPLETED %}
+{% if completion.status == COLLABORATION_STATUS_COMPLETED %}
 
     <div class="mb-4 p-4 bg-white rounded shadow-sm text-center">
         <h4 class="alert-heading">Complete</h4>

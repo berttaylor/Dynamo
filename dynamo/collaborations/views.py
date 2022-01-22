@@ -101,7 +101,6 @@ class CollaborationDetailView(FormMixin, DetailView):
                     initial={"collaboration": collaboration}
                 ),
                 "elements": get_all_elements(collaboration),
-                "completion_status": collaboration.status,
                 "collaboration": collaboration,
             },
         )

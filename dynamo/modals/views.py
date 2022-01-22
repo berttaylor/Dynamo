@@ -78,20 +78,16 @@ def task_creation_modal_view(request, collaboration_id):
             return render(request,
                           "app/collaborations/partials/elements/list/main.html", {
                               "elements": get_all_elements(collaboration),
-                              "completion_percentage": collaboration.percent_completed,
-                              "completion_status": collaboration.status,
                               "collaboration": collaboration,
-                              "completion_percentage_update": True,
                           })
 
     return render(request,
                   "app/collaborations/partials/elements/list/main.html", {
                       "elements": get_all_elements(collaboration),
-                      "completion_percentage": collaboration.percent_completed,
-                      "completion_status": collaboration.status,
                       "collaboration": collaboration,
                       "task_creation_modal": True,
                       "task_form": TaskForm(
                           initial={"collaboration": collaboration},
                       ),
                   })
+

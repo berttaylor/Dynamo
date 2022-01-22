@@ -26,9 +26,9 @@
 
 {% include "app/collaborations/partials/elements/list/finish.html" %}
 
-{% if completion_percentage_update %}
-    {% include "app/collaborations/partials/elements/template_js/update_completion_percentage.html" %}
-{% endif %}
+
+{% include "app/collaborations/partials/elements/template_js/update_completion_percentage.html" %}
+
 
 {% if task_completion_notes_required %}
     {% include "app/collaborations/partials/elements/modals/task_completion_notes_modal.html" %}

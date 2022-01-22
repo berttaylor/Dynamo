@@ -95,9 +95,6 @@ def htmx_task_status_update_view(request, pk, action):
     return render(request,
                   "app/collaborations/partials/elements/list/main.html", {
                       "elements": get_all_elements(collaboration),
-                      "completion_percentage": collaboration.percent_completed,
-                      "completion_status": collaboration.status,
-                      "completion_percentage_update": True,
                       "task_completion_notes_required": True if task.completed_at and task.prompt_for_details_on_completion else False,
                       "form": TaskCompleteForm(instance=task),
                       "collaboration": collaboration,
@@ -115,7 +112,6 @@ def htmx_get_element_list_view(request, collaboration_pk):
     return render(request,
                   "app/collaborations/partials/elements/list/main.html", {
                       "elements": get_all_elements(collaboration),
-                      "completion_percentage": collaboration.percent_completed,
                       "collaboration": collaboration,
                   })
 
