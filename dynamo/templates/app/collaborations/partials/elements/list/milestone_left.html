@@ -40,15 +40,22 @@
                 Delete
             </a>
 
+                            {% if forloop.counter != 1 %}
             <a class="text-muted font-small me-2" hx-post="{% url 'collaboration-milestone-move' slug=collaboration.slug pk=milestone.pk position=milestone.position|add:"-1" %}"
                hx-target="#element_list"
                hx-swap="innerHTML swap:0.1s"
             ><span class="fa fa-arrow-up m-2"></span></a>
 
+                                        {% endif %}
+
+            {% if forloop.counter != elements|length %}
+
             <a class="text-muted font-small" hx-post="{% url 'collaboration-milestone-move' slug=collaboration.slug pk=milestone.pk position=milestone.position|add:"1" %}"
                hx-target="#element_list"
                hx-swap="innerHTML swap:0.1s"
             ><span class="fa fa-arrow-down m-2"></span></a>
+
+                        {% endif %}
 
         </div>
        </div>
