@@ -17,6 +17,7 @@ def htmx_membership_list(request, group_id):
 
     # if the filter is not set, we send back only pending membership requests
     membership_filter = request.GET.get('membership_filter', c.MEMBERSHIP_STATUS_PENDING)
+    group = get_object_or_404(Group, id=group_id)
 
     # Clear the session, if it is being used
     if request.session.get('selected_memberships', None):
@@ -31,6 +32,7 @@ def htmx_membership_list(request, group_id):
                           ),
                           "membership_filter": membership_filter,
                           "group_id": group_id,
+                          "membership_count": get_membership_count(group),
                       })
     else:
         return HttpResponse()
