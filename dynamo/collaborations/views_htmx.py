@@ -85,7 +85,7 @@ def collaboration_task_notes_view(request, slug, pk):
     collaboration = get_object_or_404(Collaboration, slug=slug)
     task = get_object_or_404(CollaborationTask, pk=pk)
 
-    form = TaskCompleteForm(request.POST, instance=task)
+    form = TaskCompleteForm(request.POST, request.FILES, instance=task)
 
     if request.method == "POST" and form.is_valid():
         form.save()
@@ -101,7 +101,7 @@ def collaboration_task_notes_view(request, slug, pk):
                       "collaboration": collaboration,
                       "task_completion_notes_modal": True,
                       "task": task,
-                      "form": form,
+                      "form": TaskCompleteForm(instance=task),
                   })
 
 
