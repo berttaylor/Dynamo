@@ -2,13 +2,11 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseRedirect
 from django.shortcuts import get_object_or_404
-from django.urls import reverse_lazy, reverse
+from django.urls import reverse_lazy
 from django.utils.decorators import method_decorator
 from django.views.generic import (
     DetailView,
     CreateView,
-    UpdateView,
-    DeleteView,
 )
 from django.views.generic.edit import FormMixin
 
@@ -111,36 +109,6 @@ class GroupCreateView(CreateView):
         )
 
 
-@method_decorator(login_required, name="dispatch")
-class GroupUpdateView(UpdateView):
-    """
-    Allows the user to update multiple fields on a group which they are the admin/creator of.
-    """
-
-    template_name = "app/auxiliary/group/update.html"
-    model = Group
-    fields = [
-        "name",
-        "description",
-        "profile_image"
-    ]
-
-    def get_success_url(self):
-        return reverse_lazy(
-            "group-detail",
-            kwargs={"slug": self.object.slug},
-        )
-
-
-@method_decorator(login_required, name="dispatch")
-class GroupDeleteView(DeleteView):
-    template_name = "app/auxiliary/group/delete.html"
-    model = Group
-
-    def get_success_url(self):
-        return reverse("group-list")
-
-
 @login_required()
 def group_join_view(request, slug):
     """
@@ -199,7 +167,8 @@ def group_leave_view(request, slug):
         membership = get_object_or_404(Membership, user=user, group=group)
 
         # If the user is last admin of the group, send error
-        if membership.status==c.MEMBERSHIP_STATUS_ADMIN and not group.memberships.filter(status=c.MEMBERSHIP_STATUS_ADMIN).exclude(pk=membership.pk).exists():
+        if membership.status == c.MEMBERSHIP_STATUS_ADMIN and not group.memberships.filter(
+                status=c.MEMBERSHIP_STATUS_ADMIN).exclude(pk=membership.pk).exists():
             messages.error(
                 request, "You are the last admin. Assign another to leave the group"
             )
@@ -220,49 +189,3 @@ def group_leave_view(request, slug):
                     kwargs={"slug": group.slug},
                 )
             )
-
-
-@method_decorator(login_required, name="dispatch")
-class AnnouncementCreateView(CreateView):
-    """
-    Allows users to create a new announcement
-    """
-
-    template_name = "app/auxiliary/announcement/create.html"
-    model = GroupAnnouncement
-    fields = (
-        "title",
-        "body",
-    )
-
-    def get_initial(self):
-        group = get_object_or_404(Group, slug=self.kwargs.get("slug"))
-        return {"related_group": group}
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context["group"] = get_object_or_404(Group, slug=self.kwargs.get("slug"))
-        return context
-
-    def form_valid(self, form):
-        """
-        We override the form valid to add the user as admin and creator
-        """
-
-        # 1. Get user
-        user = self.request.user
-        if not user.is_authenticated:
-            raise PermissionError
-
-        form.instance.user = user
-        form.instance.group = get_object_or_404(
-            Group, slug=self.kwargs.get("slug")
-        )
-
-        return super(AnnouncementCreateView, self).form_valid(form)
-
-    def get_success_url(self):
-        return reverse_lazy(
-            "group-detail",
-            kwargs={"slug": self.object.group.slug},
-        )

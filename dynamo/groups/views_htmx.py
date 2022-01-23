@@ -5,8 +5,84 @@ from django.shortcuts import render, get_object_or_404
 
 import groups.constants as c
 from collaborations.models import Collaboration
+from groups.forms import GroupForm, GroupImageForm
 from groups.models import Group, Membership, GroupAnnouncement
+from groups.utils import get_membership_level
 from groups.views import get_membership_count
+
+
+@login_required()
+def group_update_view(request, slug):
+    """
+    HTMX VIEW - Allows group updates with no reload
+    Sends back "app/group/partials/header/main.html", to replace the content in #group_page_header
+    If "group_update_modal": True is in the context (and the form), a modal will be rendered
+    (with error messages, if appropriate)
+    """
+
+    group = get_object_or_404(Group, slug=slug)
+
+    form = GroupForm(request.POST or None, instance=group)
+
+    if request.user.is_authenticated:
+        membership_level = get_membership_level(request.user, group)
+    else:
+        membership_level = None
+
+    if request.method == "POST" and form.is_valid():
+        form.save()
+        return render(request,
+                      "app/group/partials/header/main.html", {
+                          "group": group,
+                          "membership_level": membership_level,
+                          "membership_count": get_membership_count(group),
+                      })
+
+    return render(request,
+                  "app/group/partials/header/main.html", {
+                      "group": group,
+                      "membership_level": membership_level,
+                      "membership_count": get_membership_count(group),
+                      "group_update_modal": True,
+                      "form": form,
+                  })
+
+
+@login_required()
+def group_image_view(request, slug):
+    """
+    HTMX VIEW - Allows group image updates with no reload
+    Sends back "app/group/partials/header/main.html", to replace the content in #group_page_header
+    If "group_image_modal": True is in the context (and the form), a modal will be rendered
+    (with error messages, if appropriate)
+    """
+
+    group = get_object_or_404(Group, slug=slug)
+
+    form = GroupImageForm(request.POST or None,request.FILES or None, instance=group)
+
+    if request.user.is_authenticated:
+        membership_level = get_membership_level(request.user, group)
+    else:
+        membership_level = None
+
+    if request.method == "POST" and form.is_valid():
+        form.save()
+        return render(request,
+                      "app/group/partials/header/main.html", {
+                          "group": group,
+                          "membership_level": membership_level,
+                          "membership_count": get_membership_count(group),
+                      })
+
+    return render(request,
+                  "app/group/partials/header/main.html", {
+                      "group": group,
+                      "membership_level": membership_level,
+                      "membership_count": get_membership_count(group),
+                      "group_image_modal": True,
+                      "form": form,
+                  })
 
 
 @login_required()

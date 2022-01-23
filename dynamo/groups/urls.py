@@ -20,13 +20,11 @@ from chat.views_htmx import group_message_create_view, group_message_delete_view
 from groups.views import (
     GroupDetailView,
     GroupCreateView,
-    GroupUpdateView,
-    GroupDeleteView,
     group_join_view,
-    group_leave_view, AnnouncementCreateView,
+    group_leave_view,
 )
 from .views_htmx import htmx_membership_list, htmx_membership_selector, htmx_membership_handler, htmx_announcement_list, \
-    htmx_collaboration_list, htmx_announcement_delete
+    htmx_collaboration_list, htmx_announcement_delete, group_update_view, group_image_view
 
 urlpatterns = [
     path(
@@ -39,16 +37,19 @@ urlpatterns = [
         GroupDetailView.as_view(),
         name="group-detail",
     ),
+
     path(
-        "<slug>/update/",
-        GroupUpdateView.as_view(),
+        "<slug>/update",
+        group_update_view,
         name="group-update",
     ),
+
     path(
-        "<slug>/delete/",
-        GroupDeleteView.as_view(),
-        name="group-delete",
+        "<slug>/image",
+        group_image_view,
+        name="group-image",
     ),
+
     path(
         "<slug>/join/",
         group_join_view,
@@ -93,11 +94,6 @@ urlpatterns = [
         "htmx-announcement-list/<group_id>/",
         htmx_announcement_list,
         name="htmx-announcement-list",
-    ),
-    path(
-        "<slug>/announcement/",
-        AnnouncementCreateView.as_view(),
-        name="announcement-create",
     ),
     path(
         "htmx-announcement-list/<group_id>/<pk>/delete",
