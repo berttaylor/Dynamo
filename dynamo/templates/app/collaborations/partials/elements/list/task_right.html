@@ -6,8 +6,9 @@
            hx-target="#element_list"
            hx-swap="innerHTML"
         ><h2 class="h6 pb-1">{{ task.number }}. {{ task.name }}</h2></a>
-        <p class="mb-1">{{ task.description }}</p>
-{#        <h1>{{ task.position }}</h1>#}
+        {% if task.description %}
+            <p class="mb-1">"{{ task.description }}"</p>
+        {% endif %}
         {% if task.completion_notes %}
             <p class="mb-1">"{{ task.completion_notes }}"</p>
         {% endif %}
