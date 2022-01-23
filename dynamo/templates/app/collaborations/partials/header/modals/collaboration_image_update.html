@@ -1,4 +1,4 @@
-<div class="modal fade" id="this-modal" tabindex="-1" role="dialog" aria-labelledby="modal-notification"
+<div class="modal fade" id="header-modal" tabindex="-1" role="dialog" aria-labelledby="modal-notification"
      aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content bg-primary text-white">
@@ -7,7 +7,7 @@
             </div>
 
             <form
-                hx-target="#element_list"
+                hx-target="#collaboration_header"
                 hx-swap="innerHTML"
                 enctype="multipart/form-data"
                 hx-encoding="multipart/form-data">{% csrf_token %}
@@ -15,15 +15,7 @@
 
                     <div class="py-1 text-center">
                         <span class="modal-icon display-1"><span class="fas fa-pen"></span></span>
-                        <h2 class="h4 modal-title">Update Milestone</h2>
-                                                            <div class="text-center py-2">
-                        <button type="button" class="btn btn-outline-white btn-sm" data-bs-dismiss="modal"
-                               hx-get="{% url 'collaboration-milestone-delete' slug=collaboration.slug pk=milestone.pk %}"
-                               hx-target="#element_list"
-                               hx-swap="innerHTML"
-                        >Delete</button>
-
-                    </div>
+                        <h2 class="h4 modal-title">Set Image</h2>
                     </div>
 
 
@@ -48,7 +40,7 @@
 
                     <button type="button" class="btn btn-outline-white" data-bs-dismiss="modal">Close</button>
                     <button
-                        hx-post="{% url 'collaboration-milestone-update' slug=collaboration.slug pk=milestone.pk %}"
+                        hx-post="{% url 'collaboration-image' slug=collaboration.slug %}"
                         type="submit"
                         class="btn btn-tertiary"
                         data-bs-dismiss="modal"
@@ -64,6 +56,6 @@
 </div>
 
 <script>
-    const myModal = new bootstrap.Modal(document.getElementById("this-modal"), {})
+    const myModal = new bootstrap.Modal(document.getElementById("header-modal"), {})
     myModal.show();
 </script>

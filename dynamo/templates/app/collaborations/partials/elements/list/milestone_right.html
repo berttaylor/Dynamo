@@ -2,54 +2,41 @@
 
     <div class="col-md-10 text-right">
 
-       </div>
+    </div>
 
 
-        <div class="col-md-10 text-right">
-        <h2 class="h6">{{ milestone.name }} ( {{ milestone.tasks_completed }} / {{ milestone.prerequisites.count }} Tasks Complete)</h2>
-{#            <h1>{{ milestone.position }}</h1>#}
-
-                <div class="task_action_bar pt-1">
-            <a class="text-muted font-small me-3"
-
-               hx-get="{% url 'collaboration-milestone-update' slug=collaboration.slug pk=milestone.pk %}"
+    <div class="col-md-10 text-right">
+        <a
+                hx-get="{% url 'collaboration-milestone-update' slug=collaboration.slug pk=milestone.pk %}"
                 hx-target="#element_list"
                 hx-swap="innerHTML"
+        ><h2 class="h6">{{ milestone.name }} ( {{ milestone.tasks_completed }} / {{ milestone.prerequisites.count }}
+            Tasks Complete)</h2></a>
 
-            >
-                <span class="fas fa-pen me-2"></span>
-                Edit
-            </a>
+        <div class="task_action_bar pt-1">
 
-            <a class="text-muted font-small me-3"
-               hx-get="{% url 'collaboration-milestone-delete' slug=collaboration.slug pk=milestone.pk %}"
-                hx-target="#element_list"
-                hx-swap="innerHTML"
-            >
-                <span class="fa fa-times-circle me-2" aria-hidden="true"></span>
-                Delete
-            </a>
+            {% if forloop.counter != 1 %}
 
-                    {% if forloop.counter != 1 %}
+                <a class="text-muted font-small me-2"
+                   hx-post="{% url 'collaboration-milestone-move' slug=collaboration.slug pk=milestone.pk position=milestone.position|add:"-1" %}"
+                   hx-target="#element_list"
+                   hx-swap="innerHTML swap:0.1s"
+                ><span class="fa fa-arrow-up m-2"></span></a>
 
-            <a class="text-muted font-small me-2" hx-post="{% url 'collaboration-milestone-move' slug=collaboration.slug pk=milestone.pk position=milestone.position|add:"-1" %}"
-               hx-target="#element_list"
-               hx-swap="innerHTML swap:0.1s"
-            ><span class="fa fa-arrow-up m-2"></span></a>
-
-                                {% endif %}
+            {% endif %}
 
             {% if forloop.counter != elements|length %}
 
-            <a class="text-muted font-small" hx-post="{% url 'collaboration-milestone-move' slug=collaboration.slug pk=milestone.pk position=milestone.position|add:"1" %}"
-               hx-target="#element_list"
-               hx-swap="innerHTML swap:0.1s"
-            ><span class="fa fa-arrow-down m-2"></span></a>
+                <a class="text-muted font-small"
+                   hx-post="{% url 'collaboration-milestone-move' slug=collaboration.slug pk=milestone.pk position=milestone.position|add:"1" %}"
+                   hx-target="#element_list"
+                   hx-swap="innerHTML swap:0.1s"
+                ><span class="fa fa-arrow-down m-2"></span></a>
 
-                {% endif %}
+            {% endif %}
 
         </div>
-            </div>
+    </div>
 
     <div class="col-md-2 text-center full">
         {% if milestone.is_complete %}

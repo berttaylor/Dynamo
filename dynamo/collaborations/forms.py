@@ -1,7 +1,7 @@
 from django.forms import ModelForm, DateInput, ModelChoiceField, Textarea
 from django.forms.widgets import Select
 
-from collaborations.models import CollaborationMilestone, CollaborationTask
+from collaborations.models import CollaborationMilestone, CollaborationTask, Collaboration
 
 
 class DateInputLocal(DateInput):
@@ -123,3 +123,50 @@ class MilestoneForm(ModelForm):
         super(MilestoneForm, self).__init__(*args, **kwargs)
         for field_name, field in self.fields.items():
             field.widget.attrs['class'] = 'form-control'
+
+
+class CollaborationForm(ModelForm):
+    """
+    form used for adding/updating collaborations
+    """
+
+    def __init__(self, *args, **kwargs):
+        """
+        We override init to grab the collaboration, and use it to populate the assigned_to with the group members,
+        so that they can be selected
+        """
+        super().__init__(*args, **kwargs)
+        for field_name, field in self.fields.items():
+            field.widget.attrs['class'] = 'form-control'
+
+    class Meta:
+        model = Collaboration
+        fields = ["name", "description"]
+        widgets = {
+            "description": Textarea(
+                attrs={
+                    "class": "validate form-control",
+                    "rows": 4,
+                    "cols": 5,
+                }
+            ),
+        }
+
+
+class CollaborationImageForm(ModelForm):
+    """
+    form used for adding/updating collaboration images
+    """
+
+    def __init__(self, *args, **kwargs):
+        """
+        We override init to grab the collaboration, and use it to populate the assigned_to with the group members,
+        so that they can be selected
+        """
+        super().__init__(*args, **kwargs)
+        for field_name, field in self.fields.items():
+            field.widget.attrs['class'] = 'form-control'
+
+    class Meta:
+        model = Collaboration
+        fields = ["image",]

@@ -99,36 +99,3 @@ class CollaborationDetailView(FormMixin, DetailView):
         )
 
         return context
-
-
-@method_decorator(login_required, name="dispatch")
-class CollaborationUpdateView(UpdateView):
-    """
-    Allows the user to update multiple fields on a collaboration which they are the admin/creator of.
-    """
-
-    template_name = "app/auxiliary/collaboration/update.html"
-    model = Collaboration
-    fields = [
-        "name",
-        "description",
-        "image"
-    ]
-
-    def get_success_url(self):
-        return reverse_lazy(
-            "collaboration-detail",
-            kwargs={"slug": self.object.slug},
-        )
-
-
-@method_decorator(login_required, name="dispatch")
-class CollaborationDeleteView(DeleteView):
-    template_name = "app/auxiliary/collaboration/delete.html"
-    model = Collaboration
-
-    def get_success_url(self):
-        return reverse_lazy(
-            "group-detail",
-            kwargs={"slug": self.object.related_group.slug},
-        )

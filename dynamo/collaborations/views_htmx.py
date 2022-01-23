@@ -6,10 +6,66 @@ from django.shortcuts import render, get_object_or_404
 from django.urls import reverse_lazy
 
 import collaborations.constants as c
-from collaborations.forms import MilestoneForm, TaskForm, TaskUpdateForm, TaskCompleteForm
+from collaborations.forms import MilestoneForm, TaskForm, TaskUpdateForm, TaskCompleteForm, CollaborationForm, \
+    CollaborationImageForm
 from collaborations.models import Collaboration, CollaborationTask, CollaborationMilestone
 from collaborations.utils import get_all_elements
 
+
+@login_required()
+def collaboration_update_view(request, slug):
+    """
+    HTMX VIEW - Allows collaborations to be updated without reload
+    Sends back app/collaborations/partials/header/main.html, to replace the content in #collaboration_header
+    If "collaboration_update_modal": True is in the context (and the form), a modal will be rendered (with error
+    messages, if appropriate)
+    """
+
+    collaboration = get_object_or_404(Collaboration, slug=slug)
+
+    form = CollaborationForm(request.POST or None, instance=collaboration)
+
+    if request.method == "POST" and form.is_valid():
+        form.save()
+        return render(request,
+                      "app/collaborations/partials/header/main.html", {
+                          "collaboration": collaboration,
+                      })
+
+    return render(request,
+                  "app/collaborations/partials/header/main.html", {
+                      "collaboration": collaboration,
+                      "collaboration_update_modal": True,
+                      "form": form,
+                  })
+
+
+@login_required()
+def collaboration_image_view(request, slug):
+    """
+    HTMX VIEW - Allows collaborations images to be updated without reload
+    Sends back app/collaborations/partials/header/main.html, to replace the content in #collaboration_header
+    If "collaboration_image_modal": True is in the context (and the form), a modal will be rendered (with error
+    messages, if appropriate)
+    """
+
+    collaboration = get_object_or_404(Collaboration, slug=slug)
+
+    form = CollaborationImageForm(request.POST or None, request.FILES or None, instance=collaboration)
+
+    if request.method == "POST" and form.is_valid():
+        form.save()
+        return render(request,
+                      "app/collaborations/partials/header/main.html", {
+                          "collaboration": collaboration,
+                      })
+
+    return render(request,
+                  "app/collaborations/partials/header/main.html", {
+                      "collaboration": collaboration,
+                      "collaboration_image_modal": True,
+                      "form": form,
+                  })
 
 @login_required()
 def collaboration_task_create_view(request, slug):
@@ -123,6 +179,8 @@ def collaboration_task_toggle_view(request, slug, pk, status):
         case c.UNDO_COMPLETE_TASK:
             task.completed_at = None
             task.completed_by = None
+            task.file = None
+            task.completion_notes = None
             task.save()
         case _:
             pass

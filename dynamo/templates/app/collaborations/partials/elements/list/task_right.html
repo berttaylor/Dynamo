@@ -1,7 +1,11 @@
 <div class="row align-items-center justify-content-end vertical-timeline p-0">
 
     <div class="col-12 col-md-8 text-right">
-        <h2 class="h6 pb-1">{{ task.number }}. {{ task.name }}</h2>
+        <a
+           hx-get="{% url 'collaboration-task-update' slug=collaboration.slug pk=task.pk %}"
+           hx-target="#element_list"
+           hx-swap="innerHTML"
+        ><h2 class="h6 pb-1">{{ task.number }}. {{ task.name }}</h2></a>
         <p class="mb-1">{{ task.description }}</p>
 {#        <h1>{{ task.position }}</h1>#}
         {% if task.completion_notes %}
@@ -51,23 +55,6 @@
 
             {% else %}
 
-            <a class="text-muted font-small me-3"
-               hx-get="{% url 'collaboration-task-update' slug=collaboration.slug pk=task.pk %}"
-               hx-target="#element_list"
-               hx-swap="innerHTML"
-            >
-                <span class="fas fa-pen me-2"></span>
-                <strong>Edit</strong>
-            </a>
-
-            <a class="text-muted font-small me-3"
-               hx-get="{% url 'collaboration-task-delete' slug=collaboration.slug pk=task.pk %}"
-               hx-target="#element_list"
-               hx-swap="innerHTML"
-            >
-                <span class="fas fa-times-circle me-2" aria-hidden="true"></span>
-                <strong>Delete</strong>
-            </a>
 
         {% endif %}
 
