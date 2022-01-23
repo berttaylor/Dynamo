@@ -17,7 +17,8 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 from django.views.generic import TemplateView
-from dynamo.base.views import htmx_empty_string
+
+from dynamo.base.views import empty_string
 
 urlpatterns = [
     # ADMIN
@@ -33,5 +34,5 @@ urlpatterns = [
     # Collaborations
     path("", include("collaborations.urls")),
     # Generics
-    path("htmx-empty-string", htmx_empty_string, name="htmx-empty-string"),
+    path("clear", empty_string, name="empty-string"),
 ]
