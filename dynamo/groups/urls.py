@@ -23,8 +23,9 @@ from groups.views import (
     group_join_view,
     group_leave_view,
 )
-from .views_htmx import htmx_membership_list, htmx_membership_selector, htmx_membership_handler, htmx_announcement_list, \
-    htmx_collaboration_list, htmx_announcement_delete, group_update_view, group_image_view
+from .views_htmx import htmx_announcement_list, \
+    htmx_collaboration_list, htmx_announcement_delete, group_update_view, group_image_view, group_membership_view, \
+    group_membership_selector_view, group_membership_handler_view
 
 urlpatterns = [
     path(
@@ -74,19 +75,19 @@ urlpatterns = [
 
     # HTMX views for the membership section of the group detail page.
     path(
-        "htmx-membership-list/<group_id>/",
-        htmx_membership_list,
-        name="htmx-membership-list",
+        "<slug>/memberships/",
+        group_membership_view,
+        name="group-membership-list",
     ),
     path(
-        "htmx-membership-selector/<group_id>/<membership_id>/<membership_filter>/",
-        htmx_membership_selector,
-        name="htmx-membership-selector",
+        "<slug>/membership-selector/<pk>/<membership_filter>/",
+        group_membership_selector_view,
+        name="group-membership-selector",
     ),
     path(
-        "htmx-membership-handler/<group_id>/<action>/<membership_filter>/",
-        htmx_membership_handler,
-        name="htmx-membership-handler",
+        "<slug>/membership-handler/<action>/<membership_filter>/",
+        group_membership_handler_view,
+        name="group-membership-handler",
     ),
 
     # HTMX views for the announcement section of the group detail page.

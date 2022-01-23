@@ -16,7 +16,7 @@
                     <div class="form-check inbox-check mb-0 me-2">
 
                         <input class="form-check-input" type="checkbox" value="" id="checkbox_for_{{ membership.id }}"
-                               hx-post="{% url 'htmx-membership-selector' group_id=group_id membership_id=membership.id membership_filter=membership_filter %}"
+                               hx-post="{% url 'group-membership-selector' slug=group.slug pk=membership.pk membership_filter=membership_filter %}"
                                hx-target="#requests_action_bar"
                                hx-swap="innerHTML swap:0.1s"
                         >

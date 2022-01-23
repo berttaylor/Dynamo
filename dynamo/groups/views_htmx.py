@@ -86,14 +86,14 @@ def group_image_view(request, slug):
 
 
 @login_required()
-def htmx_membership_list(request, group_id):
+def group_membership_view(request, slug):
     """
     HTMX VIEW - Populates list of memberships of the specified type - set by select object on front end
     """
 
     # if the filter is not set, we send back only pending membership requests
     membership_filter = request.GET.get('membership_filter', c.MEMBERSHIP_STATUS_PENDING)
-    group = get_object_or_404(Group, id=group_id)
+    group = get_object_or_404(Group, slug=slug)
 
     # Clear the session, if it is being used
     if request.session.get('selected_memberships', None):
@@ -104,10 +104,10 @@ def htmx_membership_list(request, group_id):
                       "app/group/partials/memberships/list.html",
                       {
                           "membership_list": Membership.objects.filter(
-                              group_id=group_id, status=membership_filter
+                              group__slug=slug, status=membership_filter
                           ),
                           "membership_filter": membership_filter,
-                          "group_id": group_id,
+                          "group": group,
                           "membership_count": get_membership_count(group),
                       })
     else:
@@ -115,7 +115,7 @@ def htmx_membership_list(request, group_id):
 
 
 @login_required()
-def htmx_membership_selector(request, group_id, membership_id, membership_filter):
+def group_membership_selector_view(request, slug, pk, membership_filter):
     """
     HTMX VIEW - Allows admins to select memberships in order to process in bulk
 
@@ -128,10 +128,11 @@ def htmx_membership_selector(request, group_id, membership_id, membership_filter
 
     # Grab the current list, or create one - an empty list
     selected_memberships = request.session.get('selected_memberships', [])
+    group = get_object_or_404(Group, slug=slug)
 
     # CASE 1: Removing an agency - Update the shortlist (in session), render the response
-    if membership_id in selected_memberships:
-        selected_memberships.remove(membership_id)
+    if pk in selected_memberships:
+        selected_memberships.remove(pk)
         if len(selected_memberships) == 0:
             del request.session['selected_memberships']
             return HttpResponse()
@@ -141,23 +142,23 @@ def htmx_membership_selector(request, group_id, membership_id, membership_filter
                           "app/group/partials/memberships/action_bar.html", {
                               "selected_memberships": len(selected_memberships),
                               "membership_filter": membership_filter,
-                              "group_id": group_id,
+                              "group": group,
                           })
 
     # CASE 2: Adding an agency to the shortlist - Update the shortlist (in session), render the response
     else:
-        selected_memberships.append(membership_id)
+        selected_memberships.append(pk)
         request.session['selected_memberships'] = selected_memberships
         return render(request,
                       "app/group/partials/memberships/action_bar.html", {
                           "selected_memberships": len(selected_memberships),
                           "membership_filter": membership_filter,
-                          "group_id": group_id,
+                          "group": group,
                       })
 
 
 @login_required()
-def htmx_membership_handler(request, group_id, action, membership_filter):
+def group_membership_handler_view(request, slug, action, membership_filter):
     """
     HTMX VIEW - Allows admins process memberships stored in session
 
@@ -172,7 +173,7 @@ def htmx_membership_handler(request, group_id, action, membership_filter):
     if not (selected_memberships := request.session.get('selected_memberships', None)):
         return None
 
-    group = get_object_or_404(Group, id=group_id)
+    group = get_object_or_404(Group, slug=slug)
 
     if action == c.MEMBERSHIP_ACTION_CLEAR_SELECTION:
         # Get the ids (so that we can 'uncheck' the checkboxes on front end)
@@ -215,7 +216,7 @@ def htmx_membership_handler(request, group_id, action, membership_filter):
 
     if membership_filter in c.MEMBERSHIP_FILTERS:
         membership_list = Membership.objects.filter(
-            group_id=group_id, status=membership_filter
+            group=group, status=membership_filter
         )
     else:
         membership_list = Membership.objects.none()
@@ -223,7 +224,6 @@ def htmx_membership_handler(request, group_id, action, membership_filter):
     return render(request, "app/group/partials/memberships/main.html",
                   {
                       "group": group,
-                      "group_id": group_id,
                       "membership_list": membership_list,
                       "membership_filter": membership_filter,
                       "membership_count": get_membership_count(group),
@@ -236,7 +236,7 @@ def htmx_announcement_list(request, group_id):
     HTMX VIEW - Populates the list of announcements - either Latest, All, or None
     """
 
-    # if the filter is not set, we send back only pending membership requests
+    # if the filter is not set, we hide the announcements
     announcement_list_filter = request.GET.get('announcement_list_filter', 'HIDE')
 
     if announcement_list_filter == 'HIDE':

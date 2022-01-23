@@ -9,7 +9,7 @@
                     aria-label="select membership view"
                     name="membership_filter"
                     hx-swap="innerHTML swap:0.1s"
-                    hx-get={% url 'htmx-membership-list' group_id=group.pk %}
+                    hx-get={% url 'group-membership-list' slug=group.slug %}
                             hx-target="#list_of_members"
             >
                 <option

@@ -3,17 +3,17 @@
     <div class="text-center mt-4">
         <p>{{ selected_memberships }} selected.
             <a
-                    hx-post="{% url 'htmx-membership-handler' group_id=group_id action=MEMBERSHIP_ACTION_APPROVE membership_filter=membership_filter %}"
+                    hx-post="{% url 'group-membership-handler' slug=group.slug action=MEMBERSHIP_ACTION_APPROVE membership_filter=membership_filter %}"
                     hx-target="#group_member_section"
                     hx-swap="innerHTML swap:0.1s"
             >{{ MEMBERSHIP_ACTION_APPROVE }}</a> |
             <a
-                    hx-post="{% url 'htmx-membership-handler' group_id=group_id action=MEMBERSHIP_ACTION_IGNORE membership_filter=membership_filter %}"
+                    hx-post="{% url 'group-membership-handler' slug=group.slug action=MEMBERSHIP_ACTION_IGNORE membership_filter=membership_filter %}"
                     hx-target="#group_member_section"
                     hx-swap="innerHTML swap:0.1s"
             >{{ MEMBERSHIP_ACTION_IGNORE }}</a> |
             <a
-                    hx-post="{% url 'htmx-membership-handler' group_id=group_id action=MEMBERSHIP_ACTION_CLEAR_SELECTION membership_filter=membership_filter %}"
+                    hx-post="{% url 'group-membership-handler' slug=group.slug action=MEMBERSHIP_ACTION_CLEAR_SELECTION membership_filter=membership_filter %}"
                     hx-target="#requests_action_bar"
                     hx-swap="innerHTML swap:0.1s"
             >{{ MEMBERSHIP_ACTION_CLEAR_SELECTION }}</a>
@@ -24,17 +24,17 @@
     <div class="text-center mt-4">
         <p>{{ selected_memberships }} selected.
             <a
-                    hx-post="{% url 'htmx-membership-handler' group_id=group_id action=MEMBERSHIP_ACTION_REMOVE membership_filter=membership_filter %}"
+                    hx-post="{% url 'group-membership-handler' slug=group.slug action=MEMBERSHIP_ACTION_REMOVE membership_filter=membership_filter %}"
                     hx-target="#group_member_section"
                     hx-swap="innerHTML swap:0.1s"
             >{{ MEMBERSHIP_ACTION_REMOVE }}</a> |
             <a
-                    hx-post="{% url 'htmx-membership-handler' group_id=group_id action=MEMBERSHIP_ACTION_MAKE_ADMIN membership_filter=membership_filter %}"
+                    hx-post="{% url 'group-membership-handler' slug=group.slug action=MEMBERSHIP_ACTION_MAKE_ADMIN membership_filter=membership_filter %}"
                     hx-target="#group_member_section"
                     hx-swap="innerHTML swap:0.1s"
             >{{ MEMBERSHIP_ACTION_MAKE_ADMIN }}</a> |
             <a
-                    hx-post="{% url 'htmx-membership-handler' group_id=group_id action=MEMBERSHIP_ACTION_CLEAR_SELECTION membership_filter=membership_filter %}"
+                    hx-post="{% url 'group-membership-handler' slug=group.slug action=MEMBERSHIP_ACTION_CLEAR_SELECTION membership_filter=membership_filter %}"
                     hx-target="#requests_action_bar"
                     hx-swap="innerHTML swap:0.1s"
             >{{ MEMBERSHIP_ACTION_CLEAR_SELECTION }}</a>
@@ -46,12 +46,12 @@
     <div class="text-center mt-4">
         <p>{{ selected_memberships }} selected.
             <a
-                    hx-post="{% url 'htmx-membership-handler' group_id=group_id action=MEMBERSHIP_ACTION_APPROVE membership_filter=membership_filter %}"
+                    hx-post="{% url 'group-membership-handler' slug=group.slug action=MEMBERSHIP_ACTION_APPROVE membership_filter=membership_filter %}"
                     hx-target="#group_member_section"
                     hx-swap="innerHTML swap:0.1s"
             >{{ MEMBERSHIP_ACTION_APPROVE }}</a> |
             <a
-                    hx-post="{% url 'htmx-membership-handler' group_id=group_id action=MEMBERSHIP_ACTION_CLEAR_SELECTION membership_filter=membership_filter %}"
+                    hx-post="{% url 'group-membership-handler' slug=group.slug action=MEMBERSHIP_ACTION_CLEAR_SELECTION membership_filter=membership_filter %}"
                     hx-target="#requests_action_bar"
                     hx-swap="innerHTML swap:0.1s"
             >{{ MEMBERSHIP_ACTION_CLEAR_SELECTION }}</a>
