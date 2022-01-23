@@ -1,6 +1,6 @@
-<div class="row align-items-center justify-content-end vertical-timeline">
+<div class="row align-items-center justify-content-end vertical-timeline p-0">
 
-    <div class="col-md-6 text-right">
+    <div class="col-12 col-md-8 text-right">
         <h2 class="h6 pb-1">{{ task.number }}. {{ task.name }}</h2>
         <p class="mb-1">{{ task.description }}</p>
 {#        <h1>{{ task.position }}</h1>#}
@@ -8,12 +8,12 @@
             <p class="mb-1">"{{ task.completion_notes }}"</p>
         {% endif %}
         {% if task.completed_by %}
-            <p class="text-muted font-small">Completed by {{ task.completed_by.first_name }} ({{ task.completed_at }})</p>
+            <p class="text-muted font-small mb-1">Completed by {{ task.completed_by.first_name }} ({{ task.completed_at|date:"d M, y" }})</p>
         {% endif %}
 
 
 
-        <div class="task_action_bar">
+        <div class="task_action_bar mt-3">
                     <span class="text-muted font-small me-3">
 
                         {% if task.is_complete %}
