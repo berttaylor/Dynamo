@@ -1,8 +1,5 @@
-from django.forms import ModelForm, DateInput, ModelChoiceField, Textarea
-from django.forms.widgets import Select
-
-from collaborations.models import CollaborationMilestone, CollaborationTask, Collaboration
-from groups.models import Group
+from django.forms import ModelForm, Textarea, TextInput
+from groups.models import Group, GroupAnnouncement
 
 
 class GroupForm(ModelForm):
@@ -40,3 +37,35 @@ class GroupImageForm(ModelForm):
     class Meta:
         model = Group
         fields = ["profile_image", ]
+
+
+class GroupAnnouncementForm(ModelForm):
+    """
+    form used for adding/updating Announcements
+    """
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        for field_name, field in self.fields.items():
+            field.widget.attrs['class'] = 'form-control'
+
+    class Meta:
+        model = GroupAnnouncement
+        fields = ["title", "body"]
+
+        widgets = {
+            "title": TextInput(
+                attrs={
+                    "class": "validate form-control",
+                    "rows": 1,
+                    "cols": 5,
+                }
+            ),
+            "body": Textarea(
+                attrs={
+                    "class": "validate form-control",
+                    "rows": 4,
+                    "cols": 5,
+                }
+            ),
+        }

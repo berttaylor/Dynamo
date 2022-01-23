@@ -23,9 +23,9 @@ from groups.views import (
     group_join_view,
     group_leave_view,
 )
-from .views_htmx import htmx_announcement_list, \
-    htmx_collaboration_list, htmx_announcement_delete, group_update_view, group_image_view, group_membership_view, \
-    group_membership_selector_view, group_membership_handler_view
+from .views_htmx import htmx_collaboration_list, group_update_view, group_image_view, group_membership_view, \
+    group_membership_selector_view, group_membership_handler_view, group_announcement_list, group_announcement_delete, \
+    group_announcement_create, group_announcement_update
 
 urlpatterns = [
     path(
@@ -92,14 +92,24 @@ urlpatterns = [
 
     # HTMX views for the announcement section of the group detail page.
     path(
-        "htmx-announcement-list/<group_id>/",
-        htmx_announcement_list,
-        name="htmx-announcement-list",
+        "<slug>/announcements",
+        group_announcement_list,
+        name="group-announcement-list",
     ),
     path(
-        "htmx-announcement-list/<group_id>/<pk>/delete",
-        htmx_announcement_delete,
-        name="htmx-announcement-delete",
+        "<slug>/announcements/create",
+        group_announcement_create,
+        name="group-announcement-create",
+    ),
+    path(
+        "<slug>/announcements/<pk>/update",
+        group_announcement_update,
+        name="group-announcement-update",
+    ),
+    path(
+        "<slug>/announcements/<pk>/delete",
+        group_announcement_delete,
+        name="group-announcement-delete",
     ),
 
     # HTMX views for the collaboration section of the group detail page.

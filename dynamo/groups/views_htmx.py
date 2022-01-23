@@ -5,7 +5,7 @@ from django.shortcuts import render, get_object_or_404
 
 import groups.constants as c
 from collaborations.models import Collaboration
-from groups.forms import GroupForm, GroupImageForm
+from groups.forms import GroupForm, GroupImageForm, GroupAnnouncementForm
 from groups.models import Group, Membership, GroupAnnouncement
 from groups.utils import get_membership_level
 from groups.views import get_membership_count
@@ -59,7 +59,7 @@ def group_image_view(request, slug):
 
     group = get_object_or_404(Group, slug=slug)
 
-    form = GroupImageForm(request.POST or None,request.FILES or None, instance=group)
+    form = GroupImageForm(request.POST or None, request.FILES or None, instance=group)
 
     if request.user.is_authenticated:
         membership_level = get_membership_level(request.user, group)
@@ -231,32 +231,6 @@ def group_membership_handler_view(request, slug, action, membership_filter):
 
 
 @login_required()
-def htmx_announcement_list(request, group_id):
-    """
-    HTMX VIEW - Populates the list of announcements - either Latest, All, or None
-    """
-
-    # if the filter is not set, we hide the announcements
-    announcement_list_filter = request.GET.get('announcement_list_filter', 'HIDE')
-
-    if announcement_list_filter == 'HIDE':
-        return HttpResponse()
-
-    match announcement_list_filter:
-        case c.ANNOUNCEMENTS_FILTER_LATEST:
-            announcements = GroupAnnouncement.objects.filter(group=group_id)[:1]
-        case c.ANNOUNCEMENTS_FILTER_ALL:
-            announcements = GroupAnnouncement.objects.filter(group=group_id)
-        case _:
-            announcements = GroupAnnouncement.objects.none()
-
-    return render(request,
-                  "app/group/partials/announcements/list.html", {
-                      "announcement_list": announcements
-                  })
-
-
-@login_required()
 def htmx_collaboration_list(request, group_id):
     """
     HTMX VIEW - Populates the list of collaborations - either All, Planning, ongoing,
@@ -303,7 +277,35 @@ def htmx_collaboration_list(request, group_id):
 
 
 @login_required()
-def htmx_announcement_delete(request, group_id, pk):
+def group_announcement_list(request, slug):
+    """
+    HTMX VIEW - Populates the list of announcements - either Latest, All, or None
+    """
+
+    # if the filter is not set, we hide the announcements
+    announcement_list_filter = request.GET.get('announcement_list_filter', 'HIDE')
+    group = get_object_or_404(Group, slug=slug)
+
+    if announcement_list_filter == 'HIDE':
+        return HttpResponse()
+
+    match announcement_list_filter:
+        case c.ANNOUNCEMENTS_FILTER_LATEST:
+            announcements = GroupAnnouncement.objects.filter(group=group)[:1]
+        case c.ANNOUNCEMENTS_FILTER_ALL:
+            announcements = GroupAnnouncement.objects.filter(group=group)
+        case _:
+            announcements = GroupAnnouncement.objects.none()
+
+    return render(request,
+                  "app/group/partials/announcements/list.html", {
+                      "group": group,
+                      "announcement_list": announcements
+                  })
+
+
+@login_required()
+def group_announcement_delete(request, slug, pk):
     """
     HTMX VIEW - Allows announcements to be deleted
     """
@@ -311,11 +313,78 @@ def htmx_announcement_delete(request, group_id, pk):
     # TODO: Secure and set methods
 
     announcement = get_object_or_404(GroupAnnouncement, pk=pk)
+    group = get_object_or_404(Group, slug=slug)
     announcement.delete()
 
-    announcements = GroupAnnouncement.objects.filter(group__pk=group_id)[:1]
+    announcements = GroupAnnouncement.objects.filter(group=group)[:1]
 
     return render(request,
                   "app/group/partials/announcements/list.html", {
-                      "announcement_list": announcements
+                      "group": group,
+                      "announcement_list": announcements,
+                  })
+
+
+@login_required()
+def group_announcement_create(request, slug):
+    """
+    HTMX VIEW - Allows new announcements with no reload
+    Sends back "app/group/partials/announcements/list.html", to replace the content in #list_of_announcements
+    If "announcement_create_modal": True is in the context (and the form), a modal will be rendered
+    (with error messages, if appropriate)
+    """
+
+    group = get_object_or_404(Group, slug=slug)
+
+    form = GroupAnnouncementForm(request.POST or None)
+
+    if request.method == "POST" and form.is_valid():
+        announcement = form.save(commit=False)
+        announcement.group = group
+        announcement.user = request.user
+        announcement.save()
+        return render(request,
+                      "app/group/partials/announcements/list.html", {
+                          "announcement_list": GroupAnnouncement.objects.filter(group=group)[:1],
+                          "group": group,
+                      })
+
+    return render(request,
+                  "app/group/partials/announcements/list.html", {
+                      "announcement_list": GroupAnnouncement.objects.filter(group=group)[:1],
+                      "group": group,
+                      "announcement_create_modal": True,
+                      "form": form,
+                  })
+
+
+@login_required()
+def group_announcement_update(request, slug, pk):
+    """
+    HTMX VIEW - Allows announcement updates with no reload
+    Sends back "app/group/partials/announcements/list.html", to replace the content in #list_of_announcements
+    If "announcement_update_modal": True is in the context (and the form), a modal will be rendered
+    (with error messages, if appropriate)
+    """
+
+    group = get_object_or_404(Group, slug=slug)
+    group_announcement = get_object_or_404(GroupAnnouncement, pk=pk)
+
+    form = GroupAnnouncementForm(request.POST or None, instance=group_announcement)
+
+    if request.method == "POST" and form.is_valid():
+        form.save()
+        return render(request,
+                      "app/group/partials/announcements/list.html", {
+                          "announcement_list": GroupAnnouncement.objects.filter(group=group)[:1],
+                          "group": group,
+                      })
+
+    return render(request,
+                  "app/group/partials/announcements/list.html", {
+                      "announcement_list": GroupAnnouncement.objects.filter(group=group)[:1],
+                      "group": group,
+                      "announcement_update_modal": True,
+                      "announcement": group_announcement,
+                      "form": form,
                   })
