@@ -43,16 +43,12 @@ def group_collaboration_create_view(request, slug):
     # Get filter parameter - if not set, send back a 'hidden' response (Empty HTML string)
     collaboration_list_filter = request.GET.get('collaboration_list_filter', None)
     if not collaboration_list_filter:
-        collaboration_list_filter = request.POST.get('collaboration_list_filter', None)
-    if collaboration_list_filter == 'HIDE':
-        collaborations = Collaboration.objects.none()
-    else:
-        collaborations = get_filtered_collaborations(group, collaboration_list_filter)
+        collaboration_list_filter = request.POST.get('collaboration_list_filter', 'HIDE')
 
     return render(request,
                   "app/group/partials/collaborations/list.html", {
                       "group": group,
-                      "collaboration_list": collaborations,
+                      "collaboration_list": get_filtered_collaborations(group, collaboration_list_filter),
                       "collaboration_creation_modal": show_modal,
                       "collaboration_list_filter": collaboration_list_filter,
                       "form": form,

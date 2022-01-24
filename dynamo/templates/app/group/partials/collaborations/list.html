@@ -50,7 +50,9 @@
     </div>
 
 {% empty %}
-    <div class="p-3">Nothing to show right now</div>
+    {% if collaboration_list_filter != "HIDE" %}
+        <div class="p-3">Nothing to show right now</div>
+    {% endif %}
 {% endfor %}
 
 {% if collaboration_creation_modal %}
