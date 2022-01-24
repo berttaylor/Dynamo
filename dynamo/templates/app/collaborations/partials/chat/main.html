@@ -29,13 +29,13 @@
         {% if message.user == request.user %}
 
             <div class="row align-items-center m-2 ms-5 py-2 bg-dark rounded">
-                <div class="col text-white"> {{ message.message }}
+                <div class="col text-white">
+                    <a
+                           hx-get="{% url 'collaboration-message-update' slug=collaboration.slug pk=message.pk %}"
+                           hx-target="#collaboration_chat"
+                   >{{ message.message }}</a>
                     <div class="small mt-1 text-gray-200"><strong
                             class="text-gray-200">You </strong>- {{ message.created_at }}
-                        <a class="text-muted font-small me-3"
-                           hx-delete="{% url 'collaboration-message-delete' slug=collaboration.slug pk=message.pk %}"
-                           hx-target="#collaboration_chat"
-                           ><span class="fa fa-trash me-2" aria-hidden="true"> </span></a>
                     </div>
                 </div>
             </div>
@@ -58,3 +58,11 @@
     {% endfor %}
 
 </div>
+
+{% if message_delete_modal %}
+    {% include "app/collaborations/partials/chat/modals/message_delete.html" %}
+{% endif %}
+
+{% if message_update_modal %}
+    {% include "app/collaborations/partials/chat/modals/message_update.html" %}
+{% endif %}

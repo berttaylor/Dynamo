@@ -5,10 +5,12 @@
 
         <div class="d-flex">
 
+            <form >
+
             <select class="form-select fmxw-150 pe-5" id="inlineFormCustomSelectMessages"
                     aria-label="collaborations filter"
                     name="collaboration_list_filter"
-                    hx-get={% url 'htmx-collaboration-list' group_id=group_id %}
+                    hx-get={% url 'group-collaboration-list' slug=group.slug %}
                             hx-target="#list_of_collaborations"
                     hx-swap="innerHTML swap:0.1s"
             >
@@ -20,11 +22,15 @@
             </select>
 
             {% if membership_level == "Admin" %}
-                <a href="{% url 'collaboration-create' slug=group.slug %}">
-                    <button class="btn btn-tertiary ms-2">New</button>
-                </a>
+                <button
+                    hx-get={% url 'group-collaboration-create' slug=group.slug %}
+                    hx-target="#list_of_collaborations"
+                    hx-include="[name='collaboration_list_filter']"
+                    hx-swap="innerHTML swap:0.1s"
+                    class="btn btn-tertiary ms-2" >New</button>
             {% endif %}
 
+            </form>
 
         </div>
 

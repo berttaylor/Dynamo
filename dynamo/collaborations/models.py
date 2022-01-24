@@ -145,7 +145,7 @@ class Collaboration(TimeStampedSoftDeleteBase):
             models.Index(fields=["name"]),
             models.Index(fields=["slug"]),
         ]
-        ordering = ["name"]
+        ordering = ["-created_at"]
 
 
 class CollaborationTask(TimeStampedSoftDeleteBase):

@@ -29,13 +29,16 @@
         {% if message.user == request.user %}
 
             <div class="row align-items-center m-2 ms-5 py-2 bg-dark rounded">
-                <div class="col text-white"> {{ message.message }}
+                <div class="col text-white">
+
+                    <a
+                           hx-get="{% url 'group-message-update' slug=group.slug pk=message.pk %}"
+                           hx-target="#group_chat"
+                   >{{ message.message }}</a>
+
+
                     <div class="small mt-1 text-gray-200"><strong
                             class="text-gray-200">You </strong>- {{ message.created_at }}
-                        <a class="text-muted font-small me-3"
-                           hx-delete="{% url 'group-message-delete' slug=group.slug pk=message.pk %}" hx-target="#group_chat"
-                           hx-swap="innerHTML swap:0.1s"
-                           ><span class="fa fa-times-circle me-2" aria-hidden="true"> </span></a>
                     </div>
                 </div>
             </div>
@@ -58,3 +61,11 @@
     {% endfor %}
 
 </div>
+
+{% if message_delete_modal %}
+    {% include "app/group/partials/modals/message_delete.html" %}
+{% endif %}
+
+{% if message_update_modal %}
+    {% include "app/group/partials/modals/message_update.html" %}
+{% endif %}

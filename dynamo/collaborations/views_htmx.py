@@ -10,6 +10,54 @@ from collaborations.forms import MilestoneForm, TaskForm, TaskUpdateForm, TaskCo
     CollaborationImageForm
 from collaborations.models import Collaboration, CollaborationTask, CollaborationMilestone
 from collaborations.utils import get_all_elements
+from dynamo.settings import SITE_PROTOCOL, SITE_DOMAIN
+from groups.models import Group
+from groups.utils import get_filtered_collaborations
+
+
+@login_required()
+def group_collaboration_create_view(request, slug):
+    """
+    HTMX VIEW - Allows collaboration creation
+    Sends back app/group/partials/collaborations/list.html, to replace the content in #list_of_collaborations
+    If "collaboration_creation_modal": True is in the context (and the form), a modal will be rendered (with error messages, if appropriate)
+    """
+
+    form = CollaborationForm(request.POST or None)
+    group = get_object_or_404(Group, slug=slug)
+    success_url = None
+    show_modal = True
+
+    if request.method == "POST" and form.is_valid():
+        collaboration = form.save(commit=False)
+        collaboration.related_group = group
+        collaboration.created_by = request.user
+        collaboration.created_at = datetime.now()
+        collaboration.save()
+        show_modal = False
+        success_url = SITE_PROTOCOL + SITE_DOMAIN + reverse_lazy(
+            "collaboration-detail",
+            kwargs={"slug": collaboration.slug},
+        )
+
+    # Get filter parameter - if not set, send back a 'hidden' response (Empty HTML string)
+    collaboration_list_filter = request.GET.get('collaboration_list_filter', None)
+    if not collaboration_list_filter:
+        collaboration_list_filter = request.POST.get('collaboration_list_filter', None)
+    if collaboration_list_filter == 'HIDE':
+        collaborations = Collaboration.objects.none()
+    else:
+        collaborations = get_filtered_collaborations(group, collaboration_list_filter)
+
+    return render(request,
+                  "app/group/partials/collaborations/list.html", {
+                      "group": group,
+                      "collaboration_list": collaborations,
+                      "collaboration_creation_modal": show_modal,
+                      "collaboration_list_filter": collaboration_list_filter,
+                      "form": form,
+                      "success_url": success_url,
+                  })
 
 
 @login_required()
@@ -66,6 +114,7 @@ def collaboration_image_view(request, slug):
                       "collaboration_image_modal": True,
                       "form": form,
                   })
+
 
 @login_required()
 def collaboration_task_create_view(request, slug):

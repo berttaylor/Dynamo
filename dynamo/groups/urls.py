@@ -16,16 +16,17 @@ Including another URLconf
 
 from django.urls import path
 
-from chat.views_htmx import group_message_create_view, group_message_delete_view
+from chat.views_htmx import group_message_create_view, group_message_delete_view, group_message_update_view
+from collaborations.views_htmx import group_collaboration_create_view
 from groups.views import (
     GroupDetailView,
     GroupCreateView,
     group_join_view,
     group_leave_view,
 )
-from .views_htmx import htmx_collaboration_list, group_update_view, group_image_view, group_membership_view, \
+from .views_htmx import group_update_view, group_image_view, group_membership_view, \
     group_membership_selector_view, group_membership_handler_view, group_announcement_list, group_announcement_delete, \
-    group_announcement_create, group_announcement_update
+    group_announcement_create, group_announcement_update, group_collaboration_list
 
 urlpatterns = [
     path(
@@ -68,6 +69,11 @@ urlpatterns = [
         name="group-message-create",
     ),
     path(
+        "/<slug>/messages/<pk>",
+        group_message_update_view,
+        name="group-message-update",
+    ),
+    path(
         "/<slug>/messages/<pk>/delete",
         group_message_delete_view,
         name="group-message-delete",
@@ -102,7 +108,7 @@ urlpatterns = [
         name="group-announcement-create",
     ),
     path(
-        "<slug>/announcements/<pk>/update",
+        "<slug>/announcements/<pk>",
         group_announcement_update,
         name="group-announcement-update",
     ),
@@ -114,9 +120,13 @@ urlpatterns = [
 
     # HTMX views for the collaboration section of the group detail page.
     path(
-        "htmx-collaboration-list/<group_id>/",
-        htmx_collaboration_list,
-        name="htmx-collaboration-list",
+        "<slug>/collaborations",
+        group_collaboration_list,
+        name="group-collaboration-list",
     ),
-
+    path(
+        "<slug>/collaborations/create",
+        group_collaboration_create_view,
+        name="group-collaboration-create",
+    ),
 ]

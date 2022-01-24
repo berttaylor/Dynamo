@@ -1,4 +1,4 @@
-<div class="modal fade" id="announcement-modal" tabindex="-1" role="dialog" aria-labelledby="modal-notification"
+<div class="modal fade" id="this-modal" tabindex="-1" role="dialog" aria-labelledby="modal-notification"
      aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content bg-primary text-white">
@@ -7,18 +7,19 @@
             </div>
 
             <form
-                hx-target="#list_of_announcements"
+                hx-target="#group_chat"
                 hx-swap="innerHTML swap:0.1s"
                 enctype="multipart/form-data"
                 hx-encoding="multipart/form-data">{% csrf_token %}
                 <div class="modal-body">
 
-                    <div class="py-1 text-center">
-                        <span class="modal-icon display-1"><span class="fa fa-plus"></span></span>
-                        <h2 class="h4 modal-title">New Announcement</h2>
-                                        <div class="text-center py-3">
-
-                    </div>
+                    <div class="py-3 text-center">
+                        <span class="modal-icon display-1"><span class="fas fa-pen"></span></span>
+                        <h2 class="h4 modal-title my-3">Edit Message</h2>
+                        <button type="button" class="btn btn-outline-white btn-sm" data-bs-dismiss="modal"
+                           hx-get="{% url 'group-message-delete' slug=group.slug pk=message.pk %}"
+                           hx-target="#group_chat"
+                        >Delete</button>
                     </div>
 
                     <div class="mx-5">
@@ -40,13 +41,12 @@
                 <div class="d-flex modal-footer border-secondary justify-content-around">
 
                     <button type="button" class="btn btn-outline-white" data-bs-dismiss="modal">Close</button>
-
                     <button
-                        hx-post="{% url 'group-announcement-create' slug=group.slug %}"
+                        hx-post="{% url 'group-message-update' slug=message.group.slug pk=message.pk %}"
                         type="submit"
                         class="btn btn-tertiary"
                         data-bs-dismiss="modal"
-                    >Submit</button>
+                    >Update</button>
 
                 </div>
 
@@ -58,6 +58,6 @@
 </div>
 
 <script>
-    const myModal = new bootstrap.Modal(document.getElementById("announcement-modal"), {})
+    const myModal = new bootstrap.Modal(document.getElementById("this-modal"), {})
     myModal.show();
 </script>

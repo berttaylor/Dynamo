@@ -2,37 +2,21 @@
 
     <div class="p-4 bg-white rounded shadow-sm my-3">
 
-
         <a
             hx-get="{% url 'group-announcement-update' slug=group.slug pk=announcement.pk %}"
             hx-target="#list_of_announcements"
             hx-swap="innerHTML swap:0.2s"
-        >
-
-                    <h5>{{ announcement.title }}</h5>
-        <p class="font-italic mb-0">{{ announcement.body }}</p>
-
-
-        </a>
+        ><h5>{{ announcement.title }}</h5><p class="font-italic mb-0">{{ announcement.body }}</p></a>
 
         <div class="justify-content-end">
             <ul class="list-inline small text-muted mt-3 mb-0">
-                <li class="list-inline-item"><i class="fa fa-comment-o mr-2"></i> Posted by
-                    <strong>{{ announcement.user }} </strong>
-                    <i class="fa fa-heart-o mr-2"></i> on {{ announcement.created_at }}</li>
-
-                {% if announcement.user == request.user %}
-                    <a class="text-muted font-small me-3"
-                       hx-delete="{% url 'group-announcement-delete' slug=announcement.group.slug pk=announcement.pk  %}"
-                       hx-target="#list_of_announcements"
-                       hx-swap="innerHTML swap:0.1s"
-                       hx-confirm="Delete Announcement?"><span class="fa fa-times-circle me-2" aria-hidden="true"> </span></a>
-
-                {% endif %}
-
-
+                <li class="list-inline-item"><i class="fa fa-comment-o mr-2"></i>
+                    Posted by<strong>{{ announcement.user }} </strong>
+                    <i class="fa fa-heart-o mr-2"></i> on {{ announcement.created_at }}
+                </li>
             </ul>
         </div>
+
     </div>
 
 {% empty %}
@@ -47,4 +31,8 @@
 
 {% if announcement_update_modal %}
     {% include "app/group/partials/modals/announcement_update.html" %}
+{% endif %}
+
+{% if announcement_delete_modal %}
+    {% include "app/group/partials/modals/announcement_delete.html" %}
 {% endif %}

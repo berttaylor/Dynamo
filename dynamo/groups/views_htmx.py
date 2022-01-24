@@ -1,13 +1,11 @@
 from django.contrib.auth.decorators import login_required
-from django.db.models import IntegerField, Case, When, Count, Q
 from django.http import HttpResponse
 from django.shortcuts import render, get_object_or_404
 
 import groups.constants as c
-from collaborations.models import Collaboration
 from groups.forms import GroupForm, GroupImageForm, GroupAnnouncementForm
 from groups.models import Group, Membership, GroupAnnouncement
-from groups.utils import get_membership_level
+from groups.utils import get_membership_level, get_filtered_collaborations
 from groups.views import get_membership_count
 
 
@@ -231,48 +229,25 @@ def group_membership_handler_view(request, slug, action, membership_filter):
 
 
 @login_required()
-def htmx_collaboration_list(request, group_id):
+def group_collaboration_list(request, slug):
     """
     HTMX VIEW - Populates the list of collaborations - either All, Planning, ongoing,
     """
+
+    # Get group
+    group = get_object_or_404(Group, slug=slug)
 
     # Get filter parameter - if not set, send back a 'hidden' response (Empty HTML string)
     collaboration_list_filter = request.GET.get('collaboration_list_filter', 'HIDE')
     if collaboration_list_filter == 'HIDE':
         return HttpResponse()
 
-    # Annotate the group's collaborations with the number of complete/incomplete tasks,
-    group_collaborations = Collaboration.objects.filter(
-        related_group=group_id,
-    ).annotate(
-        tasks_complete=Count(
-            Case(When(Q(tasks__completed_at__isnull=False), then=1),
-                 output_field=IntegerField(),
-                 )
-        ),
-        tasks_incomplete=Count(
-            Case(When(Q(tasks__completed_at__isnull=True), then=1),
-                 output_field=IntegerField(),
-                 )
-        ),
-    )
-
-    # Filter the collaborations, depending on the filter parameter chosen
-    match collaboration_list_filter:
-        case c.COLLABORATION_STATUS_ALL:
-            collaborations = group_collaborations
-        case c.COLLABORATION_STATUS_PLANNING:
-            collaborations = group_collaborations.filter(tasks_complete=0)
-        case c.COLLABORATION_STATUS_ONGOING:
-            collaborations = group_collaborations.filter(tasks_incomplete__gt=0).exclude(tasks_complete=0)
-        case c.COLLABORATION_STATUS_COMPLETED:
-            collaborations = group_collaborations.filter(tasks_incomplete=0).exclude(tasks_complete=0)
-        case _:
-            collaborations = Collaboration.objects.none()
+    collaborations = get_filtered_collaborations(group, collaboration_list_filter)
 
     return render(request,
                   "app/group/partials/collaborations/list.html", {
-                      "collaboration_list": collaborations
+                      "collaboration_list": collaborations,
+                      "group": group
                   })
 
 
@@ -307,21 +282,29 @@ def group_announcement_list(request, slug):
 @login_required()
 def group_announcement_delete(request, slug, pk):
     """
-    HTMX VIEW - Allows announcements to be deleted
+    HTMX VIEW - Allows announcement updates with no reload
+    Sends back "app/group/partials/announcements/list.html", to replace the content in #list_of_announcements
+    If "announcement_delete_modal": True is in the context (and the form), a modal will be rendered
+    (with error messages, if appropriate)
     """
 
-    # TODO: Secure and set methods
-
-    announcement = get_object_or_404(GroupAnnouncement, pk=pk)
     group = get_object_or_404(Group, slug=slug)
-    announcement.delete()
+    announcement = get_object_or_404(GroupAnnouncement, pk=pk)
 
-    announcements = GroupAnnouncement.objects.filter(group=group)[:1]
+    if request.method == "POST":
+        announcement.delete()
+        return render(request,
+                      "app/group/partials/announcements/list.html", {
+                          "announcement_list": GroupAnnouncement.objects.filter(group=group)[:1],
+                          "group": group,
+                      })
 
     return render(request,
                   "app/group/partials/announcements/list.html", {
+                      "announcement_list": GroupAnnouncement.objects.filter(group=group)[:1],
                       "group": group,
-                      "announcement_list": announcements,
+                      "announcement_delete_modal": True,
+                      "announcement": announcement,
                   })
 
 

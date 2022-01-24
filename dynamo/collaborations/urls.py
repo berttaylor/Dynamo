@@ -16,8 +16,9 @@ Including another URLconf
 
 from django.urls import path
 
-from chat.views_htmx import collaboration_message_create_view, collaboration_message_delete_view
-from collaborations.views import CollaborationCreateView, CollaborationDetailView
+from chat.views_htmx import collaboration_message_create_view, collaboration_message_delete_view, \
+    collaboration_message_update_view
+from collaborations.views import CollaborationDetailView
 from .views_htmx import collaboration_task_toggle_view, collaboration_task_create_view, \
     collaboration_milestone_create_view, collaboration_task_update_view, collaboration_milestone_update_view, \
     collaboration_task_delete_view, collaboration_milestone_delete_view, collaboration_task_move_view, \
@@ -25,13 +26,6 @@ from .views_htmx import collaboration_task_toggle_view, collaboration_task_creat
     collaboration_update_view, collaboration_image_view
 
 urlpatterns = [
-    # We use long URLs here because collaborations are created within groups and this probably make more sense
-    # to the user in terms of data hierarchy.
-    path(
-        "groups/<slug>/create-collaboration/",
-        CollaborationCreateView.as_view(),
-        name="collaboration-create",
-    ),
     path(
         "collaborations/<slug>/",
         CollaborationDetailView.as_view(),
@@ -108,6 +102,11 @@ urlpatterns = [
         "collaborations/<slug>/messages",
         collaboration_message_create_view,
         name="collaboration-message-create",
+    ),
+    path(
+        "collaborations/<slug>/messages/<pk>",
+        collaboration_message_update_view,
+        name="collaboration-message-update",
     ),
     path(
         "collaborations/<slug>/messages/<pk>/delete",

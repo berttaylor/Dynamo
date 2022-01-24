@@ -1,62 +1,12 @@
-from django.contrib.auth.decorators import login_required
-from django.shortcuts import get_object_or_404
-from django.urls import reverse_lazy
-from django.utils.decorators import method_decorator
-from django.views.generic import CreateView, DetailView
-from django.views.generic.edit import FormMixin, UpdateView, DeleteView
+from django.views.generic import DetailView
+from django.views.generic.edit import FormMixin
 
 from chat.forms import CollaborationMessageForm
 from chat.models import Message
-from collaborations.models import Collaboration, CollaborationTask, CollaborationMilestone
+from collaborations.models import Collaboration
 from collaborations.utils import get_all_elements
-from groups.models import Group
+
 from groups.views import get_membership_level
-
-
-@method_decorator(login_required, name="dispatch")
-class CollaborationCreateView(CreateView):
-    """
-    Allows users to create a new collaboration
-    """
-
-    template_name = "app/auxiliary/collaboration/create.html"
-    model = Collaboration
-    fields = (
-        "name",
-        "description",
-    )
-
-    def get_initial(self):
-        group = get_object_or_404(Group, slug=self.kwargs.get("slug"))
-        return {"related_group": group}
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context["group"] = get_object_or_404(Group, slug=self.kwargs.get("slug"))
-        return context
-
-    def form_valid(self, form):
-        """
-        We override the form valid to add the user as admin and creator
-        """
-
-        # 1. Get user
-        user = self.request.user
-        if not user.is_authenticated:
-            raise PermissionError
-        form.instance.created_by = user
-
-        form.instance.related_group = Group.objects.get(
-            slug=self.kwargs.get("slug")
-        )
-
-        return super(CollaborationCreateView, self).form_valid(form)
-
-    def get_success_url(self):
-        return reverse_lazy(
-            "collaboration-detail",
-            kwargs={"slug": self.object.slug},
-        )
 
 
 class CollaborationDetailView(FormMixin, DetailView):
