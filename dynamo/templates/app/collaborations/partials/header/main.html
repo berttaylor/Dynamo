@@ -5,7 +5,7 @@
         <a
             hx-get="{% url 'collaboration-image' slug=collaboration.slug %}"
             hx-target="#collaboration_header"
-            hx-swap="innerHTML swap:0.2s"
+            hx-swap="afterend"
         >
             {% if collaboration.image %}
                 <img src="{{ collaboration.image.url }}"
@@ -20,7 +20,7 @@
         <a
             hx-get="{% url 'collaboration-update' slug=collaboration.slug %}"
             hx-target="#collaboration_header"
-            hx-swap="innerHTML swap:0.2s"
+            hx-swap="afterend"
         >
             <h1 class="my-4">{{ collaboration.name }}</h1>
         </a>
@@ -35,7 +35,7 @@
         <a
             hx-get="{% url 'collaboration-update' slug=collaboration.slug %}"
             hx-target="#collaboration_header"
-            hx-swap="innerHTML swap:0.2s"
+            hx-swap="afterend"
         >
             <p class="card-description">{{ collaboration.description }}</p>
         </a>
@@ -56,11 +56,3 @@
     </div>
 
 </div>
-
-{% if collaboration_update_modal %}
-    {% include "app/collaborations/partials/header/modals/collaboration_update.html" %}
-{% endif %}
-
-{% if collaboration_image_modal %}
-    {% include "app/collaborations/partials/header/modals/collaboration_image_update.html" %}
-{% endif %}

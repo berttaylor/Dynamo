@@ -27,8 +27,9 @@ def group_update_view(request, slug):
     else:
         membership_level = None
 
-    if request.method == "POST" and form.is_valid():
-        form.save()
+    if request.method == "POST":
+        if form.is_valid():
+            form.save()
         return render(request,
                       "app/group/partials/header/main.html", {
                           "group": group,
@@ -37,11 +38,8 @@ def group_update_view(request, slug):
                       })
 
     return render(request,
-                  "app/group/partials/header/main.html", {
+                  "app/group/partials/modals/group_update.html", {
                       "group": group,
-                      "membership_level": membership_level,
-                      "membership_count": get_membership_count(group),
-                      "group_update_modal": True,
                       "form": form,
                   })
 
@@ -64,8 +62,9 @@ def group_image_view(request, slug):
     else:
         membership_level = None
 
-    if request.method == "POST" and form.is_valid():
-        form.save()
+    if request.method == "POST":
+        if form.is_valid():
+            form.save()
         return render(request,
                       "app/group/partials/header/main.html", {
                           "group": group,
@@ -74,11 +73,8 @@ def group_image_view(request, slug):
                       })
 
     return render(request,
-                  "app/group/partials/header/main.html", {
+                  "app/group/partials/modals/group_image.html", {
                       "group": group,
-                      "membership_level": membership_level,
-                      "membership_count": get_membership_count(group),
-                      "group_image_modal": True,
                       "form": form,
                   })
 
@@ -371,3 +367,7 @@ def group_announcement_update(request, slug, pk):
                       "announcement": group_announcement,
                       "form": form,
                   })
+
+
+def group_create_view(request):
+    return render(request,"app/home/group-create.html",)

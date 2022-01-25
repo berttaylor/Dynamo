@@ -6,7 +6,7 @@ from django.urls import reverse_lazy
 from django.utils.decorators import method_decorator
 from django.views.generic import (
     DetailView,
-    CreateView,
+    CreateView, ListView,
 )
 from django.views.generic.edit import FormMixin
 
@@ -18,6 +18,31 @@ from groups.models import Group, GroupAnnouncement, Membership
 from groups.utils import get_membership_level, get_membership_count
 
 
+@method_decorator(login_required, name="dispatch")
+class GroupListView(ListView):
+    """
+    Shows all of the users groups
+    """
+
+    template_name = "app/home/user_groups.html"
+    model = Group
+    context_object_name = 'groups'
+
+    def get_queryset(self):
+        return Group.objects.filter(members=self.request.user)
+
+
+@method_decorator(login_required, name="dispatch")
+class GroupSearchView(ListView):
+    """
+    Shows all  groups
+    """
+    template_name = "app/home/find_groups.html"
+    model = Group
+    context_object_name = 'groups'
+
+
+@method_decorator(login_required, name="dispatch")
 class GroupDetailView(FormMixin, DetailView):
     """
     Shows all information regarding a group, as well as populating the initial state for the below page sections

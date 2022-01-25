@@ -55,10 +55,6 @@
     {% endif %}
 {% endfor %}
 
-{% if collaboration_creation_modal %}
-    {% include "app/group/partials/modals/collaboration_create.html" %}
-{% endif %}
-
 {% if success_url %}
     {% include "app/group/js/redirect.html" with url=success_url %}
 {% endif %}

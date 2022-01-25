@@ -52,7 +52,7 @@ def get_filtered_collaborations(group, collaboration_list_filter):
                  output_field=IntegerField(),
                  )
         ),
-    )
+    ).order_by('-created_at')
 
     # Filter the collaborations, depending on the filter parameter chosen
     match collaboration_list_filter:

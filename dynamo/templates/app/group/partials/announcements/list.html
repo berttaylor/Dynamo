@@ -5,7 +5,7 @@
         <a
             hx-get="{% url 'group-announcement-update' slug=group.slug pk=announcement.pk %}"
             hx-target="#list_of_announcements"
-            hx-swap="innerHTML swap:0.2s"
+            hx-swap="innerHTML"
         ><h5>{{ announcement.title }}</h5><p class="font-italic mb-0">{{ announcement.body }}</p></a>
 
         <div class="justify-content-end">

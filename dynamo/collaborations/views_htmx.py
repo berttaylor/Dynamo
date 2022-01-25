@@ -1,5 +1,6 @@
 from datetime import datetime
 
+from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseRedirect
 from django.shortcuts import render, get_object_or_404
@@ -25,34 +26,65 @@ def group_collaboration_create_view(request, slug):
 
     form = CollaborationForm(request.POST or None)
     group = get_object_or_404(Group, slug=slug)
-    success_url = None
-    show_modal = True
 
-    if request.method == "POST" and form.is_valid():
-        collaboration = form.save(commit=False)
-        collaboration.related_group = group
-        collaboration.created_by = request.user
-        collaboration.created_at = datetime.now()
-        collaboration.save()
-        show_modal = False
-        success_url = SITE_PROTOCOL + SITE_DOMAIN + reverse_lazy(
-            "collaboration-detail",
-            kwargs={"slug": collaboration.slug},
-        )
+    if request.method == "POST":
+        if form.is_valid():
+            collaboration = form.save(commit=False)
+            collaboration.related_group = group
+            collaboration.created_by = request.user
+            collaboration.created_at = datetime.now()
+            collaboration.save()
+            success_url = SITE_PROTOCOL + SITE_DOMAIN + reverse_lazy(
+                "collaboration-detail",
+                kwargs={"slug": collaboration.slug},
+            )
 
-    # Get filter parameter - if not set, send back a 'hidden' response (Empty HTML string)
-    collaboration_list_filter = request.GET.get('collaboration_list_filter', None)
-    if not collaboration_list_filter:
-        collaboration_list_filter = request.POST.get('collaboration_list_filter', 'HIDE')
+            # Get filter parameter - if not set, send back a 'hidden' response (Empty HTML string)
+            collaboration_list_filter = request.GET.get('collaboration_list_filter', None)
+            if not collaboration_list_filter:
+                collaboration_list_filter = request.POST.get('collaboration_list_filter', 'HIDE')
+
+            return render(request,
+                          "app/group/partials/collaborations/list.html", {
+                              "group": group,
+                              "collaboration_list": get_filtered_collaborations(group, collaboration_list_filter),
+                              "collaboration_list_filter": collaboration_list_filter,
+                              "form": form,
+                              "success_url": success_url,
+                          })
 
     return render(request,
-                  "app/group/partials/collaborations/list.html", {
+                  "app/group/partials/modals/collaboration_create.html", {
                       "group": group,
-                      "collaboration_list": get_filtered_collaborations(group, collaboration_list_filter),
-                      "collaboration_creation_modal": show_modal,
-                      "collaboration_list_filter": collaboration_list_filter,
                       "form": form,
-                      "success_url": success_url,
+                  })
+
+
+@login_required()
+def collaboration_delete_view(request, slug):
+    """
+    HTMX VIEW - Allows deletion of collaborations
+    a get request will send back the confirmation modal (containing a delete link),
+    to be appended to #collaboration_header
+    If "task_delete_modal": True is in the context, a modal will be rendered
+    """
+
+    collaboration = get_object_or_404(Collaboration, slug=slug)
+
+    if request.method == "POST":
+        group = collaboration.related_group
+        collaboration.delete()
+        messages.success(request, "Collaboration Removed")
+        return HttpResponseRedirect(
+            reverse_lazy(
+                "group-detail",
+                kwargs={"slug": group.slug},
+            )
+        )
+
+    return render(request,
+                  "app/collaborations/partials/header/modals/collaboration_delete.html", {
+                      "collaboration": collaboration,
                   })
 
 
@@ -69,17 +101,17 @@ def collaboration_update_view(request, slug):
 
     form = CollaborationForm(request.POST or None, instance=collaboration)
 
-    if request.method == "POST" and form.is_valid():
-        form.save()
+    if request.method == "POST":
+        if form.is_valid():
+            form.save()
         return render(request,
                       "app/collaborations/partials/header/main.html", {
                           "collaboration": collaboration,
                       })
 
     return render(request,
-                  "app/collaborations/partials/header/main.html", {
+                  "app/collaborations/partials/header/modals/collaboration_update.html", {
                       "collaboration": collaboration,
-                      "collaboration_update_modal": True,
                       "form": form,
                   })
 
@@ -97,17 +129,17 @@ def collaboration_image_view(request, slug):
 
     form = CollaborationImageForm(request.POST or None, request.FILES or None, instance=collaboration)
 
-    if request.method == "POST" and form.is_valid():
-        form.save()
+    if request.method == "POST":
+        if form.is_valid():
+            form.save()
         return render(request,
                       "app/collaborations/partials/header/main.html", {
                           "collaboration": collaboration,
                       })
 
     return render(request,
-                  "app/collaborations/partials/header/main.html", {
+                  'app/collaborations/partials/header/modals/collaboration_image_update.html', {
                       "collaboration": collaboration,
-                      "collaboration_image_modal": True,
                       "form": form,
                   })
 

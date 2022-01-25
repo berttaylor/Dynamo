@@ -1,0 +1,27 @@
+{% extends "app/base/main.html" %}
+{% block body_content %}
+
+    <h1>User Collaborations List!!!!!!!</h1>
+
+    {% include "app/group/partials/collaborations/main.html" %}
+
+    <table>
+        {% for collaboration in collaborations %}
+            <tr>
+                <td>
+
+                    <a hx-boost="true" href="{% url 'collaboration-detail' slug=collaboration.slug %}">
+                        <span class="text-tertiary">{{ collaboration }}</span>
+                    </a>
+
+                </td>
+
+            </tr>
+        {% endfor %}
+    </table>
+{% endblock %}
+
+
+
+
+

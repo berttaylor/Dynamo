@@ -20,13 +20,18 @@ from dynamo import settings as s
 from django.contrib.auth import views as django_auth_views
 
 from users.forms import CustomLoginForm, CustomPasswordResetForm
-from users.views import sign_up_view
+from users.views import sign_up_view, UserUpdateView
 
 urlpatterns = [
     path(
         "signup/",
         sign_up_view,
         name="signup",
+    ),
+    path(
+        "my-details/",
+        UserUpdateView.as_view(),
+        name="user-update",
     ),
     path(
         "login/",

@@ -1,0 +1,25 @@
+{% extends "app/base/main.html" %}
+{% block body_content %}
+
+    <h1>All Groups here!!!!!!! with search?</h1>
+
+
+
+    <table>
+    {% for group in groups %}
+        <tr>
+        <td>
+            <a hx-boost="true" href="{% url 'group-detail' slug=group.slug %}">
+                <span class="text-tertiary">{{ group }}</span>
+            </a>
+        </td>
+        </tr>
+    {% endfor %}
+</table>
+
+{% endblock %}
+
+
+
+
+

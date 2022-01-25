@@ -16,6 +16,11 @@
                     <div class="py-1 text-center">
                         <span class="modal-icon display-1"><span class="fas fa-pen"></span></span>
                         <h2 class="h4 modal-title">Update Collaboration</h2>
+                        <button type="button" class="btn btn-outline-white btn-sm" data-bs-dismiss="modal"
+                               hx-get="{% url 'collaboration-delete' slug=collaboration.slug %}"
+                               hx-target="#collaboration_header"
+                               hx-swap="afterend"
+                        >Delete</button>
                     </div>
 
 
@@ -44,6 +49,7 @@
                         type="submit"
                         class="btn btn-tertiary"
                         data-bs-dismiss="modal"
+                        hx-swap="innerHTML swap:0.2s"
                     >Submit</button>
 
                 </div>

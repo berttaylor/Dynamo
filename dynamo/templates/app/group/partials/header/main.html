@@ -4,7 +4,7 @@
         <a
             hx-get="{% url 'group-image' slug=group.slug %}"
             hx-target="#group_page_header"
-            hx-swap="innerHTML swap:0.2s"
+            hx-swap="afterend"
         >
         {% if group.profile_image %}
             <img src="{{ group.profile_image.url }}" class="organic-radius img-fluid" alt="Joseph Avatar">
@@ -17,7 +17,7 @@
         <a
             hx-get="{% url 'group-update' slug=group.slug %}"
             hx-target="#group_page_header"
-            hx-swap="innerHTML swap:0.2s"
+            hx-swap="afterend"
         >
 
             <h1 class="m-4">{{ group.name }}</h1>
@@ -32,10 +32,6 @@
             {% elif not membership_level == MEMBERSHIP_STATUS_PENDING %}
                 <a href="{% url 'group-join' slug=group.slug %}">Join</a>
             {% endif %}
-            {#                {% if membership_level == "Admin" %}#}
-            {#                    | <a href="{% url 'group-update' slug=group.slug %}">Edit</a> |#}
-            {#                    <a href="{% url 'group-delete' slug=group.slug %}">Delete</a>#}
-            {#                {% endif %}#}
         </p>
 
         {% if messages %}
@@ -74,11 +70,3 @@
         </li>
     </ul>
 </div>
-
-{% if group_update_modal %}
-    {% include "app/group/partials/modals/group_update.html" %}
-{% endif %}
-
-{% if group_image_modal %}
-    {% include "app/group/partials/modals/group_image.html" %}
-{% endif %}

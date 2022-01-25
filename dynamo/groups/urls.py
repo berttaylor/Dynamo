@@ -20,19 +20,28 @@ from chat.views_htmx import group_message_create_view, group_message_delete_view
 from collaborations.views_htmx import group_collaboration_create_view
 from groups.views import (
     GroupDetailView,
-    GroupCreateView,
     group_join_view,
-    group_leave_view,
+    group_leave_view, GroupListView, GroupSearchView,
 )
 from .views_htmx import group_update_view, group_image_view, group_membership_view, \
     group_membership_selector_view, group_membership_handler_view, group_announcement_list, group_announcement_delete, \
-    group_announcement_create, group_announcement_update, group_collaboration_list
+    group_announcement_create, group_announcement_update, group_collaboration_list, group_create_view
 
 urlpatterns = [
     path(
         "",
-        GroupCreateView.as_view(),
+        GroupListView.as_view(),
+        name="group-list",
+    ),
+    path(
+        "create/",
+        group_create_view,
         name="group-create",
+    ),
+    path(
+        "search/",
+        GroupSearchView.as_view(),
+        name="group-search",
     ),
     path(
         "<slug>/",
