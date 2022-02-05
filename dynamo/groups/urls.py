@@ -34,7 +34,7 @@ urlpatterns = [
         name="group-create",
     ),
     path(
-        "search/",
+        "find/",
         GroupSearchView.as_view(),
         name="group-search",
     ),

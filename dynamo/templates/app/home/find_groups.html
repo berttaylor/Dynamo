@@ -1,25 +1,31 @@
 {% extends "app/base/main.html" %}
 {% block body_content %}
 
-    <h1>All Groups here!!!!!!! with search?</h1>
+
+<div class="py-4 px-4 mb-4 bg-white rounded shadow-sm">
+
+    <div class="d-flex align-items-center justify-content-between">
+        <h5 class="mb-0">More Groups</h5>
+        <a
+            hx-get="{% url 'group-create' %}"
+            hx-target="#modal-div"
+            hx-swap="innerHTML"
+        >
+                    <button class="btn btn-tertiary ms-2"> + Add Group</button>
+                </a>
+    </div>
+
+    </div>
+    <div class="row card-deck" id="list_of_groups">
+        {% include "app/home/partials/group_list.html" %}
+    </div>
+
+    <div id="modal-div">
+
+    </div>
 
 
-
-    <table>
-    {% for group in groups %}
-        <tr>
-        <td>
-            <a hx-boost="true" href="{% url 'group-detail' slug=group.slug %}">
-                <span class="text-tertiary">{{ group }}</span>
-            </a>
-        </td>
-        </tr>
-    {% endfor %}
-</table>
 
 {% endblock %}
-
-
-
 
 

@@ -21,11 +21,19 @@ from groups.utils import get_membership_level, get_membership_count
 @method_decorator(login_required, name="dispatch")
 class GroupSearchView(ListView):
     """
-    Shows all  groups
+    Shows all of the groups that a user is not part of
     """
+
     template_name = "app/home/find_groups.html"
     model = Group
     context_object_name = 'groups'
+
+    def get_queryset(self):
+        memberships = Membership.objects.filter(
+            user=self.request.user,
+            status__in=[c.MEMBERSHIP_STATUS_CURRENT, c.MEMBERSHIP_STATUS_ADMIN]
+        ).values_list('group', flat=True)
+        return Group.objects.exclude(pk__in=memberships)
 
 
 @method_decorator(login_required, name="dispatch")

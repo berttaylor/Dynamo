@@ -89,3 +89,6 @@ class UserCollaborationListView(ListView):
             return get_users_filtered_collaborations(self.request.user, collaboration_list_filter)
 
         return Collaboration.objects.filter(related_group__members=self.request.user)
+
+
+
