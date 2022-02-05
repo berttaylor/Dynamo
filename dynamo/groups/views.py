@@ -21,19 +21,59 @@ from groups.utils import get_membership_level, get_membership_count
 @method_decorator(login_required, name="dispatch")
 class GroupSearchView(ListView):
     """
-    Shows all of the groups that a user is not part of
+    Shows all of the groups that a user is not part of. serving both full adn htmx requests
     """
 
     template_name = "app/home/find_groups.html"
     model = Group
     context_object_name = 'groups'
 
+    def get_template_names(self):
+        """
+        If a filter is specified, this is an HTMX request, meaning that we should return a partial,
+        rather than the entire page
+        """
+        if self.request.GET.get('group_query_string', None):
+            return "app/home/partials/group_list.html"
+        return "app/home/find_groups.html"
+
     def get_queryset(self):
         memberships = Membership.objects.filter(
             user=self.request.user,
             status__in=[c.MEMBERSHIP_STATUS_CURRENT, c.MEMBERSHIP_STATUS_ADMIN]
         ).values_list('group', flat=True)
-        return Group.objects.exclude(pk__in=memberships)
+
+        groups = Group.objects.exclude(pk__in=memberships)
+        if query_string := self.request.GET.get('group_query_string', None):
+            return groups.filter(name__icontains=query_string)
+        return groups
+
+
+@method_decorator(login_required, name="dispatch")
+class UserCollaborationListView(ListView):
+    """
+    Shows all of the users Collaborations, serving both full page and htmx requests
+    """
+
+    template_name = "app/home/user_collaborations.html"
+    model = Collaboration
+
+    def get_template_names(self):
+        """
+        If a filter is specified, this is an HTMX request, meaning that we should return a partial,
+        rather than the entire page
+        Get filter parameter
+        """
+        if self.request.GET.get('collaboration_list_filter', None):
+            return "app/home/partials/collaboration_list.html"
+        return "app/home/user_collaborations.html"
+
+    def get_queryset(self):
+        """
+        If a filter is specified, we send back a subset of the users groups, rather than all of them.
+        """
+
+        return Collaboration.objects.filter(related_group__members=self.request.user)
 
 
 @method_decorator(login_required, name="dispatch")
