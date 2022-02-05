@@ -16,7 +16,7 @@
                 <h3 class="h5 card-title mt-2">
                     <a hx-swap="innerHTML swap:0.2s" hx-boost="true" href="{% url 'group-detail' slug=group.slug %}">{{ group.name }}</a></h3>
                 <div class="col d-flex mb-2 ps-0"><span class="font-small me-3"><span
-                        class="fas fa-user me-2"></span>{{ group.members.count }}</span>
+                        class="fas fa-user me-2"></span>{{ group.active_member_count }}</span>
 
                     <span class="font-small me-3">
                         <span class="fas fa-bullhorn me-2"></span>{{ group.group_announcements.count }}</span>

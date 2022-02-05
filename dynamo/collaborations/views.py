@@ -1,11 +1,10 @@
-from django.views.generic import DetailView, ListView
+from django.views.generic import DetailView
 from django.views.generic.edit import FormMixin
 
 from chat.forms import CollaborationMessageForm
 from chat.models import Message
 from collaborations.models import Collaboration
 from collaborations.utils import get_all_elements
-
 from groups.views import get_membership_level
 
 

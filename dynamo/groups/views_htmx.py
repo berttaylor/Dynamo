@@ -1,8 +1,10 @@
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse
 from django.shortcuts import render, get_object_or_404
+from django.urls import reverse_lazy
 
 import groups.constants as c
+from dynamo.settings import SITE_PROTOCOL, SITE_DOMAIN
 from groups.forms import GroupForm, GroupImageForm, GroupAnnouncementForm
 from groups.models import Group, Membership, GroupAnnouncement
 from groups.utils import get_membership_level, get_filtered_collaborations
@@ -369,5 +371,33 @@ def group_announcement_update(request, slug, pk):
                   })
 
 
+@login_required()
 def group_create_view(request):
-    return render(request,"app/home/group-create.html",)
+    """
+    HTMX VIEW - Allows group creation
+    Sends back the modal app/home/modals/group_create.html, which is appended do the header div.
+    on successful submission, sends back a JS/htmx redirect to the new group page.
+    """
+
+    form = GroupForm(request.POST or None)
+    if request.method == "POST":
+        if form.is_valid():
+            group = form.save(commit=False)
+            group.created_by = request.user
+            group.save()
+            Membership.objects.create(user=request.user, group=group, status=c.MEMBERSHIP_STATUS_ADMIN)
+            success_url = SITE_PROTOCOL + SITE_DOMAIN + reverse_lazy(
+                "group-detail",
+                kwargs={"slug": group.slug},
+            )
+
+            return render(request,
+                          "app/snippets/js_redirect.html", {
+                              "url": success_url,
+                          })
+
+    return render(request,
+                  "app/home/modals/group_create.html", {
+                      "form": form,
+                  })
+

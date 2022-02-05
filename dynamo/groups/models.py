@@ -61,9 +61,9 @@ class Group(TimeStampedSoftDeleteBase):
         self.__saved_profile_image = self.profile_image
 
     @property
-    def member_count(self):
+    def active_member_count(self):
         """Returns the number of active group members"""
-        return self.memberships.all().filter(status=c.MEMBERSHIP_STATUS_CURRENT).count()
+        return self.memberships.all().filter(status__in=[c.MEMBERSHIP_STATUS_CURRENT, c.MEMBERSHIP_STATUS_ADMIN]).count()
 
     @property
     def subscriber_count(self):

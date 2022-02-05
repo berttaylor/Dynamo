@@ -6,7 +6,7 @@ from django.urls import reverse_lazy
 from django.utils.decorators import method_decorator
 from django.views.generic import (
     DetailView,
-    CreateView, ListView,
+    ListView,
 )
 from django.views.generic.edit import FormMixin
 
@@ -77,47 +77,6 @@ class GroupDetailView(FormMixin, DetailView):
             del self.request.session['selected_memberships']
 
         return context
-
-
-@method_decorator(login_required, name="dispatch")
-class GroupCreateView(CreateView):
-    """
-    Allows users to create a new group
-    """
-
-    template_name = "app/auxiliary/group/create.html"
-    model = Group
-    fields = (
-        "name",
-        "description",
-        "profile_image"
-    )
-
-    def form_valid(self, form):
-        """
-        We override the form valid to add the user as admin and creator
-        """
-
-        # 1. Get user (if logged in)
-        user = self.request.user
-        if not user.is_authenticated:
-            raise PermissionError
-        form.instance.created_by = user
-
-        # 2. Create group in db
-        response = super(GroupCreateView, self).form_valid(form)
-        group = self.object
-
-        # 3. Add user as admin, members and subscribers
-        Membership.objects.create(user=user, group=group, status=c.MEMBERSHIP_STATUS_ADMIN)
-
-        return response
-
-    def get_success_url(self):
-        return reverse_lazy(
-            "group-detail",
-            kwargs={"slug": self.object.slug},
-        )
 
 
 @login_required()
