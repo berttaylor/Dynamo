@@ -72,11 +72,10 @@ class UserCollaborationListView(ListView):
 
     def get_template_names(self):
         """
-        If a filter is specified, this is an HTMX request, meaning that we should return a partial,
+        If this is an HTMX request, we return a partial,
         rather than the entire page
-        Get filter parameter
         """
-        if self.request.GET.get('collaboration_list_filter', None):
+        if self.request.htmx:
             return "app/home/partials/collaboration_list.html"
         return "app/home/user_collaborations.html"
 
