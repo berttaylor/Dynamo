@@ -1,4 +1,4 @@
-from django.forms import ModelForm, DateInput, ModelChoiceField, Textarea
+from django.forms import ModelForm, DateInput, ModelChoiceField, Textarea, FileInput
 from django.forms.widgets import Select
 
 from collaborations.models import CollaborationMilestone, CollaborationTask, Collaboration
@@ -170,3 +170,6 @@ class CollaborationImageForm(ModelForm):
     class Meta:
         model = Collaboration
         fields = ["image",]
+        widgets = {
+            'image': FileInput(),
+        }

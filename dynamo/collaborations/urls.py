@@ -18,7 +18,7 @@ from django.urls import path
 
 from chat.views_htmx import collaboration_message_create_view, collaboration_message_delete_view, \
     collaboration_message_update_view
-from collaborations.views import CollaborationDetailView, CollaborationListView
+from collaborations.views import CollaborationDetailView
 from .views_htmx import collaboration_task_toggle_view, collaboration_task_create_view, \
     collaboration_milestone_create_view, collaboration_task_update_view, collaboration_milestone_update_view, \
     collaboration_task_delete_view, collaboration_milestone_delete_view, collaboration_task_move_view, \
@@ -26,11 +26,6 @@ from .views_htmx import collaboration_task_toggle_view, collaboration_task_creat
     collaboration_update_view, collaboration_image_view, collaboration_delete_view
 
 urlpatterns = [
-    path(
-        "collaborations/",
-        CollaborationListView.as_view(),
-        name="collaboration-list",
-    ),
     path(
         "collaborations/<slug>/",
         CollaborationDetailView.as_view(),

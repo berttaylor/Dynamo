@@ -3,16 +3,16 @@
     height: 10vw;
     min-height: 250px;
     object-fit: fill;
-    border-top-right-radius: .3rem!important;
-    border-top-left-radius: .3rem!important;
+    border-top-right-radius: 1rem!important;
+    border-top-left-radius: 1rem!important;
 }
 
 .collaboration-card-footer {
     padding: 1.25rem 1.5rem;
     background-color: rgba(23, 31, 56, 0.03);
     border-top: 0.0625rem solid #E5E7EB;
-    border-bottom-right-radius: .3rem!important;
-    border-bottom-left-radius: .3rem!important;
+    border-bottom-right-radius: 1rem!important;
+    border-bottom-left-radius: 1rem!important;
 }
 
 .htmx-added {

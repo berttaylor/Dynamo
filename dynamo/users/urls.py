@@ -20,22 +20,17 @@ from dynamo import settings as s
 from django.contrib.auth import views as django_auth_views
 
 from users.forms import CustomLoginForm, CustomPasswordResetForm
-from users.views import sign_up_view, UserUpdateView
+from users.views import sign_up_view, UserUpdateView, UserGroupListView, UserCollaborationListView
 
 urlpatterns = [
     path(
-        "signup/",
+        "accounts/signup/",
         sign_up_view,
         name="signup",
     ),
     path(
-        "my-details/",
-        UserUpdateView.as_view(),
-        name="user-update",
-    ),
-    path(
         "login/",
-        LoginView.as_view(template_name="landing/registration/signin.html", form_class=CustomLoginForm, success_url=reverse_lazy('collaboration-list')),
+        LoginView.as_view(template_name="landing/registration/signin.html", form_class=CustomLoginForm, success_url=reverse_lazy('user-collaboration-list')),
         name="login",
     ),
     path("logout/", LogoutView.as_view(), name="logout"),
@@ -44,7 +39,7 @@ urlpatterns = [
     # The default configuration of password-reset sends a link without the port number (which is not valid in dev).
     # This one get the site domain from the env, which means it will work in both dev and prod.
     path(
-        "password-reset/",
+        "accounts/password-reset/",
         PasswordResetView.as_view(
             form_class=CustomPasswordResetForm,
             template_name="landing/registration/password_reset.html",
@@ -58,38 +53,55 @@ urlpatterns = [
         name="password-reset",
     ),
     path(
-        "password-reset-requested/",
+        "accounts/password-reset-requested/",
         TemplateView.as_view(
             template_name="landing/registration/password_reset_requested.html"
         ),
         name="password-reset-requested",
     ),
     path(
-        "password-reset-confirm/<uidb64>/<token>/",
+        "accounts/password-reset-confirm/<uidb64>/<token>/",
         django_auth_views.PasswordResetConfirmView.as_view(
             template_name="landing/registration/password_reset_confirm.html"
         ),
         name="password-reset-confirm",
     ),
     path(
-        "password-reset-complete/",
+        "accounts/password-reset-complete/",
         django_auth_views.PasswordResetCompleteView.as_view(
             template_name="landing/registration/password_reset_complete.html"
         ),
         name="password-reset-complete",
     ),
     path(
-        "password-change/",
+        "accounts/password-change/",
         django_auth_views.PasswordChangeView.as_view(
             template_name="landing/registration/password_change.html"
         ),
         name="password-change",
     ),
     path(
-        "password-change-done/",
+        "accounts/password-change-done/",
         django_auth_views.PasswordChangeDoneView.as_view(
             template_name="landing/registration/password_change_done.html"
         ),
         name="password-change-done",
+    ),
+
+    # Home views
+    path(
+        "user/details/",
+        UserUpdateView.as_view(),
+        name="user-update",
+    ),
+    path(
+        "user/groups/",
+        UserGroupListView.as_view(),
+        name="user-group-list",
+    ),
+    path(
+        "user/collaborations/",
+        UserCollaborationListView.as_view(),
+        name="user-collaboration-list",
     ),
 ]

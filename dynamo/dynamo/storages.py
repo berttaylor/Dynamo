@@ -13,3 +13,7 @@ def collaboration_based_upload_to(instance, filename):
 
 def collaboration_file_upload_to(instance, filename):
     return "collaboration/{}/task/{}/file/{}".format(instance.collaboration, instance.reference, filename)
+
+
+def user_image_upload_to(instance, filename):
+    return "user/{}/images/{}".format(instance.pk, filename)

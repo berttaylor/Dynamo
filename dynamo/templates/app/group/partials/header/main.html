@@ -1,5 +1,5 @@
-<div class="bg-white shadow rounded overflow-hidden text-center mb-0">
-    <div hx-boost="true" class="p-4 bg-dark text-center text-white">
+<div class="overflow-hidden text-center mb-0 bg-white rounded shadow-sm">
+    <div hx-boost="true" class="p-4 text-center">
 
         <a
             hx-get="{% url 'group-image' slug=group.slug %}"
@@ -7,7 +7,7 @@
             hx-swap="afterend"
         >
         {% if group.profile_image %}
-            <img src="{{ group.profile_image.url }}" class="organic-radius img-fluid" alt="Joseph Avatar">
+            <img src="{{ group.profile_image.url }}" class="organic-radius img-fluid rounded shadow-sm" alt="Joseph Avatar">
         {% else %}
             <img src="/compiled/pixel/html&css/assets/img/blog/image-1.jpg" class="organic-radius img-fluid" alt="Joseph Avatar">
         {% endif %}
@@ -20,7 +20,7 @@
             hx-swap="afterend"
         >
 
-            <h1 class="m-4">{{ group.name }}</h1>
+            <h1 class="m-4 ">{{ group.name }}</h1>
             <p class="lead ">{{ group.description }}</p>
             </a>
 

@@ -9,10 +9,10 @@
 
             <select class="form-select fmxw-150 pe-5" id="inlineFormCustomSelectMessages"
                     aria-label="collaborations filter"
-{#                    name="collaboration_list_filter"#}
-{#                    hx-get={% url 'group-collaboration-list' slug=group.slug %}#}
-{#                            hx-target="#list_of_collaborations"#}
-{#                    hx-swap="innerHTML"#}
+                    name="collaboration_list_filter"
+                    hx-get={% url 'group-collaboration-list' slug=group.slug %}
+                            hx-target="#list_of_collaborations"
+                    hx-swap="innerHTML swap:0.3s"
             >
                 <option value="{{ COLLABORATION_STATUS_ALL }}">{{ COLLABORATION_STATUS_ALL }}</option>
                 <option value="{{ COLLABORATION_STATUS_PLANNING }}">{{ COLLABORATION_STATUS_PLANNING }}</option>
@@ -21,14 +21,14 @@
                 <option value="HIDE">Hide All</option>
             </select>
 
-{#            {% if membership_level == "Admin" %}#}
-{#                <button#}
-{#                    hx-get={% url 'group-collaboration-create' slug=group.slug %}#}
-{#                    hx-target="#list_of_collaborations"#}
-{#                    hx-include="[name='collaboration_list_filter']"#}
-{#                    hx-swap="afterend"#}
-{#                    class="btn btn-tertiary ms-2" >New</button>#}
-{#            {% endif %}#}
+            {% if membership_level == "Admin" %}
+                <button
+                    hx-get={% url 'group-collaboration-create' slug=group.slug %}
+                    hx-target="#list_of_collaborations"
+                    hx-include="[name='collaboration_list_filter']"
+                    hx-swap="afterend"
+                    class="btn btn-tertiary ms-2" >New</button>
+            {% endif %}
 
 
         </div>

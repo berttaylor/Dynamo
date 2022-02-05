@@ -27,7 +27,7 @@
 
         <h2 class="h5 fw-normal text-gray mb-4">
 
-            <a hx-boost="true" href="{% url 'group-detail' slug=collaboration.related_group.slug %}">
+            <a hx-boost="true" hx-swap="innerHTML swap:0.2s" href="{% url 'group-detail' slug=collaboration.related_group.slug %}">
                 <span class="text-tertiary">{{ collaboration.related_group }}</span>
             </a>
         </h2>

@@ -19,20 +19,6 @@ from groups.utils import get_membership_level, get_membership_count
 
 
 @method_decorator(login_required, name="dispatch")
-class GroupListView(ListView):
-    """
-    Shows all of the users groups
-    """
-
-    template_name = "app/home/user_groups.html"
-    model = Group
-    context_object_name = 'groups'
-
-    def get_queryset(self):
-        return Group.objects.filter(members=self.request.user)
-
-
-@method_decorator(login_required, name="dispatch")
 class GroupSearchView(ListView):
     """
     Shows all  groups

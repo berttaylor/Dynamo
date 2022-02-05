@@ -21,18 +21,13 @@ from collaborations.views_htmx import group_collaboration_create_view
 from groups.views import (
     GroupDetailView,
     group_join_view,
-    group_leave_view, GroupListView, GroupSearchView,
+    group_leave_view, GroupSearchView,
 )
 from .views_htmx import group_update_view, group_image_view, group_membership_view, \
     group_membership_selector_view, group_membership_handler_view, group_announcement_list, group_announcement_delete, \
     group_announcement_create, group_announcement_update, group_collaboration_list, group_create_view
 
 urlpatterns = [
-    path(
-        "",
-        GroupListView.as_view(),
-        name="group-list",
-    ),
     path(
         "create/",
         group_create_view,
@@ -73,17 +68,17 @@ urlpatterns = [
     ),
 
     path(
-        "/<slug>/messages",
+        "<slug>/messages",
         group_message_create_view,
         name="group-message-create",
     ),
     path(
-        "/<slug>/messages/<pk>",
+        "<slug>/messages/<pk>",
         group_message_update_view,
         name="group-message-update",
     ),
     path(
-        "/<slug>/messages/<pk>/delete",
+        "<slug>/messages/<pk>/delete",
         group_message_delete_view,
         name="group-message-delete",
     ),

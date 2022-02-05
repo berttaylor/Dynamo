@@ -9,18 +9,6 @@ from collaborations.utils import get_all_elements
 from groups.views import get_membership_level
 
 
-class CollaborationListView(ListView):
-    """
-    Shows all of the users Collaborations
-    """
-
-    template_name = "app/home/user_collaborations.html"
-    model = Collaboration
-
-    def get_queryset(self):
-        return Collaboration.objects.filter(related_group__members=self.request.user)
-
-
 class CollaborationDetailView(FormMixin, DetailView):
     """
     Shows all information regarding a collaboration, as well as

@@ -1,4 +1,4 @@
-from django.forms import ModelForm, Textarea, TextInput
+from django.forms import ModelForm, Textarea, TextInput, FileInput
 from groups.models import Group, GroupAnnouncement
 
 
@@ -37,6 +37,9 @@ class GroupImageForm(ModelForm):
     class Meta:
         model = Group
         fields = ["profile_image", ]
+        widgets = {
+            'profile_image': FileInput(),
+        }
 
 
 class GroupAnnouncementForm(ModelForm):

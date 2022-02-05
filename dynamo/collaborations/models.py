@@ -2,16 +2,25 @@ import random
 import string
 import time
 
-from collaborations import constants as c
+from django.contrib.auth import get_user_model
 from django.db import models
 from django.db.models import F
 from django.template.defaultfilters import slugify
 from django.utils import timezone
 
-from dynamo.storages import collaboration_based_upload_to, collaboration_file_upload_to
-from users.utils import get_sentinel_user
-
+from collaborations import constants as c
 from dynamo.base.models import TimeStampedSoftDeleteBase
+from dynamo.storages import collaboration_based_upload_to, collaboration_file_upload_to
+
+
+def get_sentinel_user():
+    """
+    We use this function to set a user named "deleted" as the foreign key when a user who has
+    foreign key relationships with another models is deleted
+    """
+    return get_user_model().objects.get_or_create(
+        email="deleted@deleted.com"
+    )[0]
 
 
 class Collaboration(TimeStampedSoftDeleteBase):
