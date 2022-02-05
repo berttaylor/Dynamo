@@ -12,7 +12,22 @@
             {% endif %}
         </a>
             <div class="card-body">
+
+                {% if request.user in group.admin_users %}
                 <span class="h6 icon-tertiary small"><i class="fas fa-star mr-2"></i> Admin</span>
+                {% endif %}
+
+{#                {% if request.user in group.current_users %}#}
+{#                    <span class="h6 icon-tertiary small"><i class="fas fa-user mr-2"></i>  Member</span>#}
+{#                {% endif %}#}
+
+                {% if request.user in group.pending_users %}
+                    <span class="h6 icon-tertiary small"><i class="fas fa-clock mr-2"></i> Pending</span>
+                {% endif %}
+
+
+
+
                 <h3 class="h5 card-title mt-2">
                     <a hx-swap="innerHTML swap:0.2s" hx-boost="true" href="{% url 'group-detail' slug=group.slug %}">{{ group.name }}</a></h3>
                 <div class="col d-flex mb-2 ps-0"><span class="font-small me-3"><span
@@ -35,7 +50,7 @@
 
 
 {% empty %}
-    <div class="p-3">Nothing to show right now</div>
+    <div class="p-3 text-center">Nothing to show right now</div>
 {% endfor %}
 
 {% if success_url %}

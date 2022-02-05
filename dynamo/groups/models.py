@@ -6,6 +6,7 @@ from django.template.defaultfilters import slugify
 from dynamo.base.models import TimeStampedSoftDeleteBase
 from dynamo.storages import group_based_upload_to
 from groups import constants as c
+from users.models import User
 from users.utils import get_sentinel_user
 from .managers import MembershipManager
 
@@ -74,6 +75,21 @@ class Group(TimeStampedSoftDeleteBase):
     def admin_count(self):
         """Returns the number of group admins"""
         return self.memberships.all().filter(status=c.MEMBERSHIP_STATUS_ADMIN).count()
+
+    @property
+    def current_users(self):
+        """Returns a queryset of users with pending memberships"""
+        return User.objects.filter(pk__in=self.memberships.all().filter(status=c.MEMBERSHIP_STATUS_CURRENT).values_list('user', flat=True))
+
+    @property
+    def admin_users(self):
+        """Returns a queryset of group admins"""
+        return User.objects.filter(pk__in=self.memberships.all().filter(status=c.MEMBERSHIP_STATUS_ADMIN).values_list('user', flat=True))
+
+    @property
+    def pending_users(self):
+        """Returns a queryset of users with pending memberships"""
+        return User.objects.filter(pk__in=self.memberships.all().filter(status=c.MEMBERSHIP_STATUS_PENDING).values_list('user', flat=True))
 
     @property
     def short_description(self):

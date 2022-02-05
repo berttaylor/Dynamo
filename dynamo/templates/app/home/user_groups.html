@@ -2,18 +2,30 @@
 {% block body_content %}
 
 
-<div class="py-4 px-4 mb-4 bg-white rounded shadow-sm">
+    <div class="py-4 px-4 mb-4 bg-white rounded shadow-sm">
 
-    <div class="d-flex align-items-center justify-content-between">
-        <h5 class="mb-0">My Groups</h5>
-        <a
-            hx-get="{% url 'group-create' %}"
-            hx-target="#modal-div"
-            hx-swap="innerHTML"
-        >
+        <div class="d-flex align-items-center justify-content-between">
+            <h5 class="mb-0">My Groups</h5>
+            <div class="d-flex">
+
+                <select class="form-select fmxw-150 pe-5"
+                        aria-label="show_pending"
+                        name="show_pending"
+                        hx-get='{% url 'user-group-list' %}'
+                        hx-target="#list_of_groups"
+                        hx-swap="innerHTML swap:0.3s"
+                >
+                    <option value="">Current</option>
+                    <option value="True">Show Pending</option>
+                </select>
+
+                <a hx-get="{% url 'group-create' %}" hx-target="#modal-div" hx-swap="innerHTML">
                     <button class="btn btn-tertiary ms-2"> + New Group</button>
                 </a>
-    </div>
+
+            </div>
+
+        </div>
 
     </div>
     <div class="row card-deck" id="list_of_groups">

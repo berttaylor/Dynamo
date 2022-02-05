@@ -24,56 +24,33 @@ class GroupSearchView(ListView):
     Shows all of the groups that a user is not part of. serving both full adn htmx requests
     """
 
-    template_name = "app/home/find_groups.html"
     model = Group
     context_object_name = 'groups'
+    template_name = "app/home/find_groups.html"
+    partial_template_name = "app/home/partials/group_list.html"
+    hx_target_id = 'list_of_groups'
 
     def get_template_names(self):
         """
-        If this is an HTMX request, we return a partial,
-        rather than the entire page
+        If this is an HTMX request targeting a specific section of the page,
+        we return a partial, rather than the entire page
         """
-        print(str(self.request.GET))
-        if self.request.htmx:
-            return "app/home/partials/group_list.html"
-        return "app/home/find_groups.html"
+        if self.request.htmx.target == self.hx_target_id:
+            return self.partial_template_name
+        return self.template_name
 
     def get_queryset(self):
-        memberships = Membership.objects.filter(
+        # Get queryset of all groups user is not in
+        membership_list = Membership.objects.filter(
             user=self.request.user,
-            status__in=[c.MEMBERSHIP_STATUS_CURRENT, c.MEMBERSHIP_STATUS_ADMIN]
+            status__in=[c.MEMBERSHIP_STATUS_CURRENT, c.MEMBERSHIP_STATUS_ADMIN, c.MEMBERSHIP_STATUS_PENDING]
         ).values_list('group', flat=True)
+        groups = Group.objects.exclude(pk__in=membership_list)
 
-        groups = Group.objects.exclude(pk__in=memberships)
+        # Filter by the provided querystring
         if query_string := self.request.GET.get('group_query_string', None):
             return groups.filter(name__icontains=query_string)
         return groups
-
-
-@method_decorator(login_required, name="dispatch")
-class UserCollaborationListView(ListView):
-    """
-    Shows all of the users Collaborations, serving both full page and htmx requests
-    """
-
-    template_name = "app/home/user_collaborations.html"
-    model = Collaboration
-
-    def get_template_names(self):
-        """
-        If this is an HTMX request, we return a partial,
-        rather than the entire page
-        """
-        if self.request.htmx:
-            return "app/home/partials/collaboration_list.html"
-        return "app/home/user_collaborations.html"
-
-    def get_queryset(self):
-        """
-        If a filter is specified, we send back a subset of the users groups, rather than all of them.
-        """
-
-        return Collaboration.objects.filter(related_group__members=self.request.user)
 
 
 @method_decorator(login_required, name="dispatch")
