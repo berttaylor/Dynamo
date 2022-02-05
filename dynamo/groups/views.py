@@ -33,6 +33,7 @@ class GroupSearchView(ListView):
         If this is an HTMX request, we return a partial,
         rather than the entire page
         """
+        print(str(self.request.GET))
         if self.request.htmx:
             return "app/home/partials/group_list.html"
         return "app/home/find_groups.html"

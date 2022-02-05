@@ -10,13 +10,13 @@
 
             <div class="d-flex">
 
-                <input type="text" class="form-control fmxw-150" placeholder="Search"
+                <input type="search" class="form-control fmxw-150" placeholder="Search"
                     aria-label="group query string"
                     name="group_query_string"
                     hx-get={% url 'group-search' %}
                             hx-target="#list_of_groups"
                     hx-swap="innerHTML swap:0.3s"
-                   hx-trigger="keyup delay:0.5s changed"
+                   hx-trigger="keyup changed delay:500ms, search"
                 >
 
                 <a hx-get="{% url 'group-create' %}" hx-target="#modal-div" hx-swap="innerHTML">
