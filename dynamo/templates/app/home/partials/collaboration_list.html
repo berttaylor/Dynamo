@@ -1,6 +1,6 @@
 {% for collaboration in collaboration_list %}
-    <div class="col-12 col-md-6 col-lg-6 mt-3 rounded">
-        <div class="card border-gray-300 my-2">
+    <div class="col-12 col-md-6 col-lg-6 mb-4 rounded">
+        <div class="card border-gray-300">
 
             <a hx-boost="true" hx-swap="innerHTML swap:0.2s" href="{% url 'collaboration-detail' slug=collaboration.slug %}">
                 {% if collaboration.image %}
@@ -50,9 +50,7 @@
     </div>
 
 {% empty %}
-    {% if collaboration_list_filter != "HIDE" %}
-        <div class="p-3">Nothing to show right now</div>
-    {% endif %}
+    <div class="p-3 text-center text-muted">nothing to show right now</div>
 {% endfor %}
 
 {% if success_url %}

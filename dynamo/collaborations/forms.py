@@ -2,6 +2,8 @@ from django.forms import ModelForm, DateInput, ModelChoiceField, Textarea, FileI
 from django.forms.widgets import Select
 
 from collaborations.models import CollaborationMilestone, CollaborationTask, Collaboration
+from groups.constants import MEMBERSHIP_STATUS_ADMIN
+from groups.models import Group
 
 
 class DateInputLocal(DateInput):
@@ -172,4 +174,37 @@ class CollaborationImageForm(ModelForm):
         fields = ["image",]
         widgets = {
             'image': FileInput(),
+        }
+
+
+class CollaborationCreateFormWithGroupSelection(ModelForm):
+    """
+    form used for adding collaborations with group select (from the users home page)
+    """
+
+    related_group = ModelChoiceField(queryset=Group.objects.all())
+
+    def __init__(self, user, *args, **kwargs):
+        """
+        We override init to grab the user, and only offer groups which they have permission to add collaborations in,
+        """
+        super().__init__(*args, **kwargs)
+        for field_name, field in self.fields.items():
+            field.widget.attrs['class'] = 'form-control'
+
+        self.fields['related_group'].queryset = Group.objects.filter(
+            pk__in=user.memberships.filter(status=MEMBERSHIP_STATUS_ADMIN).values_list('group', flat=True)
+        )
+
+    class Meta:
+        model = Collaboration
+        fields = ["related_group", "name", "description"]
+        widgets = {
+            "description": Textarea(
+                attrs={
+                    "class": "validate form-control",
+                    "rows": 4,
+                    "cols": 5,
+                }
+            ),
         }

@@ -9,10 +9,11 @@ from django.views.generic.list import BaseListView
 
 import collaborations.constants as c
 from collaborations.forms import MilestoneForm, TaskForm, TaskUpdateForm, TaskCompleteForm, CollaborationForm, \
-    CollaborationImageForm
+    CollaborationImageForm, CollaborationCreateFormWithGroupSelection
 from collaborations.models import Collaboration, CollaborationTask, CollaborationMilestone
 from collaborations.utils import get_all_elements
 from dynamo.settings import SITE_PROTOCOL, SITE_DOMAIN
+from groups.constants import MEMBERSHIP_STATUS_ADMIN
 from groups.models import Group
 from groups.utils import get_filtered_collaborations
 
@@ -442,3 +443,71 @@ def collaboration_milestone_move_view(request, slug, pk, position):
                      kwargs={'slug': milestone.collaboration.slug},
                      )
     )
+
+
+@login_required()
+def user_collaboration_create_view(request, slug):
+    """
+    HTMX VIEW - Allows milestone creation with update and no reload
+    Sends back a list of elements, to replace the content in #element_list
+    If "milestone_creation_modal": True is in the context (and the form), a modal will be rendered (with error messages, if appropriate)
+    """
+
+    collaboration = get_object_or_404(Collaboration, slug=slug)
+    form = MilestoneForm(request.POST or None)
+
+    if request.method == "POST" and form.is_valid():
+        milestone = form.save(commit=False)
+        milestone.collaboration = collaboration
+        milestone.save()
+
+        return render(request,
+                      "app/collaborations/partials/elements/list/main.html", {
+                          "elements": get_all_elements(collaboration),
+                          "collaboration": collaboration,
+                      })
+
+    return render(request,
+                  "app/collaborations/partials/elements/list/main.html", {
+                      "elements": get_all_elements(collaboration),
+                      "collaboration": collaboration,
+                      "milestone_creation_modal": True,
+                      "form": form,
+                  })
+
+
+@login_required()
+def user_collaboration_create_view(request):
+    """
+    HTMX VIEW - Allows collaboration creation from the user-collaboration list view
+    This is different to creating a collaboration from within a group page, as we need to confirm with the user which
+    group the collaboration should belong to before we create it.
+    Sends back the modal app/home/modals/collaboration_create.html, which is appended do the modal div.
+    on successful submission, sends back a JS/htmx redirect to the new group page.
+    """
+
+    if not request.user.memberships.filter(status=MEMBERSHIP_STATUS_ADMIN):
+        return render(request,
+                      "app/home/modals/join_or_make_a_group.html", {
+                      })
+
+    form = CollaborationCreateFormWithGroupSelection(request.user, request.POST or None)
+    if request.method == "POST":
+        if form.is_valid():
+            collaboration = form.save(commit=False)
+            collaboration.created_by = request.user
+            collaboration.save()
+            success_url = SITE_PROTOCOL + SITE_DOMAIN + reverse_lazy(
+                "collaboration-detail",
+                kwargs={"slug": collaboration.slug},
+            )
+
+            return render(request,
+                          "app/snippets/js_redirect.html", {
+                              "url": success_url,
+                          })
+
+    return render(request,
+                  "app/home/modals/collaboration_create.html", {
+                      "form": form,
+                  })

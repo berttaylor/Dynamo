@@ -1,33 +1,40 @@
 {% extends "app/base/main.html" %}
 {% block body_content %}
 
-<div class="py-4 px-4 bg-white rounded shadow-sm">
+    <div class="py-4 px-4 mb-4 bg-white rounded shadow-sm">
 
-    <div class="d-flex align-items-center justify-content-between">
-        <h5 class="mb-0">My Collaborations</h5>
+        <div class="d-flex align-items-center justify-content-between">
+            <h5 class="mb-0">My Collaborations</h5>
 
-        <div class="d-flex">
-            <select class="form-select fmxw-150 pe-5" id="inlineFormCustomSelectMessages"
-                    aria-label="collaborations filter"
-                    name="collaboration_list_filter"
-                    hx-get={% url 'user-collaboration-list' %}
-                            hx-target="#list_of_collaborations"
-                    hx-swap="innerHTML swap:0.3s"
-            >
-                <option value="{{ COLLABORATION_STATUS_ALL }}">{{ COLLABORATION_STATUS_ALL }}</option>
-                <option value="{{ COLLABORATION_STATUS_PLANNING }}">{{ COLLABORATION_STATUS_PLANNING }}</option>
-                <option value="{{ COLLABORATION_STATUS_ONGOING }}">{{ COLLABORATION_STATUS_ONGOING }}</option>
-                <option value="{{ COLLABORATION_STATUS_COMPLETED }}">{{ COLLABORATION_STATUS_COMPLETED }}</option>
-            </select>
+            <div class="d-flex">
+                <select class="form-select fmw-100 fmxh-50 pe-5"
+                        aria-label="collaborations filter"
+                        name="collaboration_list_filter"
+                        hx-get={% url 'user-collaboration-list' %}
+                                hx-target="#list_of_collaborations"
+                        hx-swap="innerHTML swap:0.3s"
+                >
+                    <option value="{{ COLLABORATION_STATUS_ALL }}">{{ COLLABORATION_STATUS_ALL }}</option>
+                    <option value="{{ COLLABORATION_STATUS_PLANNING }}">{{ COLLABORATION_STATUS_PLANNING }}</option>
+                    <option value="{{ COLLABORATION_STATUS_ONGOING }}">{{ COLLABORATION_STATUS_ONGOING }}</option>
+                    <option value="{{ COLLABORATION_STATUS_COMPLETED }}">{{ COLLABORATION_STATUS_COMPLETED }}</option>
+                </select>
+
+                <a hx-get="{% url 'user-collaboration-create' %}" hx-target="#modal-div" hx-swap="innerHTML">
+                    <button class="btn btn-tertiary ms-2 fmw-150 fmxh-50">+ Add Collab</button>
+                </a>
+            </div>
+
         </div>
-
     </div>
-</div>
+
     <div class="row card-deck" id="list_of_collaborations">
         {% include "app/home/partials/collaboration_list.html" %}
     </div>
 
+    <div id="modal-div">
 
+    </div>
 
 {% endblock %}
 

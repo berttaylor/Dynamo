@@ -1,8 +1,8 @@
 {% if percent_completed < 50 %}
     <div class="progress-wrapper">
-        <div class="progress-info">
+        <div class="progress-info m-0">
         </div>
-        <div class="progress">
+        <div class="progress m-0">
             <div class="progress-bar progress-bar-striped bg-danger"
                  role="progressbar"
                  style="width: {{ percent_completed }}%;"
@@ -13,10 +13,10 @@
     </div>
 {% elif percent_completed < 100 %}
     <div class="progress-wrapper">
-        <div class="progress-info">
+        <div class="progress-info m-0">
 
         </div>
-        <div class="progress">
+        <div class="progress m-0">
             <div class="progress-bar progress-bar-striped bg-info"
                  role="progressbar"
                  style="width: {{ percent_completed }}%;"
@@ -27,10 +27,10 @@
     </div>
 {% else %}
     <div class="progress-wrapper">
-        <div class="progress-info">
+        <div class="progress-info m-0">
 
         </div>
-        <div class="progress">
+        <div class="progress m-0">
             <div class="progress-bar progress-bar-striped bg-success"
                  role="progressbar"
                  style="width: {{ percent_completed }}%;"

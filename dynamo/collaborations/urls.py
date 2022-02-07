@@ -23,7 +23,7 @@ from .views_htmx import collaboration_task_toggle_view, collaboration_task_creat
     collaboration_milestone_create_view, collaboration_task_update_view, collaboration_milestone_update_view, \
     collaboration_task_delete_view, collaboration_milestone_delete_view, collaboration_task_move_view, \
     collaboration_milestone_move_view, collaboration_task_notes_view, collaboration_elements_list_view, \
-    collaboration_update_view, collaboration_image_view, collaboration_delete_view
+    collaboration_update_view, collaboration_image_view, collaboration_delete_view, user_collaboration_create_view
 
 urlpatterns = [
     path(
@@ -117,5 +117,10 @@ urlpatterns = [
         "collaborations/<slug>/messages/<pk>/delete",
         collaboration_message_delete_view,
         name="collaboration-message-delete",
+    ),
+    path(
+        "collaborations/create",
+        user_collaboration_create_view,
+        name="user-collaboration-create",
     ),
 ]

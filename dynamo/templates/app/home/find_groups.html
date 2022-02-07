@@ -10,7 +10,7 @@
 
             <div class="d-flex">
 
-                <input type="search" class="form-control fmxw-150" placeholder="Search"
+                <input type="search" class="form-control fmw-100 fmxh-50" placeholder="Search"
                     aria-label="group query string"
                     name="group_query_string"
                     hx-get={% url 'group-search' %}
@@ -20,7 +20,7 @@
                 >
 
                 <a hx-get="{% url 'group-create' %}" hx-target="#modal-div" hx-swap="innerHTML">
-                    <button class="btn btn-tertiary ms-2"> + New Group</button>
+                    <button class="btn btn-tertiary ms-2 fmw-150 fmxh-50">+ Add Group</button>
                 </a>
 
             </div>
