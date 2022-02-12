@@ -1,0 +1,37 @@
+{% for announcement in announcement_list %}
+
+    <div class="p-4 bg-white rounded shadow-sm my-3">
+
+        <a
+            hx-get="{% url 'group-announcement-update' slug=group.slug pk=announcement.pk %}"
+            hx-target="#list_of_announcements"
+            hx-swap="innerHTML"
+        ><h5>{{ announcement.title }}</h5><p class="font-italic mb-0">{{ announcement.body }}</p></a>
+
+        <div class="justify-content-end">
+            <ul class="list-inline small text-muted mt-3 mb-0">
+                <li class="list-inline-item"><i class="fa fa-comment-o mr-2"></i>
+                    Posted by <strong>{{ announcement.user }} </strong>
+                    <i class="fa fa-heart-o mr-2"></i> on {{ announcement.created_at }}
+                </li>
+            </ul>
+        </div>
+
+    </div>
+
+{% empty %}
+    <div class="text-muted text-center mb-0 pt-3 pb-1">nothing to see here...</div>
+
+{% endfor %}
+
+{% if announcement_create_modal %}
+    {% include "app/group/partials/modals/announcement_create.html" %}
+{% endif %}
+
+{% if announcement_update_modal %}
+    {% include "app/group/partials/modals/announcement_update.html" %}
+{% endif %}
+
+{% if announcement_delete_modal %}
+    {% include "app/group/partials/modals/announcement_delete.html" %}
+{% endif %}

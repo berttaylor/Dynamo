@@ -1,0 +1,31 @@
+{% extends "app/base/main.html" %}
+{% block body_content %}
+
+    <div id="group_page_header">
+        {% include "app/group/partials/header/main.html" %}
+    </div>
+
+    {% if membership_level == MEMBERSHIP_STATUS_ADMIN %}
+        <div id="group_member_section">
+            {% include "app/group/partials/memberships/main.html" %}
+        </div>
+    {% endif %}
+
+    <div id="group_announcements">
+        {% include "app/group/partials/announcements/main.html" with group_id=group.pk %}
+    </div>
+
+    <div id="group_chat">
+        {% include "app/group/partials/chat/main.html" %}
+    </div>
+
+    <div id="group_collaborations">
+        {% include "app/group/partials/collaborations/main.html" with group_id=group.pk %}
+    </div>
+
+{% endblock %}
+
+
+
+
+

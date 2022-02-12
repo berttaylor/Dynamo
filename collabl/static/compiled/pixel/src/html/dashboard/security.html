@@ -1,0 +1,232 @@
+<!--
+
+=========================================================
+* Pixel Pro Bootstrap 5 UI Kit
+=========================================================
+
+* Product Page: https://themesberg.com/product/ui-kit/pixel-pro-premium-bootstrap-5-ui-kit
+* Copyright 2021 Themesberg (https://www.themesberg.com)
+
+* Coded by https://themesberg.com
+
+=========================================================
+
+* The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software. Contact us if you want to remove it.
+
+-->
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    @@include('./_head.html', {
+        "path": "../..",
+        "title": "Pixel Pro - Security"
+    })
+</head>
+
+<body>
+    @@include('./_navigation.html', {
+        "path": "../..",
+        "classes": "navbar-light navbar-transparent navbar-theme-secondary"
+    })
+    <main>
+
+        @@include('./_preloader.html', {
+            "path": "../.."
+        })
+
+        <div class="section section-lg pt-5 pt-md-7 bg-gray-200">
+            <div class="container">
+                <div class="row pt-5 pt-md-0">
+                    
+                    @@include('./_sidebar.html', {
+                        "page": "security"
+                    })
+
+                    <div class="col-12 col-lg-8">
+                        <div class="card p-0 p-md-4 mb-4">
+                            <div class="card-header bg-white border-0">
+                               <h3 class="h5 mb-0">Two Factor Authentication</h3>
+                               <p class="text-sm mb-0">Keep your account secure by enabling two-factor authentication.</p>
+                            </div>
+                            <ul class="list-group list-group-flush">
+                               <li class="list-group-item border-0 py-3">
+                                  <div class="row mx-n2">
+                                     <div class="col-12 col-lg-4 px-2 mb-3 mb-lg-0">
+                                        <select class="form-select" id="inlineFormCustomSelectSecurity" aria-label="Security select example">
+                                            <option>Google Auth</option>
+                                            <option>SMS Code</option>
+                                            <option>Backup Code</option>
+                                        </select>
+                                     </div>
+                                     <div class="col col-lg px-2">
+                                        <div class="form-group"><input type="text" class="form-control" placeholder="Description"></div>
+                                     </div>
+                                     <div class="col-auto px-2">
+                                        <button type="button" class="btn btn-secondary px-3">
+                                           <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-plus">
+                                              <line x1="12" y1="5" x2="12" y2="19"></line>
+                                              <line x1="5" y1="12" x2="19" y2="12"></line>
+                                           </svg>
+                                        </button>
+                                     </div>
+                                  </div>
+                               </li>
+                               <li class="list-group-item border-bottom rounded-0 py-3">
+                                  <div class="row align-items-center">
+                                     <div class="col-auto"><span class="icon icon-md"><span class="fab fa-google"></span></span></div>
+                                     <div class="col ms-n2">
+                                        <h6 class="text-sm mb-0">Google Auth</h6>
+                                        <p class="card-text small text-muted">iPhone</p>
+                                     </div>
+                                     <div class="col-md d-none d-md-block"><span class="text-muted">Added:</span> 2021-03-12 01:14:22</div>
+                                     <div class="col-auto">
+                                        <div class="btn-group">
+                                            <button class="btn btn-link text-dark dropdown-toggle dropdown-toggle-split m-0 p-0" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                <span class="icon icon-sm">
+                                                    <span class="fas fa-ellipsis-v icon-dark"></span>
+                                                </span>
+                                                <span class="sr-only">Toggle Dropdown</span>
+                                            </button>
+                                            <div class="dropdown-menu py-0">
+                                                <a class="dropdown-item rounded-top" href="#"><span class="fas fa-edit me-2"></span>Edit post</a>
+                                                <a class="dropdown-item text-danger rounded-bottom" href="#"><span class="fa fa-trash me-2" aria-hidden="true"></span>Disable</a>
+                                            </div>
+                                        </div>
+                                     </div>
+                                  </div>
+                               </li>
+                               <li class="list-group-item py-3">
+                                  <div class="row align-items-center">
+                                     <div class="col-auto"><span class="icon icon-md"><span class="fas fa-sms"></span></span></div>
+                                     <div class="col ms-n2">
+                                        <h6 class="text-sm mb-0">SMS Code</h6>
+                                     </div>
+                                     <div class="col d-none d-md-block"><span class="text-muted">Added:</span> 2021-02-12 14:34:12</div>
+                                     <div class="col-auto">
+                                        <div class="btn-group">
+                                            <button class="btn btn-link text-dark dropdown-toggle dropdown-toggle-split m-0 p-0" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                <span class="icon icon-sm">
+                                                    <span class="fas fa-ellipsis-v icon-dark"></span>
+                                                </span>
+                                                <span class="sr-only">Toggle Dropdown</span>
+                                            </button>
+                                            <div class="dropdown-menu py-0">
+                                                <a class="dropdown-item rounded-top" href="#"><span class="fas fa-edit me-2"></span>Edit post</a>
+                                                <a class="dropdown-item text-danger rounded-bottom" href="#"><span class="fa fa-trash me-2" aria-hidden="true"></span>Disable</a>
+                                            </div>
+                                        </div>
+                                     </div>
+                                  </div>
+                               </li>
+                            </ul>
+                        </div>
+                        <div class="card border-gray-300 p-0 p-md-4 mb-4">
+                            <div class="card-body">
+                                <h3 class="h5 mb-0">Change Password</h3>
+                                <form class="form mt-5" autocomplete="off">
+                                    <div class="mb-4">
+                                        <label for="inputPasswordOld">Current Password</label>
+                                        <input type="password" class="form-control" id="inputPasswordOld" required="">
+                                    </div>
+                                    <div class="mb-4">
+                                        <label for="inputPasswordNew">New Password</label>
+                                        <input type="password" class="form-control" id="inputPasswordNew" required="">
+                                        <span class="form-text small text-muted">
+                                                The password must be 8-20 characters, and must <em>not</em> contain spaces.
+                                            </span>
+                                    </div>
+                                    <div class="mb-4">
+                                        <label for="inputPasswordNewVerify">Verify</label>
+                                        <input type="password" class="form-control" id="inputPasswordNewVerify" required="">
+                                        <span class="form-text small text-muted">
+                                                To confirm, type the new password again.
+                                            </span>
+                                    </div>
+                                    <div class="form-group">
+                                        <button type="submit" class="btn btn-dark">Save</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                        <div class="card card-body bg-white border-gray-300 p-0 p-md-4">
+                            <div class="card-header bg-white border-0">
+                               <div class="row d-block d-md-flex align-items-center">
+                                    <div class="col">
+                                        <h3 class="h5">Your Sessions</h3>
+                                        <p class="small">This is a list of devices that have logged into your account. <br>Revoke any sessions that you do not recognize.</p>
+                                    </div>
+                                    <div class="col-auto">
+                                        <a class="btn btn-sm btn-dark" href="#">
+                                            Log out all
+                                        </a>
+                                    </div>
+                               </div>
+                            </div>
+                            <div class="card-body p-md-0">
+                                <ul class="list-group list-group-flush">
+                                    <li class="list-group-item border-bottom rounded-0 py-4">
+                                        <div class="row d-block d-md-flex align-items-center">
+                                            <div class="col-auto">
+                                                <div class="icon icon-lg me-md-5 fw-50">
+                                                    <span class="fas fa-mobile-alt"></span>
+                                                </div>
+                                            </div>
+                                            <div class="col ms-md-n5 my-4 my-md-0">
+                                                <h3 class="h6 mb-1">
+                                                    iPhone X
+                                                </h3>
+                                                <div class="small">
+                                                New York, USA
+                                                </div>
+                                                <span class="small"><span class="text-dark fw-bold">Last accessed:</span> March 10 at 6:06PM</span>
+                                            </div>
+                                            <div class="col-auto">
+                                                <button class="btn btn-xs btn-outline-gray">
+                                                Log out
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </li>
+                                    <li class="list-group-item py-4">
+                                        <div class="row d-block d-md-flex align-items-center">
+                                            <div class="col-auto">
+                                                <div class="icon icon-lg me-md-5 fw-50">
+                                                    <span class="fas fa-laptop"></span>
+                                                </div>
+                                            </div>
+                                            <div class="col ms-md-n5 my-4 my-md-0">
+                                                <h3 class="h6 mb-1">
+                                                    Chrome on Macintosh
+                                                </h3>
+                                                <div class="small">
+                                                    New York, USA
+                                                </div>
+                                                <span class="small"><span class="text-dark fw-bold">Last accessed:</span> March 11 at 4:26PM</span>
+                                            </div>
+                                            <div class="col-auto">
+                                                <button class="btn btn-xs btn-outline-gray">
+                                                Log out
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+    @@include('./_footer.html', {
+        "path": "../..",
+        "classes": "bg-dark text-white"
+    })
+
+    @@include('./_scripts.html', {
+        "path": "../.."
+    })
+</body>
+
+</html>

@@ -1,0 +1,60 @@
+{% for collaboration in collaboration_list %}
+
+    <div class="col-12 col-md-6 col-lg-6 mt-3 ">
+        <div class="card border-gray-300 my-2 ">
+
+            <a hx-swap="innerHTML swap:0.2s" hx-boost="true" href="{% url 'collaboration-detail' slug=collaboration.slug %}">
+                {% if collaboration.image %}
+                    <img src="{{ collaboration.image.url }}" class="collaboration-card-img"
+                         alt="{{ collaboration.image }}">
+                {% else %}
+                    <img src="/compiled/pixel/html&css/assets/img/blog/image-1.jpg"
+                         class="collaboration-card-img" alt="Office">
+                {% endif %}
+            </a>
+
+            <div class="card-body">
+                <div class="media d-flex align-items-center justify-content-between">
+                    <div class="post-group">
+                        <a href="#" data-toggle="tooltip" data-placement="top" title=""
+                           data-original-title="23k followers">
+                            <span class="fas fa-user me-2"></span>{{ collaboration.created_by }}</a></div>
+
+                    <div class="d-flex align-items-center">
+                        {% if collaboration.status ==  COLLABORATION_STATUS_PLANNING %}
+                            <span class="small"><span class="fas fa-pen me-2"></span>Planning</span>
+                        {% elif collaboration.status ==  COLLABORATION_STATUS_ONGOING %}
+                            <span class="small"><span class="fas fa-walking me-2"></span>Ongoing</span>
+                        {% elif collaboration.status ==  COLLABORATION_STATUS_COMPLETED %}
+                            <span class="small"><span
+                                    class="fas fa-check-circle me-2"></span>Completed</span>
+                        {% endif %}
+                    </div>
+
+                </div>
+
+                <a hx-swap="innerHTML swap:0.2s" hx-boost="true" href="{% url 'collaboration-detail' slug=collaboration.slug %}"><h3
+                        class="h5 card-title mt-4">{{ collaboration.name }}</h3></a>
+                <p class="card-text">{{ collaboration.description }}</p>
+
+
+
+            </div>
+
+
+                        <div class="collaboration-card-footer">
+                    {% include "app/snippets/progress_bar.html" with percent_completed=collaboration.percent_completed %}
+                </div>
+
+        </div>
+    </div>
+
+{% empty %}
+    {% if collaboration_list_filter != "HIDE" %}
+        <div class="text-muted text-center mb-0 pt-3 pb-1">nothing to see here...</div>
+    {% endif %}
+{% endfor %}
+
+{% if success_url %}
+    {% include "app/group/js/redirect.html" with url=success_url %}
+{% endif %}

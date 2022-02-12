@@ -1,0 +1,29 @@
+<div class="modal fade" id="join-or-create-a-group" tabindex="-1" role="dialog" aria-labelledby="modal-notification"
+     aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content bg-primary text-white">
+            <div class="modal-header border-0">
+                <button type="button" class="btn-close bg-gray-500" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+
+                <div class="modal-body">
+
+                    <div class="py-1 text-center">
+                        <span class="modal-icon display-1"><span class="fa fa-plus"></span></span>
+                        <h2 class="h4 modal-title">Add / Join a Group</h2>
+
+                    <div class="text-center py-3">
+                        To add a collaboration, you must first be the admin of a group.
+                        Find groups or create your own by clicking <a hx-boost="true" href="{% url 'group-search' %}"><span class="text-underline">here.</span></a>
+                    </div>
+
+        </div>
+        </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    const myModal = new bootstrap.Modal(document.getElementById("join-or-create-a-group"), {})
+    myModal.show();
+</script>

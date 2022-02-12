@@ -1,0 +1,31 @@
+<!-- Core -->
+<script src="/compiled/pixel/html&css/vendor/@popperjs/core/dist/umd/popper.min.js"></script>
+<script src="/compiled/pixel/html&css/vendor/bootstrap/dist/js/bootstrap.min.js"></script>
+<script src="/compiled/pixel/html&css/vendor/headroom.js/dist/headroom.min.js"></script>
+
+<!-- Vendor JS -->
+<script src="/compiled/pixel/html&css/vendor/onscreen/dist/on-screen.umd.min.js"></script>
+<script src="/compiled/pixel/html&css/vendor/nouislider/distribute/nouislider.min.js"></script>
+<script src="/compiled/pixel/html&css/vendor/jarallax/dist/jarallax.min.js"></script>
+<script src="/compiled/pixel/html&css/vendor/smooth-scroll/dist/smooth-scroll.polyfills.min.js"></script>
+<script src="/compiled/pixel/html&css/vendor/vivus/dist/vivus.min.js"></script>
+<script src="/compiled/pixel/html&css/vendor/chartist/dist/chartist.min.js"></script>
+<script src="/compiled/pixel/html&css/vendor/chartist-plugin-tooltips/dist/chartist-plugin-tooltip.min.js"></script>
+<script src="/compiled/pixel/html&css/vendor/@glidejs/glide/dist/glide.min.js"></script>
+<script src="/compiled/pixel/html&css/vendor/countup.js/dist/countUp.umd.js"></script>
+<script src="/compiled/pixel/html&css/vendor/vanillajs-datepicker/dist/js/datepicker.min.js"></script>
+
+<script async defer src="https://buttons.github.io/buttons.js"></script>
+
+<!-- pixel JS -->
+<script src="/compiled/pixel/html&css/assets/js/pixel.js"></script>
+
+<!-- HTMX -->
+<script src="https://unpkg.com/htmx.org@1.1.0"></script>
+
+<script>
+  document.body.addEventListener('htmx:configRequest', (event) => {
+    event.detail.headers['X-CSRFToken'] = '{{ csrf_token }}';
+  })
+</script>
+

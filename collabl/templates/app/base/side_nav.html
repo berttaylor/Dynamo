@@ -1,0 +1,69 @@
+<div class="col-12 col-lg-4 mb-4 ">
+    <!-- Navigation -->
+    <div class="card border-gray-300 p-2">
+        <div class="card-header bg-white border-0 text-center d-flex flex-row flex-lg-column align-items-center justify-content-center px-1 px-lg-4">
+{#            <div class="profile-thumbnail dashboard-avatar mx-lg-auto me-3">#}
+{#                <img src="{{ user.image.url }}" class="card-img-top rounded-circle border-white" alt="User Picture">#}
+{#            </div>#}
+            <span class="h5 my-0 my-lg-3 me-3 me-lg-0">{{ request.user }}</span>
+            <a hx-boost="true" href="{% url 'logout' %}" class="btn btn-gray-300 btn-xs"><span class="me-2"><span
+                    class="fas fa-sign-out-alt"></span></span>Logout</a>
+        </div>
+        <div class="card-body p-2 d-none d-lg-block">
+            <div class="list-group dashboard-menu list-group-sm">
+                <a hx-boost="true" href="{% url 'user-group-list' %}" class="d-flex list-group-item border-0 list-group-item-action ">My Groups
+                    <span class="icon icon-xs ms-auto"><span class="fas fa-chevron-right"></span></span>
+                </a>
+                <a hx-boost="true" href="{% url 'user-collaboration-list' %}" class="d-flex list-group-item border-0 list-group-item-action ">My Collaborations<span
+                        class="icon icon-xs ms-auto"><span class="fas fa-chevron-right"></span></span> </a>
+                <a hx-boost="true" href="{% url 'group-search' %}" class="d-flex list-group-item border-0 list-group-item-action ">Find
+                    Groups<span
+                            class="icon icon-xs ms-auto"><span class="fas fa-chevron-right"></span></span> </a>
+                <br><br>
+                <a hx-boost="true" href="{% url 'user-update' %}"
+                   class="d-flex list-group-item border-0 list-group-item-action  active ">My Details<span
+                        class="icon icon-xs ms-auto"><span class="fas fa-chevron-right"></span></span> </a>
+
+            </div>
+        </div>
+    </div>
+</div>
+<div class="col-12 d-lg-none">
+    <div class="card bg-white border-gray-300 mb-4 mb-lg-5">
+        <div class="card-body">
+            <div class="row align-items-center">
+                <div class="col-10 d-flex">
+                    <a hx-boost="true" href="{% url 'user-group-list' %}"
+                       class="list-group-item list-group-item-action border-0 text-center me-2 ">My Groups</a>
+                    <a hx-boost="true" href="{% url 'user-collaboration-list' %}"
+                       class="list-group-item list-group-item-action border-0 text-center me-2 ">My Collaborations</a>
+                    <a hx-boost="true" href="{% url 'group-search' %}"
+                       class="list-group-item list-group-item-action border-0 text-center me-2 d-none d-sm-block border-0  active ">Find Groups</a>
+                    <a hx-boost="true" href="{% url 'user-update' %}"
+                       class="list-group-item list-group-item-action border-0 text-center d-none d-md-block border-0 ">My Details</a>
+                </div>
+                <div class="col-2 d-flex justify-content-center">
+                    <div class="btn-group dropleft">
+                        <button class="btn btn-link dropdown-toggle dropdown-toggle-split me-2 m-0 p-0"
+                                data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <span class="icon icon-sm">
+                                <span class="fas fa-ellipsis-h icon-secondary fa-lg"></span>
+                            </span>
+                            <span class="sr-only">Toggle Dropdown</span>
+                        </button>
+                        <div class="dropdown-menu">
+                            <a hx-boost="true" href="{% url 'user-group-list' %}"
+                               class="list-group-item list-group-item-action d-sm-none border-0  active ">My Groups</a>
+                            <a hx-boost="true" href="{% url 'user-collaboration-list' %}"
+                               class="list-group-item list-group-item-action d-md-none border-0 ">My Collaborations</a>
+                            <a hx-boost="true" href="{% url 'group-search' %}"
+                               class="list-group-item list-group-item-action border-0 ">Find Groups</a>
+                            <a hx-boost="true" href="{% url 'user-update' %}"
+                               class="list-group-item list-group-item-action border-0 ">My Details</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

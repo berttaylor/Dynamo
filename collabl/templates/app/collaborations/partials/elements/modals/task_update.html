@@ -1,0 +1,73 @@
+<div class="modal fade" id="this-modal" tabindex="-1" role="dialog" aria-labelledby="modal-notification"
+     aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content bg-primary text-white">
+            <div class="modal-header border-0">
+                <button type="button" class="btn-close bg-gray-500" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+
+            <form
+                hx-target="#element_list"
+                hx-swap="innerHTML"
+                enctype="multipart/form-data"
+                hx-encoding="multipart/form-data">{% csrf_token %}
+                <div class="modal-body">
+
+                    <div class="py-1 text-center">
+                        <span class="modal-icon display-1"><span class="fas fa-pen"></span></span>
+                        <h2 class="h4 modal-title">Update Task</h2>
+                                        <div class="text-center py-3">
+                        <button type="button" class="btn btn-outline-white btn-sm" data-bs-dismiss="modal"
+                               hx-get="{% url 'collaboration-task-delete' slug=collaboration.slug pk=task.pk %}"
+                               hx-target="#element_list"
+                               hx-swap="innerHTML"
+                        >Delete</button>
+
+                    </div>
+                    </div>
+
+
+
+                    <div class="mx-5">
+
+                        {% for field in form %}
+
+                            <div class=" mb-3">
+                                {{ field.label_tag }}
+                                {{ field }}
+                                {{ field.errors }}
+                            </div>
+
+                        {% endfor %}
+
+                    </div>
+
+
+
+                </div>
+
+                <div class="d-flex modal-footer border-secondary justify-content-around">
+
+                    <button type="button" class="btn btn-outline-white" data-bs-dismiss="modal">Close</button>
+
+                    <button
+                        hx-post="{% url 'collaboration-task-update' slug=collaboration.slug pk=task.pk %}"
+                        type="submit"
+                        class="btn btn-tertiary"
+                        data-bs-dismiss="modal"
+                        hx-swap="innerHTML swap:0.2s"
+                    >Submit</button>
+
+                </div>
+
+            </form>
+
+
+        </div>
+    </div>
+</div>
+
+<script>
+    const myModal = new bootstrap.Modal(document.getElementById("this-modal"), {})
+    myModal.show();
+</script>

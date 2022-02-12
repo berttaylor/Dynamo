@@ -1,0 +1,24 @@
+{% extends "app/base/main.html" %}
+{% block body_content %}
+
+    <div class="col-12">
+
+        <div id="collaboration_header">
+            {% include "app/collaborations/partials/header/main.html" %}
+        </div>
+
+        <div id="collaboration_elements">
+            {% include "app/collaborations/partials/elements/main.html" %}
+        </div>
+
+        <div id="collaboration_chat">
+            {% include "app/collaborations/partials/chat/main.html" %}
+        </div>
+
+    </div>
+
+{% endblock %}
+
+{% block extra_scripts %}
+
+{% endblock %}

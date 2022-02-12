@@ -1,0 +1,57 @@
+{% for element in elements %}
+
+    {% if forloop.counter|divisibleby:2 %}
+
+        {% if element.type == "Task" %}
+            {% include "app/collaborations/partials/elements/list/task_right.html" with task=element %}
+        {% else %}
+            {% include "app/collaborations/partials/elements/list/milestone_right.html" with milestone=element %}
+        {% endif %}
+
+        {% include "app/collaborations/partials/elements/list/linker_right.html" with element=element %}
+
+    {% else %}
+
+        {% if element.type == "Task" %}
+            {% include "app/collaborations/partials/elements/list/task_left.html" with task=element %}
+        {% else %}
+            {% include "app/collaborations/partials/elements/list/milestone_left.html" with milestone=element %}
+        {% endif %}
+
+        {% include "app/collaborations/partials/elements/list/linker_left.html" with element=element %}
+
+    {% endif %}
+
+{% endfor %}
+
+{% include "app/collaborations/partials/elements/list/finish.html" %}
+
+{% include "app/collaborations/partials/elements/template_js/update_completion_percentage.html" %}
+
+{% if task_completion_notes_modal %}
+    {% include "app/collaborations/partials/elements/modals/task_completion.html" %}
+{% endif %}
+
+{% if task_creation_modal %}
+    {% include "app/collaborations/partials/elements/modals/task_creation.html" %}
+{% endif %}
+
+{% if task_update_modal %}
+    {% include "app/collaborations/partials/elements/modals/task_update.html" %}
+{% endif %}
+
+{% if task_delete_modal %}
+    {% include "app/collaborations/partials/elements/modals/task_delete.html" %}
+{% endif %}
+
+{% if milestone_creation_modal %}
+    {% include "app/collaborations/partials/elements/modals/milestone_creation.html" %}
+{% endif %}
+
+{% if milestone_update_modal %}
+    {% include "app/collaborations/partials/elements/modals/milestone_update.html" %}
+{% endif %}
+
+{% if milestone_delete_modal %}
+    {% include "app/collaborations/partials/elements/modals/milestone_delete.html" %}
+{% endif %}
