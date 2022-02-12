@@ -1,7 +1,7 @@
 {% if collaboration.status == COLLABORATION_STATUS_PLANNING %}
 
-    <div class="mb-4 p-4 bg-gray-200 rounded shadow-sm text-center">
-        <h4 class="alert-heading">Planning</h4>
+    <div class="p-4 text-center">
+        <h5 class="alert-heading">Planning</h5>
         <p>Use the buttons below to add tasks and milestones to the collaboration.</p>
         <p>When you are ready to complete a task, click the icon beside it.</p>
 
@@ -15,8 +15,8 @@
 
 {% if collaboration.status == COLLABORATION_STATUS_ONGOING %}
 
-    <div class="mb-4 p-4 bg-gray-200 rounded shadow-sm text-center">
-        <h4 class="alert-heading">Ongoing (<span id="finish-bar-completion-percentage">{{ collaboration.percent_completed }}</span>%)</h4>
+    <div class="p-4 text-center">
+        <h5 class="alert-heading">Ongoing (<span id="finish-bar-completion-percentage">{{ collaboration.percent_completed }}</span>%)</h5>
         <p>Click the icon beside tasks to mark them as complete.</p>
 
         <hr>
@@ -27,8 +27,8 @@
 
 {% if collaboration.status == COLLABORATION_STATUS_COMPLETED %}
 
-    <div class="mb-4 p-4 bg-gray-200 rounded shadow-sm text-center">
-        <h4 class="alert-heading">Complete</h4>
+    <div class="p-4 text-center">
+        <h5 class="alert-heading">Complete</h5>
         <p>This collaboration has been completed. Great Work!</p>
         <hr>
 {% include "app/collaborations/partials/elements/list/add_element_links.html" %}

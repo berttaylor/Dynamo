@@ -3,7 +3,6 @@
     <div class="container position-relative">
         <a class="navbar-brand me-lg-5" href="{% url 'home' %}">
             <img class="navbar-brand-dark" src="/compiled/img/logo/default-monochrome.svg" alt="Logo dark">
-{#            <img class="navbar-brand-light" src="/compiled/img/logo/default-monochrome-black.svg" alt="Logo light">#}
         </a>
         <div class="navbar-collapse collapse me-auto" id="navbar_global">
             <div class="navbar-collapse-header">
@@ -27,7 +26,9 @@
                 <li class="nav-item">
                     <a class="nav-link" href="{% url 'support-message-create' %}">Contact</a>
                 </li>
-
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'user-group-list' %}">Dashboard</a>
+                </li>
 
             </ul>
         </div>

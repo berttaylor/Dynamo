@@ -1,33 +1,33 @@
-<div class="mb-4 p-4 bg-gray-200 rounded shadow-sm">
-    <div class="d-flex align-items-center justify-content-between">
-        <h5 class="mb-0">Announcements</h5>
-        <div class="d-flex">
-            <select class="form-select fmxw-150 pe-5 bg-white" id="inlineFormCustomSelectMessages"
-                    aria-label="announcement filter"
-                    name="announcement_list_filter"
-                    hx-swap="innerHTML swap:0.1s"
-                    hx-get={% url 'group-announcement-list' slug=group.slug %}
-                            hx-target="#list_of_announcements"
-            >
-                <option value="{{ ANNOUNCEMENTS_FILTER_LATEST }}">{{ ANNOUNCEMENTS_FILTER_LATEST }}</option>
-                <option value="{{ ANNOUNCEMENTS_FILTER_ALL }}">{{ ANNOUNCEMENTS_FILTER_ALL }}</option>
-                <option value="HIDE">Hide All</option>
-            </select>
-            {% if membership_level == "Admin" %}
-        <a
-            hx-get="{% url 'group-announcement-create' slug=group.slug %}"
-            hx-target="#list_of_announcements"
-            hx-swap="innerHTML"
+
+<div class="d-flex align-items-center justify-content-between text-white">
+    <h4 class="mb-0">Announcements</h4>
+    <div class="d-flex">
+        <select class="form-select fmxw-150 pe-5 btn-primary" id="inlineFormCustomSelectMessages"
+                aria-label="announcement filter"
+                name="announcement_list_filter"
+                hx-swap="innerHTML swap:0.1s"
+                hx-get={% url 'group-announcement-list' slug=group.slug %}
+                        hx-target="#list_of_announcements"
         >
-                    <button class="btn btn-tertiary ms-2">New</button>
-                </a>
-            {% endif %}
-        </div>
+            <option value="{{ ANNOUNCEMENTS_FILTER_LATEST }}">{{ ANNOUNCEMENTS_FILTER_LATEST }}</option>
+            <option value="{{ ANNOUNCEMENTS_FILTER_ALL }}">{{ ANNOUNCEMENTS_FILTER_ALL }}</option>
+            <option value="HIDE">Hide All</option>
+        </select>
+        {% if membership_level == "Admin" %}
+    <a
+        hx-get="{% url 'group-announcement-create' slug=group.slug %}"
+        hx-target="#list_of_announcements"
+        hx-swap="innerHTML"
+    >
+                <button class="btn btn-tertiary ms-2">New</button>
+            </a>
+        {% endif %}
     </div>
+</div>
+
+
 
     <div id="list_of_announcements">
         {% include "app/group/partials/announcements/list.html" %}
     </div>
-
-</div>
 

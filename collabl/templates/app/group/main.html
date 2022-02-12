@@ -1,26 +1,39 @@
-{% extends "app/base/main.html" %}
+{% extends "app/base/main_no_nav.html" %}
 {% block body_content %}
+
+
+    <ol class="text-white bg-secondary p-0 text-center">
+        <a hx-boost="true" hx-swap="innerHTML swap:0.2s" href="{% url 'user-group-list' %}"><span class="breadcrumb-item">Dashboard </span></a> /
+        <a href=""><span class="breadcrumb-item text-white"> <strong>{{ group }}</strong></span></a>
+    </ol>
+
 
     <div id="group_page_header">
         {% include "app/group/partials/header/main.html" %}
     </div>
 
     {% if membership_level == MEMBERSHIP_STATUS_ADMIN %}
-        <div id="group_member_section">
+        <div id="group_member_section" class="mb-3">
             {% include "app/group/partials/memberships/main.html" %}
         </div>
     {% endif %}
+
+    <hr>
 
     <div id="group_announcements">
         {% include "app/group/partials/announcements/main.html" with group_id=group.pk %}
     </div>
 
-    <div id="group_chat">
-        {% include "app/group/partials/chat/main.html" %}
-    </div>
+    <hr>
 
     <div id="group_collaborations">
         {% include "app/group/partials/collaborations/main.html" with group_id=group.pk %}
+    </div>
+
+        <hr>
+
+    <div id="group_chat">
+        {% include "app/group/partials/chat/main.html" %}
     </div>
 
 {% endblock %}

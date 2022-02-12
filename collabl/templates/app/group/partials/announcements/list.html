@@ -1,6 +1,6 @@
 {% for announcement in announcement_list %}
 
-    <div class="p-4 bg-white rounded shadow-sm my-3">
+    <div class="p-4 bg-tertiary rounded shadow-sm my-3 border-3 border-white text-white">
 
         <a
             hx-get="{% url 'group-announcement-update' slug=group.slug pk=announcement.pk %}"

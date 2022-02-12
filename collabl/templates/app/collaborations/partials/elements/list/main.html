@@ -1,3 +1,8 @@
+
+<hr>
+
+<h3 class="py-3 pb-5 text-center">Progress</h3>
+
 {% for element in elements %}
 
     {% if forloop.counter|divisibleby:2 %}
@@ -24,7 +29,12 @@
 
 {% endfor %}
 
-{% include "app/collaborations/partials/elements/list/finish.html" %}
+<div class="card border-gray-300 p-2 bg-secondary">
+
+    {% include "app/collaborations/partials/elements/list/finish.html" %}
+
+</div>
+
 
 {% include "app/collaborations/partials/elements/template_js/update_completion_percentage.html" %}
 
@@ -55,3 +65,5 @@
 {% if milestone_delete_modal %}
     {% include "app/collaborations/partials/elements/modals/milestone_delete.html" %}
 {% endif %}
+
+<hr>

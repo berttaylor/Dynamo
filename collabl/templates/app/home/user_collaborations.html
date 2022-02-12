@@ -1,13 +1,13 @@
 {% extends "app/base/main.html" %}
 {% block body_content %}
 
-    <div class="py-4 px-4 mb-4 bg-white rounded shadow-sm">
+    <div class="mb-4">
 
-        <div class="d-flex align-items-center justify-content-between">
-            <h5 class="mb-0">My Collaborations</h5>
+        <div class="d-flex align-items-center justify-content-between text-white">
+            <h2 class="mb-0">My Collaborations</h2>
 
             <div class="d-flex">
-                <select class="form-select fmw-100 fmxh-50 pe-5"
+                <select class="form-select fmw-100 fmxh-50 pe-5 btn-primary"
                         aria-label="collaborations filter"
                         name="collaboration_list_filter"
                         hx-get={% url 'user-collaboration-list' %}

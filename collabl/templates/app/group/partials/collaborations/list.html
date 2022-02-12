@@ -1,7 +1,7 @@
 {% for collaboration in collaboration_list %}
 
-    <div class="col-12 col-md-6 col-lg-6 mt-3 ">
-        <div class="card border-gray-300 my-2 ">
+    <div class="col-12 col-md-6 col-lg-6 mt-3">
+        <div class="card border-gray-300 my-2 bg-tertiary text-white border-3">
 
             <a hx-swap="innerHTML swap:0.2s" hx-boost="true" href="{% url 'collaboration-detail' slug=collaboration.slug %}">
                 {% if collaboration.image %}
@@ -42,7 +42,7 @@
             </div>
 
 
-                        <div class="collaboration-card-footer bg-white">
+                        <div class="collaboration-card-footer">
                     {% include "app/snippets/progress_bar.html" with percent_completed=collaboration.percent_completed %}
                 </div>
 

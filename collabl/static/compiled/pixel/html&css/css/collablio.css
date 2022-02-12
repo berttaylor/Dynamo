@@ -28,6 +28,4 @@
     transition: opacity 0.2s ease-out;
 }
 
-img {
-    align-self: top;
-}
+html {background-color: black}

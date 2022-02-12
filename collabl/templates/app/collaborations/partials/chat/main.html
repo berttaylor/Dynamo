@@ -1,9 +1,7 @@
-<div class="py-4 px-4 bg-gray-200 rounded shadow-sm">
+<div class="py-4 text-white text-center">
 
-    <div class="d-flex align-items-center justify-content-between mb-3">
-        <h5 class="mb-0">Message Board</h5>
-    </div>
 
+        <h3 class="mb-3">Message Board</h3>
 
     {% if user.is_authenticated %}
 
@@ -13,7 +11,7 @@
                     {{ chat_form.message }}
 
                     <button hx-post="{% url 'collaboration-message-create' slug=collaboration.slug %}"
-                            hx-target="#collaboration_chat" type="submit" class="btn btn-outline-primary">Send
+                            hx-target="#collaboration_chat" type="submit" class="btn btn-primary">Send
                     </button>
                 </div>
             </form>
@@ -28,7 +26,7 @@
 
         {% if message.user == request.user %}
 
-            <div class="row align-items-center m-2 ms-5 py-2 bg-dark rounded">
+            <div class="row align-items-center m-2 ms-5 py-2 bg-primary rounded text-right">
                 <div class="col text-white">
                     <a
                            hx-get="{% url 'collaboration-message-update' slug=collaboration.slug pk=message.pk %}"

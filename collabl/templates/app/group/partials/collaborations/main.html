@@ -1,13 +1,13 @@
-<div class="py-4 px-4 bg-gray-200 rounded shadow-sm mb-0">
 
-    <div class="d-flex align-items-center justify-content-between">
-        <h5 class="mb-0">Collaborations</h5>
+
+    <div class="d-flex align-items-center justify-content-between text-white">
+        <h4 class="mb-0">Collaborations</h4>
 
         <div class="d-flex">
 
 
 
-            <select class="form-select fmxw-150 pe-5 bg-white" id="inlineFormCustomSelectMessages"
+            <select class="form-select fmxw-150 pe-5 btn-primary" id="inlineFormCustomSelectMessages"
                     aria-label="collaborations filter"
                     name="collaboration_list_filter"
                     hx-get={% url 'group-collaboration-list' slug=group.slug %}
@@ -39,4 +39,3 @@
         {% include "app/group/partials/collaborations/list.html" %}
     </div>
 
-</div>

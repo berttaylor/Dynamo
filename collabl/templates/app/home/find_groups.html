@@ -2,15 +2,15 @@
 {% block body_content %}
 
 
-    <div class="py-4 px-4 mb-4 bg-white rounded shadow-sm">
+    <div class="mb-4">
 
-        <div class="d-flex align-items-center justify-content-between">
+        <div class="d-flex align-items-center justify-content-between text-white">
 
-            <h5 class="mb-0">Find Groups</h5>
+            <h2 class="mb-0">Find Groups</h2>
 
             <div class="d-flex">
 
-                <input type="search" class="form-control fmw-100 fmxh-50" placeholder="Search"
+                <input type="search" class="form-control fmw-100 fmxh-50 btn-primary" placeholder="Search"
                     aria-label="group query string"
                     name="group_query_string"
                     hx-get={% url 'group-search' %}

@@ -2,13 +2,13 @@
 {% block body_content %}
 
 
-    <div class="py-4 px-4 mb-4 bg-white rounded shadow-sm">
+    <div class="mb-4 bg-secondary rounded">
 
-        <div class="d-flex align-items-center justify-content-between">
-            <h5 class="mb-0">My Groups</h5>
+        <div class="d-flex align-items-center justify-content-between text-white">
+            <h2 class="mb-0">My Groups</h2>
             <div class="d-flex">
 
-                <select class="form-select fmw-100 fmxh-50 pe-5"
+                <select class="form-select fmw-100 fmxh-50 pe-5 btn-primary"
                         aria-label="show_pending"
                         name="show_pending"
                         hx-get='{% url 'user-group-list' %}'
