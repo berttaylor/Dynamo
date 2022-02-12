@@ -1,10 +1,10 @@
 <div class="d-flex justify-content-around ">
-    <button class="btn btn-outline-primary btn-sm" type="button"
+    <button class="btn btn-outline-primary btn-white" type="button"
         hx-get="{% url 'collaboration-task-create' collaboration.slug %}"
         hx-target="#element_list"
         hx-swap="innerHTML"
         >{% csrf_token %}+ Task</button>
-    <button class="btn btn-outline-primary btn-sm" type="button"
+    <button class="btn btn-outline-primary btn-white" type="button"
         hx-get="{% url 'collaboration-milestone-create' collaboration.slug %}"
         hx-target="#element_list"
         hx-swap="innerHTML"
