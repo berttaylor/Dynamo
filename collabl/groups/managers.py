@@ -11,7 +11,6 @@ lower into the stack.
 
 
 class MembershipQuerySet(models.QuerySet):
-
     def pending(self):
         return self.filter(status=c.MEMBERSHIP_STATUS_PENDING)
 

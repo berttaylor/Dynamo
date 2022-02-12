@@ -17,7 +17,10 @@ class GroupAdmin(admin.ModelAdmin):
     list_filter = ("created_at",)
 
     fieldsets = (
-        ("Group details", {"fields": (("name", "slug"), "description", 'profile_image')}),
+        (
+            "Group details",
+            {"fields": (("name", "slug"), "description", "profile_image")},
+        ),
         ("Users", {"fields": ("created_by",)}),
         (
             "Database",
@@ -56,7 +59,10 @@ class MembershipAdmin(admin.ModelAdmin):
     )
 
     fieldsets = (
-        ("Membership details", {"fields": (("user", "group"), "status", 'is_subscribed')}),
+        (
+            "Membership details",
+            {"fields": (("user", "group"), "status", "is_subscribed")},
+        ),
         ("Handling", {"fields": ("updated_by",)}),
         (
             "Database",

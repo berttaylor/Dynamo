@@ -87,11 +87,7 @@ class SupportMessageAdmin(admin.ModelAdmin):
         ("Handling", {"fields": ("read",)}),
         (
             "Message",
-            {
-                "fields": (
-                    "message",
-                )
-            },
+            {"fields": ("message",)},
         ),
         ("Database", {"fields": (("created_at", "updated_at"),)}),
     )

@@ -6,27 +6,38 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('groups', '0008_alter_membership_status'),
+        ("groups", "0008_alter_membership_status"),
     ]
 
     operations = [
         migrations.RemoveField(
-            model_name='membership',
-            name='is_admin',
+            model_name="membership",
+            name="is_admin",
         ),
         migrations.AlterField(
-            model_name='groupannouncement',
-            name='body',
-            field=models.TextField(help_text='The announcement itself'),
+            model_name="groupannouncement",
+            name="body",
+            field=models.TextField(help_text="The announcement itself"),
         ),
         migrations.AlterField(
-            model_name='groupannouncement',
-            name='title',
-            field=models.TextField(help_text='The title of the announcement'),
+            model_name="groupannouncement",
+            name="title",
+            field=models.TextField(help_text="The title of the announcement"),
         ),
         migrations.AlterField(
-            model_name='membership',
-            name='status',
-            field=models.CharField(blank=True, choices=[('Admin', 'Admin'), ('Pending', 'Pending'), ('Current', 'Current'), ('Ignored', 'Ignored')], default='Pending', help_text='The status of the membership', max_length=100),
+            model_name="membership",
+            name="status",
+            field=models.CharField(
+                blank=True,
+                choices=[
+                    ("Admin", "Admin"),
+                    ("Pending", "Pending"),
+                    ("Current", "Current"),
+                    ("Ignored", "Ignored"),
+                ],
+                default="Pending",
+                help_text="The status of the membership",
+                max_length=100,
+            ),
         ),
     ]

@@ -11,36 +11,83 @@ class Migration(migrations.Migration):
 
     dependencies = [
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
-        ('groups', '0003_auto_20211122_1823'),
+        ("groups", "0003_auto_20211122_1823"),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='GroupAnnouncement',
+            name="GroupAnnouncement",
             fields=[
-                ('id', models.UUIDField(default=uuid.uuid4, editable=False, primary_key=True, serialize=False)),
-                ('created_at', models.DateTimeField(auto_now_add=True, help_text='Timestamp of when this object was first created.', null=True)),
-                ('updated_at', models.DateTimeField(auto_now=True, help_text='Timestamp of when this object was last updated.', null=True)),
-                ('deleted_at', models.DateTimeField(blank=True, help_text='Timestamp of when (if) this object was soft deleted.', null=True)),
-                ('title', models.TextField(help_text='The question')),
-                ('body', models.TextField(help_text='The message itself')),
-                ('group', models.ForeignKey(help_text='The group where the announcement was written', on_delete=django.db.models.deletion.CASCADE, related_name='group_announcements', to='groups.group')),
-                ('user', models.ForeignKey(help_text='User who wrote the announcement', on_delete=models.SET(users.utils.get_sentinel_user), related_name='group_announcements', to=settings.AUTH_USER_MODEL)),
+                (
+                    "id",
+                    models.UUIDField(
+                        default=uuid.uuid4,
+                        editable=False,
+                        primary_key=True,
+                        serialize=False,
+                    ),
+                ),
+                (
+                    "created_at",
+                    models.DateTimeField(
+                        auto_now_add=True,
+                        help_text="Timestamp of when this object was first created.",
+                        null=True,
+                    ),
+                ),
+                (
+                    "updated_at",
+                    models.DateTimeField(
+                        auto_now=True,
+                        help_text="Timestamp of when this object was last updated.",
+                        null=True,
+                    ),
+                ),
+                (
+                    "deleted_at",
+                    models.DateTimeField(
+                        blank=True,
+                        help_text="Timestamp of when (if) this object was soft deleted.",
+                        null=True,
+                    ),
+                ),
+                ("title", models.TextField(help_text="The question")),
+                ("body", models.TextField(help_text="The message itself")),
+                (
+                    "group",
+                    models.ForeignKey(
+                        help_text="The group where the announcement was written",
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="group_announcements",
+                        to="groups.group",
+                    ),
+                ),
+                (
+                    "user",
+                    models.ForeignKey(
+                        help_text="User who wrote the announcement",
+                        on_delete=models.SET(users.utils.get_sentinel_user),
+                        related_name="group_announcements",
+                        to=settings.AUTH_USER_MODEL,
+                    ),
+                ),
             ],
             options={
-                'verbose_name_plural': 'Group Announcements',
-                'ordering': ['-created_at'],
+                "verbose_name_plural": "Group Announcements",
+                "ordering": ["-created_at"],
             },
         ),
         migrations.DeleteModel(
-            name='GroupJoinRequest',
+            name="GroupJoinRequest",
         ),
         migrations.AddIndex(
-            model_name='groupannouncement',
-            index=models.Index(fields=['group'], name='groups_grou_group_i_66c5dc_idx'),
+            model_name="groupannouncement",
+            index=models.Index(fields=["group"], name="groups_grou_group_i_66c5dc_idx"),
         ),
         migrations.AddIndex(
-            model_name='groupannouncement',
-            index=models.Index(fields=['created_at'], name='groups_grou_created_e59575_idx'),
+            model_name="groupannouncement",
+            index=models.Index(
+                fields=["created_at"], name="groups_grou_created_e59575_idx"
+            ),
         ),
     ]

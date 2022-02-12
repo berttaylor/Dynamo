@@ -20,7 +20,7 @@ class CollaborationTaskInline(admin.TabularInline):
         "position",
         "assigned_to",
         "completed_at",
-        "completed_by"
+        "completed_by",
     )
 
 
@@ -52,7 +52,7 @@ class CollaborationAdmin(admin.ModelAdmin):
     fieldsets = (
         (
             "Collaboration details",
-            {"fields": (("name", "slug"), "description", 'image', "related_group")},
+            {"fields": (("name", "slug"), "description", "image", "related_group")},
         ),
         ("Users", {"fields": ("created_by",)}),
         (
@@ -66,10 +66,7 @@ class CollaborationAdmin(admin.ModelAdmin):
         ),
     )
 
-    inlines = [
-        CollaborationTaskInline,
-        CollaborationMilestoneInline
-    ]
+    inlines = [CollaborationTaskInline, CollaborationMilestoneInline]
 
     readonly_fields = (
         "created_at",
@@ -111,8 +108,14 @@ class CollaborationTaskAdmin(admin.ModelAdmin):
         ),
         (
             "Completion",
-            {"fields": (
-            ("completed_at", "completed_by"), "completion_notes", "file", "prompt_for_details_on_completion")},
+            {
+                "fields": (
+                    ("completed_at", "completed_by"),
+                    "completion_notes",
+                    "file",
+                    "prompt_for_details_on_completion",
+                )
+            },
         ),
         (
             "Database",

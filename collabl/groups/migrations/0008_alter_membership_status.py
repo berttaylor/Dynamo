@@ -6,13 +6,25 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('groups', '0007_alter_membership_is_subscribed'),
+        ("groups", "0007_alter_membership_is_subscribed"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='membership',
-            name='status',
-            field=models.CharField(blank=True, choices=[('Pending', 'Pending'), ('Current', 'Current'), ('Ignored', 'Ignored'), ('Removed', 'Removed'), ('Left', 'Left')], default='Pending', help_text='The status of the membership', max_length=100),
+            model_name="membership",
+            name="status",
+            field=models.CharField(
+                blank=True,
+                choices=[
+                    ("Pending", "Pending"),
+                    ("Current", "Current"),
+                    ("Ignored", "Ignored"),
+                    ("Removed", "Removed"),
+                    ("Left", "Left"),
+                ],
+                default="Pending",
+                help_text="The status of the membership",
+                max_length=100,
+            ),
         ),
     ]

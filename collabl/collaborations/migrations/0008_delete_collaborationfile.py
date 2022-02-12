@@ -6,11 +6,11 @@ from django.db import migrations
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('collaborations', '0007_collaborationtask_prompt_for_details_on_completion'),
+        ("collaborations", "0007_collaborationtask_prompt_for_details_on_completion"),
     ]
 
     operations = [
         migrations.DeleteModel(
-            name='CollaborationFile',
+            name="CollaborationFile",
         ),
     ]

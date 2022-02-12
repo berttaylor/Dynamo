@@ -9,9 +9,7 @@ def get_sentinel_user():
     We use this function to set a user named "deleted" as the foreign key when a user who has
     foreign key relationships with another models is deleted
     """
-    return get_user_model().objects.get_or_create(
-        email="deleted@deleted.com"
-    )[0]
+    return get_user_model().objects.get_or_create(email="deleted@deleted.com")[0]
 
 
 def get_users_filtered_collaborations(user, collaboration_list_filter):
@@ -25,20 +23,26 @@ def get_users_filtered_collaborations(user, collaboration_list_filter):
     """
 
     # Annotate the user's groups' collaborations with the number of complete/incomplete tasks,
-    unfiltered_collaborations = Collaboration.objects.filter(
-        related_group__members=user,
-    ).annotate(
-        tasks_complete=Count(
-            Case(When(tasks__completed_at__isnull=False, then=1),
-                 output_field=IntegerField(),
-                 )
-        ),
-        tasks_incomplete=Count(
-            Case(When(tasks__completed_at__isnull=True, then=1),
-                 output_field=IntegerField(),
-                 )
-        ),
-    ).order_by('-created_at')
+    unfiltered_collaborations = (
+        Collaboration.objects.filter(
+            related_group__members=user,
+        )
+        .annotate(
+            tasks_complete=Count(
+                Case(
+                    When(tasks__completed_at__isnull=False, then=1),
+                    output_field=IntegerField(),
+                )
+            ),
+            tasks_incomplete=Count(
+                Case(
+                    When(tasks__completed_at__isnull=True, then=1),
+                    output_field=IntegerField(),
+                )
+            ),
+        )
+        .order_by("-created_at")
+    )
 
     # Filter the collaborations, depending on the filter parameter chosen
     match collaboration_list_filter:
@@ -47,9 +51,13 @@ def get_users_filtered_collaborations(user, collaboration_list_filter):
         case collaboration_constants.COLLABORATION_STATUS_PLANNING:
             collaborations = unfiltered_collaborations.filter(tasks_complete=0)
         case collaboration_constants.COLLABORATION_STATUS_ONGOING:
-            collaborations = unfiltered_collaborations.filter(tasks_incomplete__gt=0).exclude(tasks_complete=0)
+            collaborations = unfiltered_collaborations.filter(
+                tasks_incomplete__gt=0
+            ).exclude(tasks_complete=0)
         case collaboration_constants.COLLABORATION_STATUS_COMPLETED:
-            collaborations = unfiltered_collaborations.filter(tasks_incomplete=0).exclude(tasks_complete=0)
+            collaborations = unfiltered_collaborations.filter(
+                tasks_incomplete=0
+            ).exclude(tasks_complete=0)
         case _:
             collaborations = Collaboration.objects.none()
 

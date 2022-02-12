@@ -7,13 +7,18 @@ import collabl.storages
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('collaborations', '0005_collaboration_image'),
+        ("collaborations", "0005_collaboration_image"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='collaborationtask',
-            name='file',
-            field=models.FileField(blank=True, help_text='File related to the task. Please aim to keep this below 5mb in size.', null=True, upload_to=collabl.storages.collaboration_file_upload_to),
+            model_name="collaborationtask",
+            name="file",
+            field=models.FileField(
+                blank=True,
+                help_text="File related to the task. Please aim to keep this below 5mb in size.",
+                null=True,
+                upload_to=collabl.storages.collaboration_file_upload_to,
+            ),
         ),
     ]

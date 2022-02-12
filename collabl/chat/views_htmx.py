@@ -1,8 +1,12 @@
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render
 
-from chat.forms import CollaborationMessageForm, GroupMessageForm, GroupMessageUpdateForm, \
-    CollaborationMessageUpdateForm
+from chat.forms import (
+    CollaborationMessageForm,
+    GroupMessageForm,
+    GroupMessageUpdateForm,
+    CollaborationMessageUpdateForm,
+)
 from chat.models import Message
 from collaborations.models import Collaboration
 from groups.models import Group
@@ -26,13 +30,16 @@ def group_message_create_view(request, slug):
     messages = Message.objects.filter(group=group)
     membership_level = get_membership_level(request.user, group)
 
-    return render(request, "app/group/partials/chat/main.html", {
-        'membership_level': membership_level,
-        "chat_messages": messages,
-        "group": group,
-        "chat_form": GroupMessageForm(
-            initial={"group": group}
-        )})
+    return render(
+        request,
+        "app/group/partials/chat/main.html",
+        {
+            "membership_level": membership_level,
+            "chat_messages": messages,
+            "group": group,
+            "chat_form": GroupMessageForm(initial={"group": group}),
+        },
+    )
 
 
 @login_required()
@@ -51,24 +58,30 @@ def group_message_update_view(request, slug, pk):
 
     if request.method == "POST" and form.is_valid():
         form.save()
-        return render(request, "app/group/partials/chat/main.html", {
-            'membership_level': get_membership_level(request.user, group),
-            "chat_messages": Message.objects.filter(group=group),
-            "group": group,
-            "chat_form": GroupMessageForm(
-                initial={"group": group}
-            )})
+        return render(
+            request,
+            "app/group/partials/chat/main.html",
+            {
+                "membership_level": get_membership_level(request.user, group),
+                "chat_messages": Message.objects.filter(group=group),
+                "group": group,
+                "chat_form": GroupMessageForm(initial={"group": group}),
+            },
+        )
 
-    return render(request, "app/group/partials/chat/main.html", {
-        'membership_level': get_membership_level(request.user, group),
-        'message': message,
-        "chat_messages": Message.objects.filter(group=group),
-        'message_update_modal': True,
-        "group": group,
-        "form": form,
-        "chat_form": GroupMessageForm(
-            initial={"group": group}
-        )})
+    return render(
+        request,
+        "app/group/partials/chat/main.html",
+        {
+            "membership_level": get_membership_level(request.user, group),
+            "message": message,
+            "chat_messages": Message.objects.filter(group=group),
+            "message_update_modal": True,
+            "group": group,
+            "form": form,
+            "chat_form": GroupMessageForm(initial={"group": group}),
+        },
+    )
 
 
 @login_required()
@@ -86,23 +99,29 @@ def group_message_delete_view(request, slug, pk):
 
     if request.method == "POST":
         message.delete()
-        return render(request, "app/group/partials/chat/main.html", {
-            'membership_level': get_membership_level(request.user, group),
-            "chat_messages": Message.objects.filter(group=group),
-            "group": group,
-            "chat_form": GroupMessageForm(
-                initial={"group": group}
-            )})
+        return render(
+            request,
+            "app/group/partials/chat/main.html",
+            {
+                "membership_level": get_membership_level(request.user, group),
+                "chat_messages": Message.objects.filter(group=group),
+                "group": group,
+                "chat_form": GroupMessageForm(initial={"group": group}),
+            },
+        )
 
-    return render(request, "app/group/partials/chat/main.html", {
-        'membership_level': get_membership_level(request.user, group),
-        'message': message,
-        "chat_messages": Message.objects.filter(group=group),
-        'message_delete_modal': True,
-        "group": group,
-        "chat_form": GroupMessageForm(
-            initial={"group": group}
-        )})
+    return render(
+        request,
+        "app/group/partials/chat/main.html",
+        {
+            "membership_level": get_membership_level(request.user, group),
+            "message": message,
+            "chat_messages": Message.objects.filter(group=group),
+            "message_delete_modal": True,
+            "group": group,
+            "chat_form": GroupMessageForm(initial={"group": group}),
+        },
+    )
 
 
 @login_required()
@@ -118,13 +137,20 @@ def collaboration_message_create_view(request, slug):
     collaboration = Collaboration.objects.get(slug=slug)
     Message.objects.create(collaboration=collaboration, user=user, message=message)
 
-    return render(request, "app/collaborations/partials/chat/main.html", {
-        'membership_level': get_membership_level(request.user, collaboration.related_group),
-        "chat_messages": Message.objects.filter(collaboration=collaboration),
-        "collaboration": collaboration,
-        "chat_form": CollaborationMessageForm(
-            initial={"collaboration": collaboration}
-        )})
+    return render(
+        request,
+        "app/collaborations/partials/chat/main.html",
+        {
+            "membership_level": get_membership_level(
+                request.user, collaboration.related_group
+            ),
+            "chat_messages": Message.objects.filter(collaboration=collaboration),
+            "collaboration": collaboration,
+            "chat_form": CollaborationMessageForm(
+                initial={"collaboration": collaboration}
+            ),
+        },
+    )
 
 
 @login_required()
@@ -143,23 +169,37 @@ def collaboration_message_delete_view(request, slug, pk):
 
     if request.method == "POST":
         message.delete()
-        return render(request, "app/collaborations/partials/chat/main.html", {
-            'membership_level': get_membership_level(request.user, collaboration.related_group),
+        return render(
+            request,
+            "app/collaborations/partials/chat/main.html",
+            {
+                "membership_level": get_membership_level(
+                    request.user, collaboration.related_group
+                ),
+                "chat_messages": Message.objects.filter(collaboration=collaboration),
+                "collaboration": collaboration,
+                "chat_form": CollaborationMessageForm(
+                    initial={"collaboration": collaboration}
+                ),
+            },
+        )
+
+    return render(
+        request,
+        "app/collaborations/partials/chat/main.html",
+        {
+            "membership_level": get_membership_level(
+                request.user, collaboration.related_group
+            ),
+            "message": message,
             "chat_messages": Message.objects.filter(collaboration=collaboration),
+            "message_delete_modal": True,
             "collaboration": collaboration,
             "chat_form": CollaborationMessageForm(
                 initial={"collaboration": collaboration}
-            )})
-
-    return render(request, "app/collaborations/partials/chat/main.html", {
-        'membership_level': get_membership_level(request.user, collaboration.related_group),
-        'message': message,
-        "chat_messages": Message.objects.filter(collaboration=collaboration),
-        'message_delete_modal': True,
-        "collaboration": collaboration,
-        "chat_form": CollaborationMessageForm(
-            initial={"collaboration": collaboration}
-        )})
+            ),
+        },
+    )
 
 
 @login_required()
@@ -179,22 +219,35 @@ def collaboration_message_update_view(request, slug, pk):
 
     if request.method == "POST" and form.is_valid():
         form.save()
-        return render(request, "app/collaborations/partials/chat/main.html", {
-            'membership_level': get_membership_level(request.user, collaboration.related_group),
+        return render(
+            request,
+            "app/collaborations/partials/chat/main.html",
+            {
+                "membership_level": get_membership_level(
+                    request.user, collaboration.related_group
+                ),
+                "chat_messages": Message.objects.filter(collaboration=collaboration),
+                "collaboration": collaboration,
+                "chat_form": CollaborationMessageForm(
+                    initial={"collaboration": collaboration}
+                ),
+            },
+        )
+
+    return render(
+        request,
+        "app/collaborations/partials/chat/main.html",
+        {
+            "membership_level": get_membership_level(
+                request.user, collaboration.related_group
+            ),
+            "message": message,
             "chat_messages": Message.objects.filter(collaboration=collaboration),
+            "message_update_modal": True,
             "collaboration": collaboration,
+            "form": form,
             "chat_form": CollaborationMessageForm(
                 initial={"collaboration": collaboration}
-            )})
-
-    return render(request, "app/collaborations/partials/chat/main.html", {
-        'membership_level': get_membership_level(request.user, collaboration.related_group),
-        'message': message,
-        "chat_messages": Message.objects.filter(collaboration=collaboration),
-        'message_update_modal': True,
-        "collaboration": collaboration,
-        "form": form,
-        "chat_form": CollaborationMessageForm(
-            initial={"collaboration": collaboration}
-        )})
-
+            ),
+        },
+    )

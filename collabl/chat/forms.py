@@ -19,7 +19,7 @@ class GroupMessageForm(ModelForm):
                     "id": "message",
                     "rows": "1",
                     "placeholder": "Your Message",
-                    "required": True
+                    "required": True,
                 }
             ),
         }
@@ -32,7 +32,9 @@ class GroupMessageUpdateForm(ModelForm):
 
     class Meta:
         model = Message
-        fields = ["message", ]
+        fields = [
+            "message",
+        ]
 
         widgets = {
             "message": Textarea(
@@ -60,7 +62,7 @@ class CollaborationMessageForm(ModelForm):
                     "id": "message",
                     "rows": "1",
                     "placeholder": "Your Message",
-                    "required": True
+                    "required": True,
                 }
             ),
         }
@@ -73,7 +75,9 @@ class CollaborationMessageUpdateForm(ModelForm):
 
     class Meta:
         model = Message
-        fields = ["message", ]
+        fields = [
+            "message",
+        ]
 
         widgets = {
             "message": Textarea(
