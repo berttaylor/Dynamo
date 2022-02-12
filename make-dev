@@ -2,7 +2,7 @@
 .PHONY: springclean
 
 # Generic declarations
-PROJECT = dynamo
+PROJECT = collabl
 INSTALL = pip install
 
 # Sets commands for individual containers
@@ -161,7 +161,7 @@ setuptests:
 	$(BACKEND_EXEC) "pip install --dev"
 
 runtests:
-	$(BACKEND_EXEC) "cd dynamo/tests; pytest"
+	$(BACKEND_EXEC) "cd collabl/tests; pytest"
 
 droptestdata:
 	$(BACKEND_RUN) "cd $(PROJECT); ./manage.py drop_pm_test_data;"

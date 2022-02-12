@@ -10,13 +10,13 @@ RUN apt-get update \
     && apt-get -y autoclean
 
 # Django app config
-RUN mkdir -p /opt/services/dynamo/src
-COPY requirements.txt /opt/services/dynamo/src/
-WORKDIR /opt/services/dynamo/src
+RUN mkdir -p /opt/services/collabl/src
+COPY requirements.txt /opt/services/collabl/src/
+WORKDIR /opt/services/collabl/src
 RUN pip install --upgrade pip
 RUN pip install -r requirements.txt
-COPY . /opt/services/dynamo/src
-RUN cd dynamo/static
+COPY . /opt/services/collabl/src
+RUN cd collabl/static
 
 EXPOSE 8000
-CMD ["gunicorn", "-c", "dynamo/config/gunicorn/conf.py", "--bind", ":8000", "--chdir", "dynamo", "dynamo.wsgi:application"]
+CMD ["gunicorn", "-c", "collabl/config/gunicorn/conf.py", "--bind", ":8000", "--chdir", "collabl", "collabl.wsgi:application"]
