@@ -1,8 +1,8 @@
-# Dynamo
+# collabl.io
 
 ## Summary
 
-Dynamo is a fully functional  **Collaborative Goal Tracking** & **Task Management** web application, written with the following goals in mind:
+Collabl is a fully functional  **Collaborative Goal Tracking** & **Task Management** web application, written with the following goals in mind:
 
 * Allow individuals users with a similar cause to form online groups
 * Allow these groups to plan and track collaborations in a way which is fully featured (see the feature spec below), but also intuitive and simple to use.
