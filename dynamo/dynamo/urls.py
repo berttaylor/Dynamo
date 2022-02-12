@@ -13,32 +13,26 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
-from django.conf.urls import url
-from django.conf.urls.static import static
+
 from django.contrib import admin
 from django.urls import path, include
 from django.views.generic import TemplateView
-from django.views.static import serve
 
-from dynamo import settings
-from dynamo.base.views import empty_html_string
+from dynamo.base.views import empty_string
 
 urlpatterns = [
     # ADMIN
     path("admin/", admin.site.urls),
     # AUTH
-    path("accounts/", include("users.urls")),
+    path("", include("users.urls")),
     # Home
     path("", TemplateView.as_view(template_name="landing/landing.html"), name="home"),
     # FAQ / Support
     path("support/", include("support.urls")),
     # Groups
     path("groups/", include("groups.urls")),
-    # Chat
-    path("chat/", include("chat.urls")),
     # Collaborations
     path("", include("collaborations.urls")),
-
     # Generics
-    path("clear", empty_html_string, name="clear"),
+    path("clear", empty_string, name="empty-string"),
 ]

@@ -1,0 +1,44 @@
+{% extends "app/base/main.html" %}
+{% block body_content %}
+
+
+    <div class="py-4 px-4 mb-4 bg-white rounded shadow-sm">
+
+        <div class="d-flex align-items-center justify-content-between">
+
+            <h5 class="mb-0">Find Groups</h5>
+
+            <div class="d-flex">
+
+                <input type="search" class="form-control fmw-100 fmxh-50" placeholder="Search"
+                    aria-label="group query string"
+                    name="group_query_string"
+                    hx-get={% url 'group-search' %}
+                            hx-target="#list_of_groups"
+                    hx-swap="innerHTML swap:0.3s"
+                   hx-trigger="keyup changed delay:500ms, search"
+                >
+
+                <a hx-get="{% url 'group-create' %}" hx-target="#modal-div" hx-swap="innerHTML">
+                    <button class="btn btn-tertiary ms-2 fmw-150 fmxh-50">+ Add Group</button>
+                </a>
+
+            </div>
+
+
+        </div>
+
+    </div>
+    <div class="row card-deck" id="list_of_groups">
+        {% include "app/home/partials/group_list.html" %}
+    </div>
+
+    <div id="modal-div">
+
+    </div>
+
+
+
+{% endblock %}
+
+

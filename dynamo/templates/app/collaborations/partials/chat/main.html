@@ -12,7 +12,7 @@
                 <div class="input-group">
                     {{ chat_form.message }}
 
-                    <button hx-post="{% url 'collaboration-chat' collaboration_id=collaboration.pk %}"
+                    <button hx-post="{% url 'collaboration-message-create' slug=collaboration.slug %}"
                             hx-target="#collaboration_chat" type="submit" class="btn btn-outline-primary">Send
                     </button>
                 </div>
@@ -29,13 +29,13 @@
         {% if message.user == request.user %}
 
             <div class="row align-items-center m-2 ms-5 py-2 bg-dark rounded">
-                <div class="col text-white"> {{ message.message }}
+                <div class="col text-white">
+                    <a
+                           hx-get="{% url 'collaboration-message-update' slug=collaboration.slug pk=message.pk %}"
+                           hx-target="#collaboration_chat"
+                   >{{ message.message }}</a>
                     <div class="small mt-1 text-gray-200"><strong
                             class="text-gray-200">You </strong>- {{ message.created_at }}
-                        <a class="text-muted font-small me-3"
-                           hx-delete="{% url 'collaboration-message-delete' message_id=message.id %}"
-                           hx-target="#collaboration_chat"
-                           hx-confirm="Delete Message?"><span class="fa fa-trash me-2" aria-hidden="true"> </span></a>
                     </div>
                 </div>
             </div>
@@ -54,7 +54,17 @@
             </div>
         {% endif %}
     {% empty %}
-        <p class="m-2">No messages yet</p>
+
+        <div class="text-muted text-center mb-0 p-1">nothing to see here...</div>
+
     {% endfor %}
 
 </div>
+
+{% if message_delete_modal %}
+    {% include "app/collaborations/partials/chat/modals/message_delete.html" %}
+{% endif %}
+
+{% if message_update_modal %}
+    {% include "app/collaborations/partials/chat/modals/message_update.html" %}
+{% endif %}

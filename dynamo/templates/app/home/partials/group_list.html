@@ -1,0 +1,58 @@
+{% for group in groups %}
+
+    <div class="col-12 col-m-6 col-xl-6 mb-5">
+        <div class="card border-light">
+        <a hx-swap="innerHTML swap:0.2s" hx-boost="true" href="{% url 'group-detail' slug=group.slug %}">
+            {% if group.profile_image %}
+                <img src="{{ group.profile_image.url }}" class="card-img-top rounded-top"
+                     alt="{{ group.profile_image }}">
+            {% else %}
+                <img src="/compiled/pixel/html&css/assets/img/blog/image-1.jpg"
+                     class="card-img-top rounded-top" alt="Office">
+            {% endif %}
+        </a>
+            <div class="card-body">
+
+                {% if request.user in group.admin_users %}
+                <span class="h6 icon-tertiary small"><i class="fas fa-star mr-2"></i> Admin</span>
+                {% endif %}
+
+{#                {% if request.user in group.current_users %}#}
+{#                    <span class="h6 icon-tertiary small"><i class="fas fa-user mr-2"></i>  Member</span>#}
+{#                {% endif %}#}
+
+                {% if request.user in group.pending_users %}
+                    <span class="h6 icon-tertiary small"><i class="fas fa-clock mr-2"></i> Pending</span>
+                {% endif %}
+
+
+
+
+                <h3 class="h5 card-title mt-2">
+                    <a hx-swap="innerHTML swap:0.2s" hx-boost="true" href="{% url 'group-detail' slug=group.slug %}">{{ group.name }}</a></h3>
+                <div class="col d-flex mb-2 ps-0"><span class="font-small me-3"><span
+                        class="fas fa-user me-2"></span>{{ group.active_member_count }}</span>
+
+                    <span class="font-small me-3">
+                        <span class="fas fa-bullhorn me-2"></span>{{ group.group_announcements.count }}</span>
+                    <span class="font-small me-3"><span
+                            class="fa fa-handshake me-2"></span>{{ group.collaborations.count }}</span>
+                    <span class="font-small">
+                        <span class="fas fa-envelope me-2"></span>{{ group.chat_messages.count }}</span>
+                </div>
+                <p class="card-text">{{ group.description }}</p>
+                <a hx-swap="innerHTML swap:0.2s" hx-boost="true" href="{% url 'group-detail' slug=group.slug %}"
+                   class="btn btn-primary btn-sm">Enter</a>
+            </div>
+        </div>
+    </div>
+
+
+
+{% empty %}
+    <div class="p-3 text-center text-muted">nothing to show right now</div>
+{% endfor %}
+
+{% if success_url %}
+    {% include "app/group/js/redirect.html" with url=success_url %}
+{% endif %}

@@ -5,7 +5,8 @@
             <select class="form-select fmxw-150 pe-5" id="inlineFormCustomSelectMessages"
                     aria-label="announcement filter"
                     name="announcement_list_filter"
-                    hx-get={% url 'htmx_announcement_list' group_id=group.id %}
+                    hx-swap="innerHTML swap:0.1s"
+                    hx-get={% url 'group-announcement-list' slug=group.slug %}
                             hx-target="#list_of_announcements"
             >
                 <option value="{{ ANNOUNCEMENTS_FILTER_LATEST }}">{{ ANNOUNCEMENTS_FILTER_LATEST }}</option>
@@ -13,7 +14,11 @@
                 <option value="HIDE">Hide All</option>
             </select>
             {% if membership_level == "Admin" %}
-                <a href="{% url 'announcement_create' group_slug=group.slug %}">
+        <a
+            hx-get="{% url 'group-announcement-create' slug=group.slug %}"
+            hx-target="#list_of_announcements"
+            hx-swap="innerHTML"
+        >
                     <button class="btn btn-tertiary ms-2">New</button>
                 </a>
             {% endif %}
@@ -25,3 +30,4 @@
     </div>
 
 </div>
+

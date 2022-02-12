@@ -1,17 +1,14 @@
-import os
 import time
 
 from django.db import models
-from django.db.models.signals import pre_save
-from django.dispatch import receiver
 from django.template.defaultfilters import slugify
 
+from dynamo.base.models import TimeStampedSoftDeleteBase
 from dynamo.storages import group_based_upload_to
 from groups import constants as c
-from .managers import MembershipManager
+from users.models import User
 from users.utils import get_sentinel_user
-
-from dynamo.base.models import TimeStampedSoftDeleteBase
+from .managers import MembershipManager
 
 
 class Group(TimeStampedSoftDeleteBase):
@@ -63,6 +60,36 @@ class Group(TimeStampedSoftDeleteBase):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.__saved_profile_image = self.profile_image
+
+    @property
+    def active_member_count(self):
+        """Returns the number of active group members"""
+        return self.memberships.all().filter(status__in=[c.MEMBERSHIP_STATUS_CURRENT, c.MEMBERSHIP_STATUS_ADMIN]).count()
+
+    @property
+    def subscriber_count(self):
+        """Returns the number of group subscribers"""
+        return self.memberships.all().filter(is_subscribed=True).count()
+
+    @property
+    def admin_count(self):
+        """Returns the number of group admins"""
+        return self.memberships.all().filter(status=c.MEMBERSHIP_STATUS_ADMIN).count()
+
+    @property
+    def current_users(self):
+        """Returns a queryset of users with pending memberships"""
+        return User.objects.filter(pk__in=self.memberships.all().filter(status=c.MEMBERSHIP_STATUS_CURRENT).values_list('user', flat=True))
+
+    @property
+    def admin_users(self):
+        """Returns a queryset of group admins"""
+        return User.objects.filter(pk__in=self.memberships.all().filter(status=c.MEMBERSHIP_STATUS_ADMIN).values_list('user', flat=True))
+
+    @property
+    def pending_users(self):
+        """Returns a queryset of users with pending memberships"""
+        return User.objects.filter(pk__in=self.memberships.all().filter(status=c.MEMBERSHIP_STATUS_PENDING).values_list('user', flat=True))
 
     @property
     def short_description(self):
@@ -167,33 +194,6 @@ class Membership(TimeStampedSoftDeleteBase):
 
     def __str__(self):
         return f"[{self.status}] {self.user.first_name}"
-
-
-# class GroupProfileImage(TimeStampedSoftDeleteBase):
-#     """
-#     Images stored for the Groups' main profile page
-#     """
-#
-#     # TODO : sort file uploads
-#     #  related_file = models.FileField(
-#     #     # The PrivateAssetStorage class extends the S3Boto with some overrides
-#     #     # (Sends to a private, separate DO space)
-#     #     storage=PrivateAssetStorage(),
-#     #     upload_to=build_image_storage_path,
-#     #     help_text="The file of the image. Please aim to keep this below 1mb in size.",
-#     #     )
-#
-#     alt_text = models.CharField(
-#         null=False,
-#         max_length=100,
-#         help_text="The full alt text of the image for accessibility purposes.",
-#     )
-#
-#     def __str__(self):
-#         return self.alt_text
-#
-#     class Meta:
-#         verbose_name_plural = "Profile Images"
 
 
 class GroupAnnouncement(TimeStampedSoftDeleteBase):

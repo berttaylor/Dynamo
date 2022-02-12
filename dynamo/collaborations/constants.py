@@ -40,3 +40,8 @@ FILE_FORMAT_CHOICES: tuple = (
 MILESTONE_STATUS_ON_TARGET: str = "On Target"
 MILESTONE_STATUS_BEHIND_TARGET: str = "Behind Target"
 MILESTONE_STATUS_REACHED: str = "Reached"
+
+"""TASK STATUS ACTIONS"""
+
+COMPLETE_TASK: str = "Complete Task"
+UNDO_COMPLETE_TASK: str = "Undo Complete Task"

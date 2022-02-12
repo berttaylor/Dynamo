@@ -1,15 +1,18 @@
-<div class="py-4 px-4 mb-4 bg-white rounded shadow-sm">
+<div class="py-4 px-4 bg-white rounded shadow-sm mb-0">
 
     <div class="d-flex align-items-center justify-content-between">
         <h5 class="mb-0">Collaborations</h5>
 
         <div class="d-flex">
 
+
+
             <select class="form-select fmxw-150 pe-5" id="inlineFormCustomSelectMessages"
                     aria-label="collaborations filter"
                     name="collaboration_list_filter"
-                    hx-get={% url 'htmx_collaboration_list' group_id=group_id %}
+                    hx-get={% url 'group-collaboration-list' slug=group.slug %}
                             hx-target="#list_of_collaborations"
+                    hx-swap="innerHTML swap:0.3s"
             >
                 <option value="{{ COLLABORATION_STATUS_ALL }}">{{ COLLABORATION_STATUS_ALL }}</option>
                 <option value="{{ COLLABORATION_STATUS_PLANNING }}">{{ COLLABORATION_STATUS_PLANNING }}</option>
@@ -19,9 +22,12 @@
             </select>
 
             {% if membership_level == "Admin" %}
-                <a href="{% url 'collaboration-create' group_slug=group.slug %}">
-                    <button class="btn btn-tertiary ms-2">New</button>
-                </a>
+                <button
+                    hx-get={% url 'group-collaboration-create' slug=group.slug %}
+                    hx-target="#list_of_collaborations"
+                    hx-include="[name='collaboration_list_filter']"
+                    hx-swap="afterend"
+                    class="btn btn-tertiary ms-2" >New</button>
             {% endif %}
 
 

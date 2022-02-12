@@ -57,6 +57,7 @@ INSTALLED_APPS = [
     "support",
     "chat",
     "storages",
+    "django_htmx",
     "axes",
 ]
 
@@ -68,6 +69,7 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    "django_htmx.middleware.HtmxMiddleware",
     # AxesMiddleware should be the last middleware in the MIDDLEWARE list.
     # It only formats user lockout messages and renders Axes lockout responses
     # on failed user authentication attempts from login views.
@@ -191,9 +193,9 @@ MEDIA_ROOT = os.path.join(BASE_DIR, "media/root")  # Added
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 # ADDED: Set some URLs and overrides
-LOGIN_URL = "/accounts/login/"
-LOGOUT_REDIRECT_URL = "/accounts/login/"
-LOGIN_REDIRECT_URL = "/collaborations/"
+LOGIN_URL = "/login/"
+LOGOUT_REDIRECT_URL = "/login/"
+LOGIN_REDIRECT_URL = "/user/collaborations/"
 
 # ADDED: Axes settings
 AXES_FAILURE_LIMIT = 10  # Number of failed attempts before lockout

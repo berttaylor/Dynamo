@@ -37,6 +37,14 @@ class UserAdmin(admin.ModelAdmin):
             },
         ),
         (
+            "Image",
+            {
+                "fields": (
+                    "image",
+                )
+            },
+        ),
+        (
             "Permissions",
             {
                 "fields": (

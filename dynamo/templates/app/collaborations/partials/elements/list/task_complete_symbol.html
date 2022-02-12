@@ -1,0 +1,9 @@
+<button class="shape bg-secondary border-0 d-flex align-items-center justify-content-center organic-radius icon-white icon-lg"
+        hx-post="{% url 'collaboration-task-toggle' slug=collaboration.slug pk=task.pk status=UNDO_COMPLETE_TASK %}"
+        hx-trigger="click"
+        hx-target="#element_list"
+        hx-swap="innerHTML swap:0.2s">
+
+<span class="fas fa-check-circle fa-2x"></span>
+
+</button>

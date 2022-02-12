@@ -8,7 +8,8 @@
             <select class="form-select fmxw-150 pe-5" id="inlineFormCustomSelectMessages"
                     aria-label="select membership view"
                     name="membership_filter"
-                    hx-get={% url 'htmx_membership_list' group_id=group_id %}
+                    hx-swap="innerHTML swap:0.2s"
+                    hx-get={% url 'group-membership-list' slug=group.slug %}
                             hx-target="#list_of_members"
             >
                 <option

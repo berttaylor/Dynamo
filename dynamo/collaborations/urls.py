@@ -16,18 +16,16 @@ Including another URLconf
 
 from django.urls import path
 
-from collaborations.views import CollaborationCreateView, CollaborationDetailView, CollaborationUpdateView, \
-    CollaborationDeleteView, TaskUpdateView, MilestoneUpdateView
-from .views_htmx import task_create_view, milestone_create_view, task_delete_view, milestone_delete_view
+from chat.views_htmx import collaboration_message_create_view, collaboration_message_delete_view, \
+    collaboration_message_update_view
+from collaborations.views import CollaborationDetailView
+from .views_htmx import collaboration_task_toggle_view, collaboration_task_create_view, \
+    collaboration_milestone_create_view, collaboration_task_update_view, collaboration_milestone_update_view, \
+    collaboration_task_delete_view, collaboration_milestone_delete_view, collaboration_task_move_view, \
+    collaboration_milestone_move_view, collaboration_task_notes_view, collaboration_elements_list_view, \
+    collaboration_update_view, collaboration_image_view, collaboration_delete_view, user_collaboration_create_view
 
 urlpatterns = [
-    # We use long URLs here because collaborations are created within groups and this probably make more sense
-    # to the user in terms of data hierarchy.
-    path(
-        "groups/<group_slug>/create-collaboration/",
-        CollaborationCreateView.as_view(),
-        name="collaboration-create",
-    ),
     path(
         "collaborations/<slug>/",
         CollaborationDetailView.as_view(),
@@ -35,42 +33,94 @@ urlpatterns = [
     ),
     path(
         "collaborations/<slug>/update",
-        CollaborationUpdateView.as_view(),
+        collaboration_update_view,
         name="collaboration-update",
     ),
     path(
+        "collaborations/<slug>/image",
+        collaboration_image_view,
+        name="collaboration-image",
+    ),
+    path(
         "collaborations/<slug>/delete",
-        CollaborationDeleteView.as_view(),
+        collaboration_delete_view,
         name="collaboration-delete",
     ),
     path(
-        "collaboration/<collaboration_id>/create-task",
-        task_create_view,
-        name="task-create",
+        "collaborations/<slug>/elements",
+        collaboration_elements_list_view,
+        name="collaboration-elements-list",
+    ),
+
+    path(
+        "collaborations/<slug>/tasks",
+        collaboration_task_create_view,
+        name="collaboration-task-create",
     ),
     path(
-        "collaboration/<collaboration_id>/create-milesteone",
-        milestone_create_view,
-        name="milestone-create",
+        "collaborations/<slug>/tasks/<pk>",
+        collaboration_task_update_view,
+        name="collaboration-task-update",
     ),
     path(
-        "task/<pk>/update",
-        TaskUpdateView.as_view(),
-        name="task-update",
+        "collaborations/<slug>/tasks/<pk>/delete",
+        collaboration_task_delete_view,
+        name="collaboration-task-delete",
     ),
     path(
-        "milestone/<pk>/update",
-        MilestoneUpdateView.as_view(),
-        name="milestone-update",
+        "collaborations/<slug>/tasks/<pk>/notes",
+        collaboration_task_notes_view,
+        name="collaboration-task-notes",
     ),
     path(
-        "task/<pk>/delete",
-        task_delete_view,
-        name="task-delete",
+        "collaborations/<slug>/tasks/<pk>/toggle/<status>",
+        collaboration_task_toggle_view,
+        name="collaboration-task-toggle",
     ),
     path(
-        "milestone/<pk>/delete",
-        milestone_delete_view,
-        name="milestone-delete",
+        "collaborations/<slug>/tasks/<pk>/move/<position>",
+        collaboration_task_move_view,
+        name="collaboration-task-move",
+    ),
+
+    path(
+        "collaborations/<slug>/milestones",
+        collaboration_milestone_create_view,
+        name="collaboration-milestone-create",
+    ),
+    path(
+        "collaborations/<slug>/milestones/<pk>",
+        collaboration_milestone_update_view,
+        name="collaboration-milestone-update",
+    ),
+    path(
+        "collaborations/<slug>/milestones/<pk>/delete",
+        collaboration_milestone_delete_view,
+        name="collaboration-milestone-delete",
+    ),
+    path(
+        "collaborations/<slug>/milestones/<pk>/move/<position>",
+        collaboration_milestone_move_view,
+        name="collaboration-milestone-move",
+    ),
+    path(
+        "collaborations/<slug>/messages",
+        collaboration_message_create_view,
+        name="collaboration-message-create",
+    ),
+    path(
+        "collaborations/<slug>/messages/<pk>",
+        collaboration_message_update_view,
+        name="collaboration-message-update",
+    ),
+    path(
+        "collaborations/<slug>/messages/<pk>/delete",
+        collaboration_message_delete_view,
+        name="collaboration-message-delete",
+    ),
+    path(
+        "collaborations/create",
+        user_collaboration_create_view,
+        name="user-collaboration-create",
     ),
 ]

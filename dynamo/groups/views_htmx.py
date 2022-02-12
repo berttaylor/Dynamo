@@ -1,22 +1,95 @@
 from django.contrib.auth.decorators import login_required
-from django.db.models import IntegerField, Case, When, Count, Q
 from django.http import HttpResponse
 from django.shortcuts import render, get_object_or_404
+from django.urls import reverse_lazy
 
 import groups.constants as c
-from collaborations.models import Collaboration
+from dynamo.settings import SITE_PROTOCOL, SITE_DOMAIN
+from groups.forms import GroupForm, GroupImageForm, GroupAnnouncementForm
 from groups.models import Group, Membership, GroupAnnouncement
+from groups.utils import get_membership_level, get_filtered_collaborations
 from groups.views import get_membership_count
 
 
 @login_required()
-def htmx_membership_list(request, group_id):
+def group_update_view(request, slug):
+    """
+    HTMX VIEW - Allows group updates with no reload
+    Sends back "app/group/partials/header/main.html", to replace the content in #group_page_header
+    If "group_update_modal": True is in the context (and the form), a modal will be rendered
+    (with error messages, if appropriate)
+    """
+
+    group = get_object_or_404(Group, slug=slug)
+
+    form = GroupForm(request.POST or None, instance=group)
+
+    if request.user.is_authenticated:
+        membership_level = get_membership_level(request.user, group)
+    else:
+        membership_level = None
+
+    if request.method == "POST":
+        if form.is_valid():
+            form.save()
+        return render(request,
+                      "app/group/partials/header/main.html", {
+                          "group": group,
+                          "membership_level": membership_level,
+                          "membership_count": get_membership_count(group),
+                      })
+
+    return render(request,
+                  "app/group/partials/modals/group_update.html", {
+                      "group": group,
+                      "form": form,
+                  })
+
+
+@login_required()
+def group_image_view(request, slug):
+    """
+    HTMX VIEW - Allows group image updates with no reload
+    Sends back "app/group/partials/header/main.html", to replace the content in #group_page_header
+    If "group_image_modal": True is in the context (and the form), a modal will be rendered
+    (with error messages, if appropriate)
+    """
+
+    group = get_object_or_404(Group, slug=slug)
+
+    form = GroupImageForm(request.POST or None, request.FILES or None, instance=group)
+
+    if request.user.is_authenticated:
+        membership_level = get_membership_level(request.user, group)
+    else:
+        membership_level = None
+
+    if request.method == "POST":
+        if form.is_valid():
+            form.save()
+        return render(request,
+                      "app/group/partials/header/main.html", {
+                          "group": group,
+                          "membership_level": membership_level,
+                          "membership_count": get_membership_count(group),
+                      })
+
+    return render(request,
+                  "app/group/partials/modals/group_image.html", {
+                      "group": group,
+                      "form": form,
+                  })
+
+
+@login_required()
+def group_membership_view(request, slug):
     """
     HTMX VIEW - Populates list of memberships of the specified type - set by select object on front end
     """
 
     # if the filter is not set, we send back only pending membership requests
     membership_filter = request.GET.get('membership_filter', c.MEMBERSHIP_STATUS_PENDING)
+    group = get_object_or_404(Group, slug=slug)
 
     # Clear the session, if it is being used
     if request.session.get('selected_memberships', None):
@@ -27,17 +100,18 @@ def htmx_membership_list(request, group_id):
                       "app/group/partials/memberships/list.html",
                       {
                           "membership_list": Membership.objects.filter(
-                              group_id=group_id, status=membership_filter
+                              group__slug=slug, status=membership_filter
                           ),
                           "membership_filter": membership_filter,
-                          "group_id": group_id,
+                          "group": group,
+                          "membership_count": get_membership_count(group),
                       })
     else:
-        return HttpResponse("")
+        return HttpResponse()
 
 
 @login_required()
-def htmx_membership_selector(request, group_id, membership_id, membership_filter):
+def group_membership_selector_view(request, slug, pk, membership_filter):
     """
     HTMX VIEW - Allows admins to select memberships in order to process in bulk
 
@@ -50,36 +124,37 @@ def htmx_membership_selector(request, group_id, membership_id, membership_filter
 
     # Grab the current list, or create one - an empty list
     selected_memberships = request.session.get('selected_memberships', [])
+    group = get_object_or_404(Group, slug=slug)
 
     # CASE 1: Removing an agency - Update the shortlist (in session), render the response
-    if membership_id in selected_memberships:
-        selected_memberships.remove(membership_id)
+    if pk in selected_memberships:
+        selected_memberships.remove(pk)
         if len(selected_memberships) == 0:
             del request.session['selected_memberships']
-            return HttpResponse("")
+            return HttpResponse()
         else:
             request.session['selected_memberships'] = selected_memberships
             return render(request,
                           "app/group/partials/memberships/action_bar.html", {
                               "selected_memberships": len(selected_memberships),
                               "membership_filter": membership_filter,
-                              "group_id": group_id,
+                              "group": group,
                           })
 
     # CASE 2: Adding an agency to the shortlist - Update the shortlist (in session), render the response
     else:
-        selected_memberships.append(membership_id)
+        selected_memberships.append(pk)
         request.session['selected_memberships'] = selected_memberships
         return render(request,
                       "app/group/partials/memberships/action_bar.html", {
                           "selected_memberships": len(selected_memberships),
                           "membership_filter": membership_filter,
-                          "group_id": group_id,
+                          "group": group,
                       })
 
 
 @login_required()
-def htmx_membership_handler(request, group_id, action, membership_filter):
+def group_membership_handler_view(request, slug, action, membership_filter):
     """
     HTMX VIEW - Allows admins process memberships stored in session
 
@@ -94,7 +169,7 @@ def htmx_membership_handler(request, group_id, action, membership_filter):
     if not (selected_memberships := request.session.get('selected_memberships', None)):
         return None
 
-    group = get_object_or_404(Group, id=group_id)
+    group = get_object_or_404(Group, slug=slug)
 
     if action == c.MEMBERSHIP_ACTION_CLEAR_SELECTION:
         # Get the ids (so that we can 'uncheck' the checkboxes on front end)
@@ -137,109 +212,192 @@ def htmx_membership_handler(request, group_id, action, membership_filter):
 
     if membership_filter in c.MEMBERSHIP_FILTERS:
         membership_list = Membership.objects.filter(
-            group_id=group_id, status=membership_filter
+            group=group, status=membership_filter
         )
     else:
         membership_list = Membership.objects.none()
 
     return render(request, "app/group/partials/memberships/main.html",
                   {
+                      "group": group,
                       "membership_list": membership_list,
                       "membership_filter": membership_filter,
                       "membership_count": get_membership_count(group),
-                      "group_id": group_id,
-                      "new_member_count": group.memberships.all().filter(status=c.MEMBERSHIP_STATUS_CURRENT).count(),
-                      "new_subscriber_count": group.memberships.all().filter(is_subscribed=True).count(),
-                      "new_admin_count": group.memberships.all().filter(status=c.MEMBERSHIP_STATUS_ADMIN).count(),
                   })
 
 
 @login_required()
-def htmx_announcement_list(request, group_id):
+def group_collaboration_list(request, slug):
+    """
+    HTMX VIEW - Populates the list of collaborations - either All, Planning, ongoing,
+    """
+
+    # Get group
+    group = get_object_or_404(Group, slug=slug)
+
+    # Get filter parameter - if not set, send back a 'hidden' response (Empty HTML string)
+    collaboration_list_filter = request.GET.get('collaboration_list_filter', 'HIDE')
+    if collaboration_list_filter == 'HIDE':
+        return HttpResponse()
+
+    collaborations = get_filtered_collaborations(group, collaboration_list_filter)
+
+    return render(request,
+                  "app/group/partials/collaborations/list.html", {
+                      "collaboration_list": collaborations,
+                      "group": group
+                  })
+
+
+@login_required()
+def group_announcement_list(request, slug):
     """
     HTMX VIEW - Populates the list of announcements - either Latest, All, or None
     """
 
-    # if the filter is not set, we send back only pending membership requests
+    # if the filter is not set, we hide the announcements
     announcement_list_filter = request.GET.get('announcement_list_filter', 'HIDE')
+    group = get_object_or_404(Group, slug=slug)
 
     if announcement_list_filter == 'HIDE':
-        return HttpResponse("")
+        return HttpResponse()
 
     match announcement_list_filter:
         case c.ANNOUNCEMENTS_FILTER_LATEST:
-            announcements = GroupAnnouncement.objects.filter(group=group_id)[:1]
+            announcements = GroupAnnouncement.objects.filter(group=group)[:1]
         case c.ANNOUNCEMENTS_FILTER_ALL:
-            announcements = GroupAnnouncement.objects.filter(group=group_id)
+            announcements = GroupAnnouncement.objects.filter(group=group)
         case _:
             announcements = GroupAnnouncement.objects.none()
 
     return render(request,
                   "app/group/partials/announcements/list.html", {
+                      "group": group,
                       "announcement_list": announcements
                   })
 
 
 @login_required()
-def htmx_collaboration_list(request, group_id):
+def group_announcement_delete(request, slug, pk):
     """
-    HTMX VIEW - Populates the list of collaborations - either All, Planning, ongoing,
-    """
-
-    # Get filter parameter - if not set, send back a 'hidden' response (Empty HTML string)
-    collaboration_list_filter = request.GET.get('collaboration_list_filter', 'HIDE')
-    if collaboration_list_filter == 'HIDE':
-        return HttpResponse("")
-
-    # Annotate the group's collaborations with the number of complete/incomplete tasks,
-    group_collaborations = Collaboration.objects.filter(
-        related_group=group_id,
-    ).annotate(
-        tasks_complete=Count(
-            Case(When(Q(tasks__completed_at__isnull=False), then=1),
-                 output_field=IntegerField(),
-                 )
-        ),
-        tasks_incomplete=Count(
-            Case(When(Q(tasks__completed_at__isnull=True), then=1),
-                 output_field=IntegerField(),
-                 )
-        ),
-    )
-
-    # Filter the collaborations, depending on the filter parameter chosen
-    match collaboration_list_filter:
-        case c.COLLABORATION_STATUS_ALL:
-            collaborations = group_collaborations
-        case c.COLLABORATION_STATUS_PLANNING:
-            collaborations = group_collaborations.filter(tasks_complete=0)
-        case c.COLLABORATION_STATUS_ONGOING:
-            collaborations = group_collaborations.filter(tasks_incomplete__gt=0).exclude(tasks_complete=0)
-        case c.COLLABORATION_STATUS_COMPLETED:
-            collaborations = group_collaborations.filter(tasks_incomplete=0).exclude(tasks_complete=0)
-        case _:
-            collaborations = Collaboration.objects.none()
-
-    return render(request,
-                  "app/group/partials/collaborations/list.html", {
-                      "collaboration_list": collaborations
-                  })
-
-
-@login_required()
-def htmx_announcement_delete(request, group_slug, announcement_id):
-    """
-    HTMX VIEW - Allows announcements to be deleted
+    HTMX VIEW - Allows announcement updates with no reload
+    Sends back "app/group/partials/announcements/list.html", to replace the content in #list_of_announcements
+    If "announcement_delete_modal": True is in the context (and the form), a modal will be rendered
+    (with error messages, if appropriate)
     """
 
-    # TODO: Secure and set methods
+    group = get_object_or_404(Group, slug=slug)
+    announcement = get_object_or_404(GroupAnnouncement, pk=pk)
 
-    announcement = get_object_or_404(GroupAnnouncement, pk=announcement_id)
-    announcement.delete()
-
-    announcements = GroupAnnouncement.objects.filter(group__slug=group_slug)[:1]
+    if request.method == "POST":
+        announcement.delete()
+        return render(request,
+                      "app/group/partials/announcements/list.html", {
+                          "announcement_list": GroupAnnouncement.objects.filter(group=group)[:1],
+                          "group": group,
+                      })
 
     return render(request,
                   "app/group/partials/announcements/list.html", {
-                      "announcement_list": announcements
+                      "announcement_list": GroupAnnouncement.objects.filter(group=group)[:1],
+                      "group": group,
+                      "announcement_delete_modal": True,
+                      "announcement": announcement,
                   })
+
+
+@login_required()
+def group_announcement_create(request, slug):
+    """
+    HTMX VIEW - Allows new announcements with no reload
+    Sends back "app/group/partials/announcements/list.html", to replace the content in #list_of_announcements
+    If "announcement_create_modal": True is in the context (and the form), a modal will be rendered
+    (with error messages, if appropriate)
+    """
+
+    group = get_object_or_404(Group, slug=slug)
+
+    form = GroupAnnouncementForm(request.POST or None)
+
+    if request.method == "POST" and form.is_valid():
+        announcement = form.save(commit=False)
+        announcement.group = group
+        announcement.user = request.user
+        announcement.save()
+        return render(request,
+                      "app/group/partials/announcements/list.html", {
+                          "announcement_list": GroupAnnouncement.objects.filter(group=group)[:1],
+                          "group": group,
+                      })
+
+    return render(request,
+                  "app/group/partials/announcements/list.html", {
+                      "announcement_list": GroupAnnouncement.objects.filter(group=group)[:1],
+                      "group": group,
+                      "announcement_create_modal": True,
+                      "form": form,
+                  })
+
+
+@login_required()
+def group_announcement_update(request, slug, pk):
+    """
+    HTMX VIEW - Allows announcement updates with no reload
+    Sends back "app/group/partials/announcements/list.html", to replace the content in #list_of_announcements
+    If "announcement_update_modal": True is in the context (and the form), a modal will be rendered
+    (with error messages, if appropriate)
+    """
+
+    group = get_object_or_404(Group, slug=slug)
+    group_announcement = get_object_or_404(GroupAnnouncement, pk=pk)
+
+    form = GroupAnnouncementForm(request.POST or None, instance=group_announcement)
+
+    if request.method == "POST" and form.is_valid():
+        form.save()
+        return render(request,
+                      "app/group/partials/announcements/list.html", {
+                          "announcement_list": GroupAnnouncement.objects.filter(group=group)[:1],
+                          "group": group,
+                      })
+
+    return render(request,
+                  "app/group/partials/announcements/list.html", {
+                      "announcement_list": GroupAnnouncement.objects.filter(group=group)[:1],
+                      "group": group,
+                      "announcement_update_modal": True,
+                      "announcement": group_announcement,
+                      "form": form,
+                  })
+
+
+@login_required()
+def group_create_view(request):
+    """
+    HTMX VIEW - Allows group creation
+    Sends back the modal app/home/modals/group_create.html, which is appended do the header div.
+    on successful submission, sends back a JS/htmx redirect to the new group page.
+    """
+
+    form = GroupForm(request.POST or None)
+    if request.method == "POST":
+        if form.is_valid():
+            group = form.save(commit=False)
+            group.created_by = request.user
+            group.save()
+            Membership.objects.create(user=request.user, group=group, status=c.MEMBERSHIP_STATUS_ADMIN)
+            success_url = SITE_PROTOCOL + SITE_DOMAIN + reverse_lazy(
+                "group-detail",
+                kwargs={"slug": group.slug},
+            )
+
+            return render(request,
+                          "app/snippets/js_redirect.html", {
+                              "url": success_url,
+                          })
+
+    return render(request,
+                  "app/home/modals/group_create.html", {
+                      "form": form,
+                  })
+

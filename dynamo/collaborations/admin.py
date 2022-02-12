@@ -2,10 +2,8 @@ from django.contrib import admin
 
 from .models import (
     Collaboration,
-    CollaborationFile,
     CollaborationMilestone,
     CollaborationTask,
-    CollaborationTaskTag,
 )
 
 """
@@ -113,7 +111,8 @@ class CollaborationTaskAdmin(admin.ModelAdmin):
         ),
         (
             "Completion",
-            {"fields": (("completed_at", "completed_by"), "completion_notes")},
+            {"fields": (
+            ("completed_at", "completed_by"), "completion_notes", "file", "prompt_for_details_on_completion")},
         ),
         (
             "Database",
@@ -181,74 +180,4 @@ class CollaborationMilestoneAdmin(admin.ModelAdmin):
         "deleted_at",
         "reference",
         "prerequisites",
-    )
-
-
-@admin.register(CollaborationTaskTag)
-class CollaborationTaskTagAdmin(admin.ModelAdmin):
-    ordering = ("name",)
-
-    list_display = ("name",)
-
-    list_filter = ("created_at",)
-
-    fieldsets = (
-        (None, {"fields": ("name",)}),
-        (
-            "Database",
-            {
-                "fields": (
-                    ("created_at", "updated_at"),
-                    "deleted_at",
-                )
-            },
-        ),
-    )
-
-    readonly_fields = (
-        "created_at",
-        "updated_at",
-        "deleted_at",
-    )
-
-
-@admin.register(CollaborationFile)
-class CollaborationFileAdmin(admin.ModelAdmin):
-    ordering = ("name",)
-    search_fields = ("name",)
-
-    list_display = (
-        "created_at",
-        "name",
-        "collaboration",
-        "format",
-    )
-
-    list_filter = ("format",)
-
-    fieldsets = (
-        (
-            None,
-            {
-                "fields": (
-                    "collaboration",
-                    ("name", "format"),
-                )
-            },
-        ),
-        (
-            "Database",
-            {
-                "fields": (
-                    ("created_at", "updated_at"),
-                    "deleted_at",
-                )
-            },
-        ),
-    )
-
-    readonly_fields = (
-        "created_at",
-        "updated_at",
-        "deleted_at",
     )
