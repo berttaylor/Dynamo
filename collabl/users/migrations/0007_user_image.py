@@ -7,13 +7,18 @@ import collabl.storages
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('users', '0006_auto_20220109_1353'),
+        ("users", "0006_auto_20220109_1353"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='user',
-            name='image',
-            field=models.FileField(blank=True, help_text='Image for your profile (optional)', null=True, upload_to=collabl.storages.user_image_upload_to),
+            model_name="user",
+            name="image",
+            field=models.FileField(
+                blank=True,
+                help_text="Image for your profile (optional)",
+                null=True,
+                upload_to=collabl.storages.user_image_upload_to,
+            ),
         ),
     ]

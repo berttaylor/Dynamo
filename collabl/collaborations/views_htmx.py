@@ -8,9 +8,20 @@ from django.urls import reverse_lazy
 from django.views.generic.list import BaseListView
 
 import collaborations.constants as c
-from collaborations.forms import MilestoneForm, TaskForm, TaskUpdateForm, TaskCompleteForm, CollaborationForm, \
-    CollaborationImageForm, CollaborationCreateFormWithGroupSelection
-from collaborations.models import Collaboration, CollaborationTask, CollaborationMilestone
+from collaborations.forms import (
+    MilestoneForm,
+    TaskForm,
+    TaskUpdateForm,
+    TaskCompleteForm,
+    CollaborationForm,
+    CollaborationImageForm,
+    CollaborationCreateFormWithGroupSelection,
+)
+from collaborations.models import (
+    Collaboration,
+    CollaborationTask,
+    CollaborationMilestone,
+)
 from collaborations.utils import get_all_elements
 from collabl.settings import SITE_PROTOCOL, SITE_DOMAIN
 from groups.constants import MEMBERSHIP_STATUS_ADMIN
@@ -36,30 +47,46 @@ def group_collaboration_create_view(request, slug):
             collaboration.created_by = request.user
             collaboration.created_at = datetime.now()
             collaboration.save()
-            success_url = SITE_PROTOCOL + SITE_DOMAIN + reverse_lazy(
-                "collaboration-detail",
-                kwargs={"slug": collaboration.slug},
+            success_url = (
+                SITE_PROTOCOL
+                + SITE_DOMAIN
+                + reverse_lazy(
+                    "collaboration-detail",
+                    kwargs={"slug": collaboration.slug},
+                )
             )
 
             # Get filter parameter - if not set, send back a 'hidden' response (Empty HTML string)
-            collaboration_list_filter = request.GET.get('collaboration_list_filter', None)
+            collaboration_list_filter = request.GET.get(
+                "collaboration_list_filter", None
+            )
             if not collaboration_list_filter:
-                collaboration_list_filter = request.POST.get('collaboration_list_filter', 'HIDE')
+                collaboration_list_filter = request.POST.get(
+                    "collaboration_list_filter", "HIDE"
+                )
 
-            return render(request,
-                          "app/group/partials/collaborations/list.html", {
-                              "group": group,
-                              "collaboration_list": get_filtered_collaborations(group, collaboration_list_filter),
-                              "collaboration_list_filter": collaboration_list_filter,
-                              "form": form,
-                              "success_url": success_url,
-                          })
+            return render(
+                request,
+                "app/group/partials/collaborations/list.html",
+                {
+                    "group": group,
+                    "collaboration_list": get_filtered_collaborations(
+                        group, collaboration_list_filter
+                    ),
+                    "collaboration_list_filter": collaboration_list_filter,
+                    "form": form,
+                    "success_url": success_url,
+                },
+            )
 
-    return render(request,
-                  "app/group/partials/modals/collaboration_create.html", {
-                      "group": group,
-                      "form": form,
-                  })
+    return render(
+        request,
+        "app/group/partials/modals/collaboration_create.html",
+        {
+            "group": group,
+            "form": form,
+        },
+    )
 
 
 @login_required()
@@ -84,10 +111,13 @@ def collaboration_delete_view(request, slug):
             )
         )
 
-    return render(request,
-                  "app/collaborations/partials/header/modals/collaboration_delete.html", {
-                      "collaboration": collaboration,
-                  })
+    return render(
+        request,
+        "app/collaborations/partials/header/modals/collaboration_delete.html",
+        {
+            "collaboration": collaboration,
+        },
+    )
 
 
 @login_required()
@@ -106,16 +136,22 @@ def collaboration_update_view(request, slug):
     if request.method == "POST":
         if form.is_valid():
             form.save()
-        return render(request,
-                      "app/collaborations/partials/header/main.html", {
-                          "collaboration": collaboration,
-                      })
+        return render(
+            request,
+            "app/collaborations/partials/header/main.html",
+            {
+                "collaboration": collaboration,
+            },
+        )
 
-    return render(request,
-                  "app/collaborations/partials/header/modals/collaboration_update.html", {
-                      "collaboration": collaboration,
-                      "form": form,
-                  })
+    return render(
+        request,
+        "app/collaborations/partials/header/modals/collaboration_update.html",
+        {
+            "collaboration": collaboration,
+            "form": form,
+        },
+    )
 
 
 @login_required()
@@ -129,21 +165,29 @@ def collaboration_image_view(request, slug):
 
     collaboration = get_object_or_404(Collaboration, slug=slug)
 
-    form = CollaborationImageForm(request.POST or None, request.FILES or None, instance=collaboration)
+    form = CollaborationImageForm(
+        request.POST or None, request.FILES or None, instance=collaboration
+    )
 
     if request.method == "POST":
         if form.is_valid():
             form.save()
-        return render(request,
-                      "app/collaborations/partials/header/main.html", {
-                          "collaboration": collaboration,
-                      })
+        return render(
+            request,
+            "app/collaborations/partials/header/main.html",
+            {
+                "collaboration": collaboration,
+            },
+        )
 
-    return render(request,
-                  'app/collaborations/partials/header/modals/collaboration_image_update.html', {
-                      "collaboration": collaboration,
-                      "form": form,
-                  })
+    return render(
+        request,
+        "app/collaborations/partials/header/modals/collaboration_image_update.html",
+        {
+            "collaboration": collaboration,
+            "form": form,
+        },
+    )
 
 
 @login_required()
@@ -162,19 +206,25 @@ def collaboration_task_create_view(request, slug):
         task.collaboration = collaboration
         task.save()
 
-        return render(request,
-                      "app/collaborations/partials/elements/list/main.html", {
-                          "elements": get_all_elements(collaboration),
-                          "collaboration": collaboration,
-                      })
+        return render(
+            request,
+            "app/collaborations/partials/elements/list/main.html",
+            {
+                "elements": get_all_elements(collaboration),
+                "collaboration": collaboration,
+            },
+        )
 
-    return render(request,
-                  "app/collaborations/partials/elements/list/main.html", {
-                      "elements": get_all_elements(collaboration),
-                      "collaboration": collaboration,
-                      "task_creation_modal": True,
-                      "form": form,
-                  })
+    return render(
+        request,
+        "app/collaborations/partials/elements/list/main.html",
+        {
+            "elements": get_all_elements(collaboration),
+            "collaboration": collaboration,
+            "task_creation_modal": True,
+            "form": form,
+        },
+    )
 
 
 @login_required()
@@ -188,24 +238,32 @@ def collaboration_task_update_view(request, slug, pk):
     collaboration = get_object_or_404(Collaboration, slug=slug)
     task = get_object_or_404(CollaborationTask, pk=pk)
 
-    form = TaskUpdateForm(request.POST or None, initial={"collaboration": collaboration}, instance=task)
+    form = TaskUpdateForm(
+        request.POST or None, initial={"collaboration": collaboration}, instance=task
+    )
 
     if request.method == "POST" and form.is_valid():
         form.save()
-        return render(request,
-                      "app/collaborations/partials/elements/list/main.html", {
-                          "elements": get_all_elements(collaboration),
-                          "collaboration": collaboration,
-                      })
+        return render(
+            request,
+            "app/collaborations/partials/elements/list/main.html",
+            {
+                "elements": get_all_elements(collaboration),
+                "collaboration": collaboration,
+            },
+        )
 
-    return render(request,
-                  "app/collaborations/partials/elements/list/main.html", {
-                      "elements": get_all_elements(collaboration),
-                      "collaboration": collaboration,
-                      "task_update_modal": True,
-                      "task": task,
-                      "form": form,
-                  })
+    return render(
+        request,
+        "app/collaborations/partials/elements/list/main.html",
+        {
+            "elements": get_all_elements(collaboration),
+            "collaboration": collaboration,
+            "task_update_modal": True,
+            "task": task,
+            "form": form,
+        },
+    )
 
 
 @login_required()
@@ -224,20 +282,26 @@ def collaboration_task_notes_view(request, slug, pk):
 
     if request.method == "POST" and form.is_valid():
         form.save()
-        return render(request,
-                      "app/collaborations/partials/elements/list/main.html", {
-                          "elements": get_all_elements(collaboration),
-                          "collaboration": collaboration,
-                      })
+        return render(
+            request,
+            "app/collaborations/partials/elements/list/main.html",
+            {
+                "elements": get_all_elements(collaboration),
+                "collaboration": collaboration,
+            },
+        )
 
-    return render(request,
-                  "app/collaborations/partials/elements/list/main.html", {
-                      "elements": get_all_elements(collaboration),
-                      "collaboration": collaboration,
-                      "task_completion_notes_modal": True,
-                      "task": task,
-                      "form": TaskCompleteForm(instance=task),
-                  })
+    return render(
+        request,
+        "app/collaborations/partials/elements/list/main.html",
+        {
+            "elements": get_all_elements(collaboration),
+            "collaboration": collaboration,
+            "task_completion_notes_modal": True,
+            "task": task,
+            "form": TaskCompleteForm(instance=task),
+        },
+    )
 
 
 @login_required()
@@ -264,14 +328,19 @@ def collaboration_task_toggle_view(request, slug, pk, status):
         case _:
             pass
 
-    return render(request,
-                  "app/collaborations/partials/elements/list/main.html", {
-                      "elements": get_all_elements(collaboration),
-                      "task_completion_notes_modal": True if task.completed_at and task.prompt_for_details_on_completion else False,
-                      "form": TaskCompleteForm(instance=task),
-                      "task": task,
-                      "collaboration": collaboration,
-                  })
+    return render(
+        request,
+        "app/collaborations/partials/elements/list/main.html",
+        {
+            "elements": get_all_elements(collaboration),
+            "task_completion_notes_modal": True
+            if task.completed_at and task.prompt_for_details_on_completion
+            else False,
+            "form": TaskCompleteForm(instance=task),
+            "task": task,
+            "collaboration": collaboration,
+        },
+    )
 
 
 @login_required()
@@ -287,19 +356,25 @@ def collaboration_task_delete_view(request, slug, pk):
 
     if request.method == "POST":
         task.remove()
-        return render(request,
-                      "app/collaborations/partials/elements/list/main.html", {
-                          "elements": get_all_elements(collaboration),
-                          "collaboration": collaboration,
-                      })
+        return render(
+            request,
+            "app/collaborations/partials/elements/list/main.html",
+            {
+                "elements": get_all_elements(collaboration),
+                "collaboration": collaboration,
+            },
+        )
 
-    return render(request,
-                  "app/collaborations/partials/elements/list/main.html", {
-                      "elements": get_all_elements(collaboration),
-                      "collaboration": collaboration,
-                      "task_delete_modal": True,
-                      "task": task,
-                  })
+    return render(
+        request,
+        "app/collaborations/partials/elements/list/main.html",
+        {
+            "elements": get_all_elements(collaboration),
+            "collaboration": collaboration,
+            "task_delete_modal": True,
+            "task": task,
+        },
+    )
 
 
 @login_required()
@@ -318,19 +393,25 @@ def collaboration_milestone_create_view(request, slug):
         milestone.collaboration = collaboration
         milestone.save()
 
-        return render(request,
-                      "app/collaborations/partials/elements/list/main.html", {
-                          "elements": get_all_elements(collaboration),
-                          "collaboration": collaboration,
-                      })
+        return render(
+            request,
+            "app/collaborations/partials/elements/list/main.html",
+            {
+                "elements": get_all_elements(collaboration),
+                "collaboration": collaboration,
+            },
+        )
 
-    return render(request,
-                  "app/collaborations/partials/elements/list/main.html", {
-                      "elements": get_all_elements(collaboration),
-                      "collaboration": collaboration,
-                      "milestone_creation_modal": True,
-                      "form": form,
-                  })
+    return render(
+        request,
+        "app/collaborations/partials/elements/list/main.html",
+        {
+            "elements": get_all_elements(collaboration),
+            "collaboration": collaboration,
+            "milestone_creation_modal": True,
+            "form": form,
+        },
+    )
 
 
 @login_required()
@@ -344,24 +425,34 @@ def collaboration_milestone_update_view(request, slug, pk):
     collaboration = get_object_or_404(Collaboration, slug=slug)
     milestone = get_object_or_404(CollaborationMilestone, pk=pk)
 
-    form = MilestoneForm(request.POST or None, initial={"collaboration": collaboration}, instance=milestone)
+    form = MilestoneForm(
+        request.POST or None,
+        initial={"collaboration": collaboration},
+        instance=milestone,
+    )
 
     if request.method == "POST" and form.is_valid():
         form.save()
-        return render(request,
-                      "app/collaborations/partials/elements/list/main.html", {
-                          "elements": get_all_elements(collaboration),
-                          "collaboration": collaboration,
-                      })
+        return render(
+            request,
+            "app/collaborations/partials/elements/list/main.html",
+            {
+                "elements": get_all_elements(collaboration),
+                "collaboration": collaboration,
+            },
+        )
 
-    return render(request,
-                  "app/collaborations/partials/elements/list/main.html", {
-                      "elements": get_all_elements(collaboration),
-                      "collaboration": collaboration,
-                      "milestone_update_modal": True,
-                      "milestone": milestone,
-                      "form": form,
-                  })
+    return render(
+        request,
+        "app/collaborations/partials/elements/list/main.html",
+        {
+            "elements": get_all_elements(collaboration),
+            "collaboration": collaboration,
+            "milestone_update_modal": True,
+            "milestone": milestone,
+            "form": form,
+        },
+    )
 
 
 @login_required()
@@ -377,19 +468,25 @@ def collaboration_milestone_delete_view(request, slug, pk):
 
     if request.method == "POST":
         milestone.remove()
-        return render(request,
-                      "app/collaborations/partials/elements/list/main.html", {
-                          "elements": get_all_elements(collaboration),
-                          "collaboration": collaboration,
-                      })
+        return render(
+            request,
+            "app/collaborations/partials/elements/list/main.html",
+            {
+                "elements": get_all_elements(collaboration),
+                "collaboration": collaboration,
+            },
+        )
 
-    return render(request,
-                  "app/collaborations/partials/elements/list/main.html", {
-                      "elements": get_all_elements(collaboration),
-                      "collaboration": collaboration,
-                      "milestone_delete_modal": True,
-                      "milestone": milestone,
-                  })
+    return render(
+        request,
+        "app/collaborations/partials/elements/list/main.html",
+        {
+            "elements": get_all_elements(collaboration),
+            "collaboration": collaboration,
+            "milestone_delete_modal": True,
+            "milestone": milestone,
+        },
+    )
 
 
 @login_required()
@@ -400,11 +497,14 @@ def collaboration_elements_list_view(request, slug):
 
     collaboration = get_object_or_404(Collaboration, slug=slug)
 
-    return render(request,
-                  "app/collaborations/partials/elements/list/main.html", {
-                      "elements": get_all_elements(collaboration),
-                      "collaboration": collaboration,
-                  })
+    return render(
+        request,
+        "app/collaborations/partials/elements/list/main.html",
+        {
+            "elements": get_all_elements(collaboration),
+            "collaboration": collaboration,
+        },
+    )
 
 
 @login_required()
@@ -420,9 +520,10 @@ def collaboration_task_move_view(request, slug, pk, position):
         task.save()
 
     return HttpResponseRedirect(
-        reverse_lazy('collaboration-elements-list',
-                     kwargs={'slug': task.collaboration.slug},
-                     )
+        reverse_lazy(
+            "collaboration-elements-list",
+            kwargs={"slug": task.collaboration.slug},
+        )
     )
 
 
@@ -439,9 +540,10 @@ def collaboration_milestone_move_view(request, slug, pk, position):
         milestone.save()
 
     return HttpResponseRedirect(
-        reverse_lazy('collaboration-elements-list',
-                     kwargs={'slug': milestone.collaboration.slug},
-                     )
+        reverse_lazy(
+            "collaboration-elements-list",
+            kwargs={"slug": milestone.collaboration.slug},
+        )
     )
 
 
@@ -461,19 +563,25 @@ def user_collaboration_create_view(request, slug):
         milestone.collaboration = collaboration
         milestone.save()
 
-        return render(request,
-                      "app/collaborations/partials/elements/list/main.html", {
-                          "elements": get_all_elements(collaboration),
-                          "collaboration": collaboration,
-                      })
+        return render(
+            request,
+            "app/collaborations/partials/elements/list/main.html",
+            {
+                "elements": get_all_elements(collaboration),
+                "collaboration": collaboration,
+            },
+        )
 
-    return render(request,
-                  "app/collaborations/partials/elements/list/main.html", {
-                      "elements": get_all_elements(collaboration),
-                      "collaboration": collaboration,
-                      "milestone_creation_modal": True,
-                      "form": form,
-                  })
+    return render(
+        request,
+        "app/collaborations/partials/elements/list/main.html",
+        {
+            "elements": get_all_elements(collaboration),
+            "collaboration": collaboration,
+            "milestone_creation_modal": True,
+            "form": form,
+        },
+    )
 
 
 @login_required()
@@ -487,9 +595,7 @@ def user_collaboration_create_view(request):
     """
 
     if not request.user.memberships.filter(status=MEMBERSHIP_STATUS_ADMIN):
-        return render(request,
-                      "app/home/modals/join_or_make_a_group.html", {
-                      })
+        return render(request, "app/home/modals/join_or_make_a_group.html", {})
 
     form = CollaborationCreateFormWithGroupSelection(request.user, request.POST or None)
     if request.method == "POST":
@@ -497,17 +603,27 @@ def user_collaboration_create_view(request):
             collaboration = form.save(commit=False)
             collaboration.created_by = request.user
             collaboration.save()
-            success_url = SITE_PROTOCOL + SITE_DOMAIN + reverse_lazy(
-                "collaboration-detail",
-                kwargs={"slug": collaboration.slug},
+            success_url = (
+                SITE_PROTOCOL
+                + SITE_DOMAIN
+                + reverse_lazy(
+                    "collaboration-detail",
+                    kwargs={"slug": collaboration.slug},
+                )
             )
 
-            return render(request,
-                          "app/snippets/js_redirect.html", {
-                              "url": success_url,
-                          })
+            return render(
+                request,
+                "app/snippets/js_redirect.html",
+                {
+                    "url": success_url,
+                },
+            )
 
-    return render(request,
-                  "app/home/modals/collaboration_create.html", {
-                      "form": form,
-                  })
+    return render(
+        request,
+        "app/home/modals/collaboration_create.html",
+        {
+            "form": form,
+        },
+    )

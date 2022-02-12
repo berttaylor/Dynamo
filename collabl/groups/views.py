@@ -25,10 +25,10 @@ class GroupSearchView(ListView):
     """
 
     model = Group
-    context_object_name = 'groups'
+    context_object_name = "groups"
     template_name = "app/home/find_groups.html"
     partial_template_name = "app/home/partials/group_list.html"
-    hx_target_id = 'list_of_groups'
+    hx_target_id = "list_of_groups"
 
     def get_template_names(self):
         """
@@ -43,12 +43,16 @@ class GroupSearchView(ListView):
         # Get queryset of all groups user is not in
         membership_list = Membership.objects.filter(
             user=self.request.user,
-            status__in=[c.MEMBERSHIP_STATUS_CURRENT, c.MEMBERSHIP_STATUS_ADMIN, c.MEMBERSHIP_STATUS_PENDING]
-        ).values_list('group', flat=True)
+            status__in=[
+                c.MEMBERSHIP_STATUS_CURRENT,
+                c.MEMBERSHIP_STATUS_ADMIN,
+                c.MEMBERSHIP_STATUS_PENDING,
+            ],
+        ).values_list("group", flat=True)
         groups = Group.objects.exclude(pk__in=membership_list)
 
         # Filter by the provided querystring
-        if query_string := self.request.GET.get('group_query_string', None):
+        if query_string := self.request.GET.get("group_query_string", None):
             return groups.filter(name__icontains=query_string)
         return groups
 
@@ -93,13 +97,15 @@ class GroupDetailView(FormMixin, DetailView):
                 "announcement_filter": c.ANNOUNCEMENTS_FILTER_LATEST,
                 "announcement_list": GroupAnnouncement.objects.filter(group=group)[:1],
                 "membership_filter": c.MEMBERSHIP_STATUS_PENDING,
-                "membership_list": group.memberships.filter(status=c.MEMBERSHIP_STATUS_PENDING)
+                "membership_list": group.memberships.filter(
+                    status=c.MEMBERSHIP_STATUS_PENDING
+                ),
             },
         )
 
         # Clear the session, if it is being used
-        if self.request.session.get('selected_memberships', None):
-            del self.request.session['selected_memberships']
+        if self.request.session.get("selected_memberships", None):
+            del self.request.session["selected_memberships"]
 
         return context
 
@@ -124,7 +130,9 @@ def group_join_view(request, slug):
         )
 
     # Otherwise, create the membership
-    Membership.objects.create(user=user, group=group, status=c.MEMBERSHIP_STATUS_PENDING)
+    Membership.objects.create(
+        user=user, group=group, status=c.MEMBERSHIP_STATUS_PENDING
+    )
 
     messages.success(
         request, "Membership Requested: Awaiting confirmation from group admin"
@@ -162,8 +170,12 @@ def group_leave_view(request, slug):
         membership = get_object_or_404(Membership, user=user, group=group)
 
         # If the user is last admin of the group, send error
-        if membership.status == c.MEMBERSHIP_STATUS_ADMIN and not group.memberships.filter(
-                status=c.MEMBERSHIP_STATUS_ADMIN).exclude(pk=membership.pk).exists():
+        if (
+            membership.status == c.MEMBERSHIP_STATUS_ADMIN
+            and not group.memberships.filter(status=c.MEMBERSHIP_STATUS_ADMIN)
+            .exclude(pk=membership.pk)
+            .exists()
+        ):
             messages.error(
                 request, "You are the last admin. Assign another to leave the group"
             )

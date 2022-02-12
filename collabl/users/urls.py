@@ -20,7 +20,12 @@ from collabl import settings as s
 from django.contrib.auth import views as django_auth_views
 
 from users.forms import CustomLoginForm, CustomPasswordResetForm
-from users.views import sign_up_view, UserUpdateView, UserGroupListView, UserCollaborationListView
+from users.views import (
+    sign_up_view,
+    UserUpdateView,
+    UserGroupListView,
+    UserCollaborationListView,
+)
 
 urlpatterns = [
     path(
@@ -30,7 +35,11 @@ urlpatterns = [
     ),
     path(
         "login/",
-        LoginView.as_view(template_name="landing/registration/signin.html", form_class=CustomLoginForm, success_url=reverse_lazy('user-collaboration-list')),
+        LoginView.as_view(
+            template_name="landing/registration/signin.html",
+            form_class=CustomLoginForm,
+            success_url=reverse_lazy("user-collaboration-list"),
+        ),
         name="login",
     ),
     path("logout/", LogoutView.as_view(), name="logout"),
@@ -87,7 +96,6 @@ urlpatterns = [
         ),
         name="password-change-done",
     ),
-
     # Home views
     path(
         "user/details/",

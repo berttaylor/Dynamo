@@ -5,7 +5,7 @@
 {#            <div class="profile-thumbnail dashboard-avatar mx-lg-auto me-3">#}
 {#                <img src="{{ user.image.url }}" class="card-img-top rounded-circle border-white" alt="User Picture">#}
 {#            </div>#}
-            <span class="h5 my-0 my-lg-3 me-3 me-lg-0">{{ request.user }}</span>
+            <span class="h5 my-0 my-lg-3 me-3 me-lg-0">{{ request.user.first_name }}</span>
             <a hx-boost="true" href="{% url 'logout' %}" class="btn btn-gray-300 btn-xs"><span class="me-2"><span
                     class="fas fa-sign-out-alt"></span></span>Logout</a>
         </div>

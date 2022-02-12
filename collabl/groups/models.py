@@ -43,7 +43,7 @@ class Group(TimeStampedSoftDeleteBase):
     members = models.ManyToManyField(
         "users.User",
         through="Membership",
-        through_fields=('group', 'user'),
+        through_fields=("group", "user"),
         help_text="Users who are members of the Group",
         blank=True,
     )
@@ -64,7 +64,11 @@ class Group(TimeStampedSoftDeleteBase):
     @property
     def active_member_count(self):
         """Returns the number of active group members"""
-        return self.memberships.all().filter(status__in=[c.MEMBERSHIP_STATUS_CURRENT, c.MEMBERSHIP_STATUS_ADMIN]).count()
+        return (
+            self.memberships.all()
+            .filter(status__in=[c.MEMBERSHIP_STATUS_CURRENT, c.MEMBERSHIP_STATUS_ADMIN])
+            .count()
+        )
 
     @property
     def subscriber_count(self):
@@ -79,17 +83,29 @@ class Group(TimeStampedSoftDeleteBase):
     @property
     def current_users(self):
         """Returns a queryset of users with pending memberships"""
-        return User.objects.filter(pk__in=self.memberships.all().filter(status=c.MEMBERSHIP_STATUS_CURRENT).values_list('user', flat=True))
+        return User.objects.filter(
+            pk__in=self.memberships.all()
+            .filter(status=c.MEMBERSHIP_STATUS_CURRENT)
+            .values_list("user", flat=True)
+        )
 
     @property
     def admin_users(self):
         """Returns a queryset of group admins"""
-        return User.objects.filter(pk__in=self.memberships.all().filter(status=c.MEMBERSHIP_STATUS_ADMIN).values_list('user', flat=True))
+        return User.objects.filter(
+            pk__in=self.memberships.all()
+            .filter(status=c.MEMBERSHIP_STATUS_ADMIN)
+            .values_list("user", flat=True)
+        )
 
     @property
     def pending_users(self):
         """Returns a queryset of users with pending memberships"""
-        return User.objects.filter(pk__in=self.memberships.all().filter(status=c.MEMBERSHIP_STATUS_PENDING).values_list('user', flat=True))
+        return User.objects.filter(
+            pk__in=self.memberships.all()
+            .filter(status=c.MEMBERSHIP_STATUS_PENDING)
+            .values_list("user", flat=True)
+        )
 
     @property
     def short_description(self):

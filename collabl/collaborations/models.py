@@ -18,9 +18,7 @@ def get_sentinel_user():
     We use this function to set a user named "deleted" as the foreign key when a user who has
     foreign key relationships with another models is deleted
     """
-    return get_user_model().objects.get_or_create(
-        email="deleted@deleted.com"
-    )[0]
+    return get_user_model().objects.get_or_create(email="deleted@deleted.com")[0]
 
 
 class Collaboration(TimeStampedSoftDeleteBase):
@@ -90,7 +88,9 @@ class Collaboration(TimeStampedSoftDeleteBase):
         """
         Gets the total number of tasks completed
         """
-        return CollaborationTask.objects.filter(collaboration=self, completed_at__isnull=False).count()
+        return CollaborationTask.objects.filter(
+            collaboration=self, completed_at__isnull=False
+        ).count()
 
     @property
     def number_of_milestones(self) -> int:
@@ -171,7 +171,9 @@ class CollaborationTask(TimeStampedSoftDeleteBase):
         super().__init__(*args, **kwargs)
         self.__original_position = self.position
 
-    position = models.PositiveSmallIntegerField(help_text="The position of the element (1 = 1st)", blank=True)
+    position = models.PositiveSmallIntegerField(
+        help_text="The position of the element (1 = 1st)", blank=True
+    )
 
     __original_position = None
 
@@ -263,7 +265,7 @@ class CollaborationTask(TimeStampedSoftDeleteBase):
     def next_milestone(self):
         """Gets the next milestone"""
         if CollaborationMilestone.objects.filter(
-                collaboration=self.collaboration, position__gt=self.position
+            collaboration=self.collaboration, position__gt=self.position
         ).exists():
             return CollaborationMilestone.objects.filter(
                 collaboration=self.collaboration, position__gt=self.position
@@ -415,7 +417,9 @@ class CollaborationTask(TimeStampedSoftDeleteBase):
             return f" ☒ {self.name}"
 
         # If not, check if assigned to anyone, and return an appropriate string.
-        assigned_to = string.capwords(self.assigned_to.first_name) if self.assigned_to else None
+        assigned_to = (
+            string.capwords(self.assigned_to.first_name) if self.assigned_to else None
+        )
         if assigned_to:
             return f" ☐ {self.name} ({assigned_to})"
         else:
@@ -452,7 +456,9 @@ class CollaborationMilestone(TimeStampedSoftDeleteBase):
         super().__init__(*args, **kwargs)
         self.__original_position = self.position
 
-    position = models.PositiveSmallIntegerField(help_text="The position of the element (1 = 1st)", blank=True)
+    position = models.PositiveSmallIntegerField(
+        help_text="The position of the element (1 = 1st)", blank=True
+    )
 
     __original_position = None
 
@@ -510,7 +516,7 @@ class CollaborationMilestone(TimeStampedSoftDeleteBase):
     def next_milestone(self):
         """Gets the next milestone"""
         if CollaborationMilestone.objects.filter(
-                collaboration=self.collaboration, position__gt=self.position
+            collaboration=self.collaboration, position__gt=self.position
         ).exists():
             return CollaborationMilestone.objects.filter(
                 collaboration=self.collaboration, position__gt=self.position
@@ -525,14 +531,14 @@ class CollaborationMilestone(TimeStampedSoftDeleteBase):
         """
         # Check if there are another other milestones before this one
         if CollaborationMilestone.objects.filter(
-                collaboration=self.collaboration, position__lt=self.position
+            collaboration=self.collaboration, position__lt=self.position
         ).exists():
             previous_milestone_position = (
                 CollaborationMilestone.objects.filter(
                     collaboration=self.collaboration, position__lt=self.position
                 )
-                    .order_by("-position")[0]
-                    .position
+                .order_by("-position")[0]
+                .position
             )
         else:
             previous_milestone_position = 0
@@ -583,7 +589,9 @@ class CollaborationMilestone(TimeStampedSoftDeleteBase):
         as this results in a single db query.
         NOTE: This section only gets called if the new milestone is not placed at the end
         """
-        if self.position < self.collaboration.number_of_elements - 1:  # minus this milestone
+        if (
+            self.position < self.collaboration.number_of_elements - 1
+        ):  # minus this milestone
             CollaborationTask.objects.filter(
                 collaboration=self.collaboration, position__gte=self.position
             ).update(position=F("position") + 1)

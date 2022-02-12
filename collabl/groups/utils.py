@@ -39,20 +39,26 @@ def get_membership_count(group):
 
 def get_filtered_collaborations(group, collaboration_list_filter):
     # Annotate the group's collaborations with the number of complete/incomplete tasks,
-    group_collaborations = Collaboration.objects.filter(
-        related_group=group,
-    ).annotate(
-        tasks_complete=Count(
-            Case(When(Q(tasks__completed_at__isnull=False), then=1),
-                 output_field=IntegerField(),
-                 )
-        ),
-        tasks_incomplete=Count(
-            Case(When(Q(tasks__completed_at__isnull=True), then=1),
-                 output_field=IntegerField(),
-                 )
-        ),
-    ).order_by('-created_at')
+    group_collaborations = (
+        Collaboration.objects.filter(
+            related_group=group,
+        )
+        .annotate(
+            tasks_complete=Count(
+                Case(
+                    When(Q(tasks__completed_at__isnull=False), then=1),
+                    output_field=IntegerField(),
+                )
+            ),
+            tasks_incomplete=Count(
+                Case(
+                    When(Q(tasks__completed_at__isnull=True), then=1),
+                    output_field=IntegerField(),
+                )
+            ),
+        )
+        .order_by("-created_at")
+    )
 
     # Filter the collaborations, depending on the filter parameter chosen
     match collaboration_list_filter:
@@ -61,9 +67,13 @@ def get_filtered_collaborations(group, collaboration_list_filter):
         case c.COLLABORATION_STATUS_PLANNING:
             collaborations = group_collaborations.filter(tasks_complete=0)
         case c.COLLABORATION_STATUS_ONGOING:
-            collaborations = group_collaborations.filter(tasks_incomplete__gt=0).exclude(tasks_complete=0)
+            collaborations = group_collaborations.filter(
+                tasks_incomplete__gt=0
+            ).exclude(tasks_complete=0)
         case c.COLLABORATION_STATUS_COMPLETED:
-            collaborations = group_collaborations.filter(tasks_incomplete=0).exclude(tasks_complete=0)
+            collaborations = group_collaborations.filter(tasks_incomplete=0).exclude(
+                tasks_complete=0
+            )
         case _:
             collaborations = Collaboration.objects.none()
 

@@ -6,13 +6,16 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('collaborations', '0006_collaborationtask_file'),
+        ("collaborations", "0006_collaborationtask_file"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='collaborationtask',
-            name='prompt_for_details_on_completion',
-            field=models.BooleanField(default=False, help_text='Whether the user who completes the task should be prompted to enter further details'),
+            model_name="collaborationtask",
+            name="prompt_for_details_on_completion",
+            field=models.BooleanField(
+                default=False,
+                help_text="Whether the user who completes the task should be prompted to enter further details",
+            ),
         ),
     ]

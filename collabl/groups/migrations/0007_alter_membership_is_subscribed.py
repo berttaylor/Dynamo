@@ -6,13 +6,15 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('groups', '0006_auto_20211227_2218'),
+        ("groups", "0006_auto_20211227_2218"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='membership',
-            name='is_subscribed',
-            field=models.BooleanField(default=False, help_text='Whether the user gets email updates'),
+            model_name="membership",
+            name="is_subscribed",
+            field=models.BooleanField(
+                default=False, help_text="Whether the user gets email updates"
+            ),
         ),
     ]

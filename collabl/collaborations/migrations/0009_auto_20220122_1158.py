@@ -6,15 +6,15 @@ from django.db import migrations
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('collaborations', '0008_delete_collaborationfile'),
+        ("collaborations", "0008_delete_collaborationfile"),
     ]
 
     operations = [
         migrations.RemoveField(
-            model_name='collaborationtask',
-            name='tags',
+            model_name="collaborationtask",
+            name="tags",
         ),
         migrations.DeleteModel(
-            name='CollaborationTaskTag',
+            name="CollaborationTaskTag",
         ),
     ]

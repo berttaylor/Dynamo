@@ -6,18 +6,22 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('collaborations', '0002_initial'),
+        ("collaborations", "0002_initial"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='collaborationmilestone',
-            name='position',
-            field=models.PositiveSmallIntegerField(blank=True, help_text='The position of the element (1 = 1st)'),
+            model_name="collaborationmilestone",
+            name="position",
+            field=models.PositiveSmallIntegerField(
+                blank=True, help_text="The position of the element (1 = 1st)"
+            ),
         ),
         migrations.AlterField(
-            model_name='collaborationtask',
-            name='position',
-            field=models.PositiveSmallIntegerField(blank=True, help_text='The position of the element (1 = 1st)'),
+            model_name="collaborationtask",
+            name="position",
+            field=models.PositiveSmallIntegerField(
+                blank=True, help_text="The position of the element (1 = 1st)"
+            ),
         ),
     ]

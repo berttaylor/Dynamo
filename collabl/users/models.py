@@ -25,8 +25,8 @@ class User(AbstractUser):
     # Replace the ID field with a UUID for better security
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
 
-    first_name = models.CharField(_('first name'), max_length=150, blank=True)
-    last_name = models.CharField(_('last name'), max_length=150, blank=True)
+    first_name = models.CharField(_("first name"), max_length=150, blank=True)
+    last_name = models.CharField(_("last name"), max_length=150, blank=True)
 
     email = models.EmailField(_("email address"), unique=True)
 

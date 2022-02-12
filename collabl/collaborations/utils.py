@@ -16,17 +16,17 @@ def get_all_elements(collaboration):
     # position in relation to the other tasks, rather than by their 'position' field, which orders them according to
     # position with milestones also (and is zero indexed.)
     tasks = CollaborationTask.objects.filter(collaboration=collaboration).annotate(
-        type=Value('Task', output_field=CharField()), number=Window(
-            expression=Rank(),
-            order_by=F('position').asc()
-        ))
+        type=Value("Task", output_field=CharField()),
+        number=Window(expression=Rank(), order_by=F("position").asc()),
+    )
 
     # 2. Get all Milestones, and annotate them with the type ('Milestone')
-    milestones = CollaborationMilestone.objects.filter(collaboration=collaboration).annotate(
-        type=Value('Milestone', output_field=CharField()))
+    milestones = CollaborationMilestone.objects.filter(
+        collaboration=collaboration
+    ).annotate(type=Value("Milestone", output_field=CharField()))
 
     # 3. Chain the lists together, and sort them by their position field (in reverse)
     element_list = sorted(
-        chain(tasks, milestones),
-        key=lambda element: element.position)
+        chain(tasks, milestones), key=lambda element: element.position
+    )
     return element_list

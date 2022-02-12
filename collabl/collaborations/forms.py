@@ -1,13 +1,17 @@
 from django.forms import ModelForm, DateInput, ModelChoiceField, Textarea, FileInput
 from django.forms.widgets import Select
 
-from collaborations.models import CollaborationMilestone, CollaborationTask, Collaboration
+from collaborations.models import (
+    CollaborationMilestone,
+    CollaborationTask,
+    Collaboration,
+)
 from groups.constants import MEMBERSHIP_STATUS_ADMIN
 from groups.models import Group
 
 
 class DateInputLocal(DateInput):
-    input_type = 'datetime-local'
+    input_type = "datetime-local"
 
 
 class TaskForm(ModelForm):
@@ -21,24 +25,29 @@ class TaskForm(ModelForm):
         so that they can be selected
         """
         super(TaskForm, self).__init__(*args, **kwargs)
-        if kwargs.get('initial'):
-            collaboration = kwargs['initial']['collaboration']
+        if kwargs.get("initial"):
+            collaboration = kwargs["initial"]["collaboration"]
             group_members = collaboration.related_group.members.all()
-            self.fields['assigned_to'].queryset = group_members
+            self.fields["assigned_to"].queryset = group_members
         for field_name, field in self.fields.items():
-            if field_name != 'prompt_for_details_on_completion':
-                field.widget.attrs['class'] = 'form-control'
+            if field_name != "prompt_for_details_on_completion":
+                field.widget.attrs["class"] = "form-control"
 
     class Meta:
         model = CollaborationTask
-        fields = ["name", "description", "assigned_to", 'prompt_for_details_on_completion']
+        fields = [
+            "name",
+            "description",
+            "assigned_to",
+            "prompt_for_details_on_completion",
+        ]
         widgets = {
             "assigned_to": Select(
                 attrs={
                     "class": "form-control",
                     "id": "task_name",
                     "rows": "1",
-                    "required": True
+                    "required": True,
                 }
             ),
             "description": Textarea(
@@ -62,24 +71,29 @@ class TaskUpdateForm(ModelForm):
         so that they can be selected
         """
         super().__init__(*args, **kwargs)
-        if kwargs.get('initial'):
-            collaboration = kwargs['initial']['collaboration']
+        if kwargs.get("initial"):
+            collaboration = kwargs["initial"]["collaboration"]
             group_members = collaboration.related_group.members.all()
-            self.fields['assigned_to'].queryset = group_members
+            self.fields["assigned_to"].queryset = group_members
         for field_name, field in self.fields.items():
-            if field_name != 'prompt_for_details_on_completion':
-                field.widget.attrs['class'] = 'form-control'
+            if field_name != "prompt_for_details_on_completion":
+                field.widget.attrs["class"] = "form-control"
 
     class Meta:
         model = CollaborationTask
-        fields = ["name", "description", "assigned_to", 'prompt_for_details_on_completion']
+        fields = [
+            "name",
+            "description",
+            "assigned_to",
+            "prompt_for_details_on_completion",
+        ]
         widgets = {
             "assigned_to": Select(
                 attrs={
                     "class": "form-control",
                     "id": "task_name",
                     "rows": "1",
-                    "required": True
+                    "required": True,
                 }
             ),
             "description": Textarea(
@@ -93,15 +107,14 @@ class TaskUpdateForm(ModelForm):
 
 
 class TaskCompleteForm(ModelForm):
-
     def __init__(self, *args, **kwargs):
         super(TaskCompleteForm, self).__init__(*args, **kwargs)
         for field_name, field in self.fields.items():
-            field.widget.attrs['class'] = 'form-control'
+            field.widget.attrs["class"] = "form-control"
 
     class Meta:
         model = CollaborationTask
-        fields = ["completion_notes", 'file']
+        fields = ["completion_notes", "file"]
         widgets = {
             "completion_notes": Textarea(
                 attrs={
@@ -124,7 +137,7 @@ class MilestoneForm(ModelForm):
     def __init__(self, *args, **kwargs):
         super(MilestoneForm, self).__init__(*args, **kwargs)
         for field_name, field in self.fields.items():
-            field.widget.attrs['class'] = 'form-control'
+            field.widget.attrs["class"] = "form-control"
 
 
 class CollaborationForm(ModelForm):
@@ -139,7 +152,7 @@ class CollaborationForm(ModelForm):
         """
         super().__init__(*args, **kwargs)
         for field_name, field in self.fields.items():
-            field.widget.attrs['class'] = 'form-control'
+            field.widget.attrs["class"] = "form-control"
 
     class Meta:
         model = Collaboration
@@ -167,13 +180,15 @@ class CollaborationImageForm(ModelForm):
         """
         super().__init__(*args, **kwargs)
         for field_name, field in self.fields.items():
-            field.widget.attrs['class'] = 'form-control'
+            field.widget.attrs["class"] = "form-control"
 
     class Meta:
         model = Collaboration
-        fields = ["image",]
+        fields = [
+            "image",
+        ]
         widgets = {
-            'image': FileInput(),
+            "image": FileInput(),
         }
 
 
@@ -190,10 +205,12 @@ class CollaborationCreateFormWithGroupSelection(ModelForm):
         """
         super().__init__(*args, **kwargs)
         for field_name, field in self.fields.items():
-            field.widget.attrs['class'] = 'form-control'
+            field.widget.attrs["class"] = "form-control"
 
-        self.fields['related_group'].queryset = Group.objects.filter(
-            pk__in=user.memberships.filter(status=MEMBERSHIP_STATUS_ADMIN).values_list('group', flat=True)
+        self.fields["related_group"].queryset = Group.objects.filter(
+            pk__in=user.memberships.filter(status=MEMBERSHIP_STATUS_ADMIN).values_list(
+                "group", flat=True
+            )
         )
 
     class Meta:
