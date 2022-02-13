@@ -31,3 +31,8 @@
 html {
     background-color: #1c2540 !important;
 }
+
+html,
+body {
+  height: 100%;
+}
