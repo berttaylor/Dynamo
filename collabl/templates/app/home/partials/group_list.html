@@ -41,9 +41,7 @@
                     <span class="font-small">
                         <span class="fas fa-envelope me-2"></span>{{ group.chat_messages.count }}</span>
                 </div>
-                <p class="card-text">{{ group.description }}</p>
-                <a hx-swap="innerHTML swap:0.2s" hx-boost="true" href="{% url 'group-detail' slug=group.slug %}"
-                   class="btn btn-primary btn-sm">Enter</a>
+                <p class="card-text" style="height: 70px !important;" >{{ group.description|truncatechars:110 }}</p>
             </div>
         </div>
     </div>
