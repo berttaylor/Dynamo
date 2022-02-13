@@ -4,7 +4,7 @@
         <div class="card border-gray-300 bg-tertiary text-white border-3">
         <a hx-swap="innerHTML swap:0.2s" hx-boost="true" href="{% url 'group-detail' slug=group.slug %}">
             {% if group.profile_image %}
-                <img src="{{ group.profile_image.url }}" class="card-img-top rounded-top"
+                <img src="{{ group.profile_image.url }}" class="card-img-top rounded-top fmh-250"
                      alt="{{ group.profile_image }}">
             {% else %}
                 <img src="/compiled/pixel/html&css/assets/img/blog/image-1.jpg"
