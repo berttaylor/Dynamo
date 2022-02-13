@@ -2,20 +2,6 @@
 
     <div class="row timeline-inner p-1" style="margin-top: -5px;">
         <div class="col-md-2">
-            <div class="corner top-right" style="border-color: #0f5132"></div>
-        </div>
-        <div class="col-md-8">
-            <hr style="border-color: #0f5132">
-        </div>
-        <div class="col-md-2" style="margin-top: 1px">
-            <div class="corner left-bottom" style="border-color: #0f5132"></div>
-        </div>
-    </div>
-
-{% else %}
-
-    <div class="row timeline-inner p-1" style="margin-top: -5px;">
-        <div class="col-md-2">
             <div class="corner top-right"></div>
         </div>
         <div class="col-md-8">
@@ -23,6 +9,20 @@
         </div>
         <div class="col-md-2" style="margin-top: 1px">
             <div class="corner left-bottom"></div>
+        </div>
+    </div>
+
+{% else %}
+
+    <div class="row timeline-inner p-1" style="margin-top: -5px;">
+        <div class="col-md-2">
+            <div class="corner top-right border-gray-800"></div>
+        </div>
+        <div class="col-md-8">
+            <hr class="border-gray-800">
+        </div>
+        <div class="col-md-2" style="margin-top: 1px">
+            <div class="corner left-bottom border-gray-800"></div>
         </div>
     </div>
 {% endif %}
