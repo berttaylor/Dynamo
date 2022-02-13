@@ -4,10 +4,12 @@
 
             <a hx-boost="true" hx-swap="innerHTML swap:0.2s" href="{% url 'collaboration-detail' slug=collaboration.slug %}">
                 {% if collaboration.image %}
-                    <img src="{{ collaboration.image.url }}" class="collaboration-card-img fmh-250"
+                    <img src="{{ collaboration.image.url }}" class="collaboration-card-img fh-200"
+                         style="object-fit: cover;"
                          alt="{{ collaboration.image }}">
                 {% else %}
                     <img src="/compiled/pixel/html&css/assets/img/blog/image-1.jpg"
+                         style="object-fit: cover;"
                          class="collaboration-card-img fmh-250" alt="Office">
                 {% endif %}
             </a>
