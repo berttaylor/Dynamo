@@ -62,7 +62,7 @@ $colors: ("blue": $blue,
 // Color scheme
 $primary  : #242e4c !default;
 $secondary: #1c2540 !default;
-$tertiary : #893168 !default;
+$tertiary : #302841;
 
 // Mobile landing color scheme
 $primary-app  : #EBF4F6 !default;
@@ -130,7 +130,7 @@ $theme-colors: ("primary": $primary,
 
 // Series names and colors. This can be extended or customized as desired. Just add more series and colors.
 $ct-series-names: (a, b, c, d) !default;
-$ct-series-colors: (#893168,
+$ct-series-colors: (#302841,
   #242e4c,
   #564787,
   #218380,
