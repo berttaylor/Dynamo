@@ -8158,7 +8158,7 @@ textarea.form-control-lg {
     z-index: 1;
     color: #4B5563;
     text-decoration: none;
-    background-color: #F9FAFB;
+    background-color: #302841;
 }
 
 .list-group-item-action:active {
@@ -28433,7 +28433,7 @@ html:not([dir="rtl"]) .noUi-horizontal .noUi-handle {
 }
 
 .list-group.dashboard-menu .list-group-item:hover {
-    background-color: #f5f5f5;
+    background-color: #242e4c;
     border-radius: 1rem;
 }
 

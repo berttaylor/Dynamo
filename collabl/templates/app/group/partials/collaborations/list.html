@@ -37,7 +37,7 @@
 
                 <a hx-swap="innerHTML swap:0.2s" hx-boost="true" href="{% url 'collaboration-detail' slug=collaboration.slug %}"><h3
                         class="h5 card-title mt-4">{{ collaboration.name }}</h3></a>
-                <p class="card-text" style="height: 70px !important;">{{ collaboration.description|truncatechars:110 }}</p>
+                <p class="card-text" style="height: 70px !important;">{{ collaboration.description|truncatechars:80 }}</p>
 
 
 

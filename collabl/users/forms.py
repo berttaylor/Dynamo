@@ -40,7 +40,11 @@ class UserDetailUpdateForm(ModelForm):
             "image",
         )
         widgets = {
-            "image": FileInput(),
+            "image": FileInput(
+                attrs={
+                    "class": "form-control btn-primary",
+                },
+            )
         }
 
     def __init__(self, *args, **kwargs):

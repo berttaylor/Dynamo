@@ -1,6 +1,6 @@
 {% for group in groups %}
 
-    <div class="col-12 col-m-6 col-xl-6 mb-4">
+    <div class="col-md-6 mb-4">
         <div class="card border-gray-300 bg-tertiary text-white border-3">
         <a hx-swap="innerHTML swap:0.2s" hx-boost="true" href="{% url 'group-detail' slug=group.slug %}">
             {% if group.profile_image %}
@@ -41,7 +41,7 @@
                     <span class="font-small">
                         <span class="fas fa-envelope me-2"></span>{{ group.chat_messages.count }}</span>
                 </div>
-                <p class="card-text" style="height: 70px !important;" >{{ group.description|truncatechars:110 }}</p>
+                <p class="card-text" style="height: 70px !important;" >{{ group.description|truncatechars:80 }}</p>
             </div>
         </div>
     </div>
