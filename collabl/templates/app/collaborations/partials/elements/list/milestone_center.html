@@ -1,6 +1,6 @@
-<div class="row align-items-center justify-content-end vertical-timeline p-1 d-none d-md-flex">
+<div class="row align-items-center justify-content-end vertical-timeline p-1 d-md-none">
 
-    <div class="col-md-2 text-center full">
+    <div class="col-md-2 text-center full mt-4">
         {% if milestone.is_complete %}
 
             {% include "app/collaborations/partials/elements/list/milestone_complete_symbol.html" %}
@@ -12,7 +12,7 @@
         {% endif %}
     </div>
 
-    <div class="col-md-10">
+    <div class="text-center my-4">
 
         <a
                 hx-get="{% url 'collaboration-milestone-update' slug=collaboration.slug pk=milestone.pk %}"

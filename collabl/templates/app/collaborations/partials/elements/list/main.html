@@ -9,21 +9,35 @@
 
         {% if element.type == "Task" %}
             {% include "app/collaborations/partials/elements/list/task_right.html" with task=element %}
+            {% include "app/collaborations/partials/elements/list/task_center.html" with task=element %}
         {% else %}
             {% include "app/collaborations/partials/elements/list/milestone_right.html" with milestone=element %}
+            {% include "app/collaborations/partials/elements/list/milestone_center.html" with milestone=element %}
         {% endif %}
 
+        <br class="d-md-none">
+
         {% include "app/collaborations/partials/elements/list/linker_right.html" with element=element %}
+
+        {% if forloop.counter != elements|length %}
+            {% include "app/collaborations/partials/elements/list/linker_center.html" with element=element %}
+        {% endif %}
 
     {% else %}
 
         {% if element.type == "Task" %}
             {% include "app/collaborations/partials/elements/list/task_left.html" with task=element %}
+            {% include "app/collaborations/partials/elements/list/task_center.html" with task=element %}
         {% else %}
             {% include "app/collaborations/partials/elements/list/milestone_left.html" with milestone=element %}
+            {% include "app/collaborations/partials/elements/list/milestone_center.html" with milestone=element %}
         {% endif %}
 
         {% include "app/collaborations/partials/elements/list/linker_left.html" with element=element %}
+
+        {% if forloop.counter != elements|length %}
+            {% include "app/collaborations/partials/elements/list/linker_center.html" with element=element %}
+        {% endif %}
 
     {% endif %}
 

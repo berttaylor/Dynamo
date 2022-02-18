@@ -1,6 +1,6 @@
-<div class="row d-flex align-items-center p-0 d-none d-md-flex">
+<div class="row d-flex align-items-center p-0 d-md-none">
 
-    <div class="col-md-2 text-center bottom">
+    <div class="col-md-2 text-center bottom mt-4">
 
 
         {% if task.is_complete %}
@@ -16,7 +16,9 @@
 
     </div>
 
-    <div class="col-12 col-md-8 text-md-start">
+    <br>
+
+    <div class="text-center my-4">
 
         <a
            hx-get="{% url 'collaboration-task-update' slug=collaboration.slug pk=task.pk %}"
@@ -91,5 +93,4 @@
         </div>
 
     </div>
-
 </div>

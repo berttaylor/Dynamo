@@ -27,7 +27,7 @@
                    class="d-flex list-group-item border-0 list-group-item-action {% active_link request user_collab_list_url %}">My Collabs<span
                         class="icon icon-xs ms-auto"><span class="fas fa-chevron-right"></span></span> </a>
                 <a hx-boost="true" href="{{ group_search_url }}"
-                   class="d-flex list-group-item border-0 list-group-item-action {% active_link request group_search_url %}">Search<span
+                   class="d-flex list-group-item border-0 list-group-item-action {% active_link request group_search_url %}">Search Groups<span
                             class="icon icon-xs ms-auto"><span class="fas fa-chevron-right"></span></span> </a>
                 <br><br>
                 <a hx-boost="true" href="{{ user_update_url }}"
@@ -63,9 +63,11 @@
                             <a hx-boost="true" href="{{ user_collab_list_url }}"
                                class="list-group-item list-group-item-action border-0 {% active_link request user_collab_list_url %}">My Collabs</a>
                             <a hx-boost="true" href="{{ group_search_url }}"
-                               class="list-group-item list-group-item-action border-0 {% active_link request group_search_url %}">Search</a>
+                               class="list-group-item list-group-item-action border-0 {% active_link request group_search_url %}">Search Groups</a>
                             <a hx-boost="true" href="{{ user_update_url }}"
                                class="list-group-item list-group-item-action border-0 {% active_link request user_update_url %}">My Details</a>
+                            <a hx-boost="true" href="{% url 'logout' %}"
+                               class="list-group-item list-group-item-action border-0"><span class="fas fa-sign-out-alt me-2"></span>Logout</a>
                         </div>
                     </div>
                 </div>
