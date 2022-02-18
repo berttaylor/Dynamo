@@ -9,16 +9,10 @@
 
 <!-- Section -->
 
-{% block global_header %}
-    {% include 'app/base/top_nav.html' %}
-{% endblock %}
-
 {% block body %}
-    <div class="section section-lg pt-5 pt-md-7 bg-secondary min-vh-100">
+    <div class="section section-lg bg-secondary min-vh-100  align-content-start py-4">
         <div class="container">
-            <div class="row pt-5 pt-md-0 justify-content-center">
-                {% block sidenav %}
-                {% endblock %}
+            <div class="row pt-md-0 justify-content-center">
                 <div id="body_content" class="col-12 col-lg-9">
                     {% block body_content %}
                     {% endblock %}
