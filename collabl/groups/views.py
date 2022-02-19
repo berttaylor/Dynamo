@@ -18,7 +18,7 @@ from groups.models import Group, GroupAnnouncement, Membership
 from groups.utils import get_membership_level, get_membership_count
 
 
-@method_decorator(login_required, name="dispatch")
+@method_decorator(login_required(login_url="login"), name="dispatch")
 class GroupSearchView(ListView):
     """
     Shows all of the groups that a user is not part of. serving both full adn htmx requests
@@ -57,7 +57,7 @@ class GroupSearchView(ListView):
         return groups
 
 
-@method_decorator(login_required, name="dispatch")
+@method_decorator(login_required(login_url="login"), name="dispatch")
 class GroupDetailView(FormMixin, DetailView):
     """
     Shows all information regarding a group, as well as populating the initial state for the below page sections

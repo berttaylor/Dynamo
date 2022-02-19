@@ -30,9 +30,9 @@
                 <div class="col text-white">
 
                     <a
-                           hx-get="{% url 'collaboration-message-update' slug=collaboration.slug pk=message.pk %}"
-                           hx-target="#group_chat"
-                   >{{ message.message }}</a>
+                            hx-get="{% url 'collaboration-message-update' slug=collaboration.slug pk=message.pk %}"
+                            hx-target="#group_chat"
+                    >{{ message.message }}</a>
 
 
                     <div class="small mt-1 text-gray-200"><strong
@@ -55,7 +55,9 @@
 
     {% empty %}
 
-        <div class="text-muted text-center mb-0 p-1">nothing to see here...</div>
+        <div class="text-muted text-center mb-0 p-1"
+        >nothing to see here...
+        </div>
 
     {% endfor %}
 

@@ -1,3 +1,4 @@
+from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse
 from django.urls import reverse_lazy
 from django.views.generic import RedirectView
@@ -7,6 +8,7 @@ Generic views needed for front end functionality are kept here.
 """
 
 
+@login_required()
 def empty_string(request):
     return HttpResponse()
 

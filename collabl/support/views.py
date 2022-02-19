@@ -72,7 +72,6 @@ class SupportMessageCreateView(CreateView):
         return response
 
 
-@method_decorator(login_required, name="dispatch")
 class SupportMessageThanksView(TemplateView):
     """
     Confirms to the user that the message has been sent
