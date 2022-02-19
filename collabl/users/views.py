@@ -3,6 +3,7 @@ from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect
 from django.urls import reverse_lazy
 from django.utils.decorators import method_decorator
+from django.views.decorators.http import require_http_methods
 from django.views.generic import UpdateView, ListView
 
 from collaborations.models import Collaboration
@@ -16,6 +17,7 @@ from users.forms import SignUpForm, UserDetailUpdateForm
 from users.utils import get_users_filtered_collaborations
 
 
+@require_http_methods(["GET", "POST"])
 def sign_up_view(request):
     if request.method == "POST":
         form = SignUpForm(request.POST)
@@ -40,6 +42,7 @@ class UserUpdateView(UpdateView):
     template_name = "app/home/user_details.html"
     form_class = UserDetailUpdateForm
     success_url = reverse_lazy("user-update")
+    http_method_names = ['get', 'post']
 
     def get_object(self, queryset=None):
         return self.request.user
@@ -56,6 +59,7 @@ class UserGroupListView(ListView):
     template_name = "app/home/user_groups.html"
     partial_template_name = "app/home/partials/group_list.html"
     hx_target_id = "list_of_groups"
+    http_method_names = ['get',]
 
     def get_template_names(self):
         """
@@ -91,6 +95,7 @@ class UserCollaborationListView(ListView):
     template_name = "app/home/user_collaborations.html"
     partial_template_name = "app/home/partials/collaboration_list.html"
     hx_target_id = "list_of_collaborations"
+    http_method_names = ['get',]
 
     def get_template_names(self):
         """

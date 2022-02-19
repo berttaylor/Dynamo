@@ -2,6 +2,7 @@ from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse, HttpResponseForbidden
 from django.shortcuts import render, get_object_or_404
 from django.urls import reverse_lazy
+from django.views.decorators.http import require_http_methods
 
 import groups.constants as c
 from collabl.settings import SITE_PROTOCOL, SITE_DOMAIN
@@ -16,6 +17,7 @@ from groups.views import get_membership_count
 
 
 @login_required()
+@require_http_methods(["GET", "POST"])
 def group_update_view(request, slug):
     """
     HTMX VIEW - Allows group updates with no reload
@@ -58,6 +60,7 @@ def group_update_view(request, slug):
 
 
 @login_required()
+@require_http_methods(["GET", "POST"])
 def group_image_view(request, slug):
     """
     HTMX VIEW - Allows group image updates with no reload
@@ -100,6 +103,7 @@ def group_image_view(request, slug):
 
 
 @login_required()
+@require_http_methods(["GET",])
 def group_membership_view(request, slug):
     """
     HTMX VIEW - Populates list of memberships of the specified type - set by select object on front end
@@ -139,6 +143,7 @@ def group_membership_view(request, slug):
 
 
 @login_required()
+@require_http_methods(["POST",])
 def group_membership_selector_view(request, slug, pk, membership_filter):
     """
     HTMX VIEW - Allows admins to select memberships in order to process in bulk
@@ -192,6 +197,7 @@ def group_membership_selector_view(request, slug, pk, membership_filter):
 
 
 @login_required()
+@require_http_methods(["POST",])
 def group_membership_handler_view(request, slug, action, membership_filter):
     """
     HTMX VIEW - Allows admins process memberships stored in session
@@ -280,6 +286,7 @@ def group_membership_handler_view(request, slug, action, membership_filter):
 
 
 @login_required()
+@require_http_methods(["GET",])
 def group_collaboration_list(request, slug):
     """
     HTMX VIEW - Populates the list of collaborations - either All, Planning, ongoing,
@@ -307,6 +314,7 @@ def group_collaboration_list(request, slug):
 
 
 @login_required()
+@require_http_methods(["GET",])
 def group_announcement_list(request, slug):
     """
     HTMX VIEW - Populates the list of announcements - either Latest, All, or None
@@ -334,6 +342,7 @@ def group_announcement_list(request, slug):
 
 
 @login_required()
+@require_http_methods(["GET", "POST"])
 def group_announcement_delete(request, slug, pk):
     """
     HTMX VIEW - Allows announcement updates with no reload
@@ -376,6 +385,7 @@ def group_announcement_delete(request, slug, pk):
 
 
 @login_required()
+@require_http_methods(["GET", "POST"])
 def group_announcement_create(request, slug):
     """
     HTMX VIEW - Allows new announcements with no reload
@@ -421,6 +431,7 @@ def group_announcement_create(request, slug):
 
 
 @login_required()
+@require_http_methods(["GET", "POST"])
 def group_announcement_update(request, slug, pk):
     """
     HTMX VIEW - Allows announcement updates with no reload
@@ -467,6 +478,7 @@ def group_announcement_update(request, slug, pk):
 
 
 @login_required()
+@require_http_methods(["GET", "POST"])
 def group_create_view(request):
     """
     HTMX VIEW - Allows group creation

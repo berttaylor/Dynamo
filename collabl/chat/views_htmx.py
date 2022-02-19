@@ -1,6 +1,7 @@
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseForbidden
 from django.shortcuts import render
+from django.views.decorators.http import require_http_methods
 
 from chat.forms import (
     CollaborationMessageForm,
@@ -17,6 +18,7 @@ from groups.views import get_membership_level
 
 
 @login_required()
+@require_http_methods(["POST",])
 def group_message_create_view(request, slug):
     """
     HTMX VIEW - Allows chat messages to be added
@@ -48,6 +50,7 @@ def group_message_create_view(request, slug):
 
 
 @login_required()
+@require_http_methods(["GET", "POST"])
 def group_message_update_view(request, slug, pk):
     """
     HTMX VIEW - Allows message updates with no reload
@@ -96,6 +99,7 @@ def group_message_update_view(request, slug, pk):
 
 
 @login_required()
+@require_http_methods(["GET", "POST"])
 def group_message_delete_view(request, slug, pk):
     """
     HTMX VIEW - Allows message deletion
@@ -142,6 +146,7 @@ def group_message_delete_view(request, slug, pk):
 
 
 @login_required()
+@require_http_methods(["POST",])
 def collaboration_message_create_view(request, slug):
     """
     HTMX VIEW - Allows chat messages to be added
@@ -178,6 +183,7 @@ def collaboration_message_create_view(request, slug):
 
 
 @login_required()
+@require_http_methods(["GET", "POST"])
 def collaboration_message_delete_view(request, slug, pk):
     """
     HTMX VIEW - Allows chat messages to be deleted
@@ -233,6 +239,7 @@ def collaboration_message_delete_view(request, slug, pk):
 
 
 @login_required()
+@require_http_methods(["GET", "POST"])
 def collaboration_message_update_view(request, slug, pk):
     """
     HTMX VIEW - Allows chat messages to be deleted

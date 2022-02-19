@@ -5,6 +5,7 @@ from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseRedirect, HttpResponseForbidden
 from django.shortcuts import render, get_object_or_404
 from django.urls import reverse_lazy
+from django.views.decorators.http import require_http_methods
 
 import collaborations.constants as c
 from collaborations.forms import (
@@ -33,6 +34,7 @@ from groups.utils import (
 
 
 @login_required()
+@require_http_methods(["GET", "POST"])
 def group_collaboration_create_view(request, slug):
     """
     HTMX VIEW - Allows collaboration creation
@@ -106,6 +108,7 @@ def group_collaboration_create_view(request, slug):
 
 
 @login_required()
+@require_http_methods(["GET", "POST"])
 def collaboration_delete_view(request, slug):
     """
     HTMX VIEW - Allows deletion of collaborations
@@ -143,6 +146,7 @@ def collaboration_delete_view(request, slug):
 
 
 @login_required()
+@require_http_methods(["GET", "POST"])
 def collaboration_update_view(request, slug):
     """
     HTMX VIEW - Allows collaborations to be updated without reload
@@ -183,6 +187,7 @@ def collaboration_update_view(request, slug):
 
 
 @login_required()
+@require_http_methods(["GET", "POST"])
 def collaboration_image_view(request, slug):
     """
     HTMX VIEW - Allows collaborations images to be updated without reload
@@ -225,6 +230,7 @@ def collaboration_image_view(request, slug):
 
 
 @login_required()
+@require_http_methods(["GET", "POST"])
 def collaboration_task_create_view(request, slug):
     """
     HTMX VIEW - Allows task creation with update and no reload
@@ -269,6 +275,7 @@ def collaboration_task_create_view(request, slug):
 
 
 @login_required()
+@require_http_methods(["GET", "POST"])
 def collaboration_task_update_view(request, slug, pk):
     """
     HTMX VIEW - Allows task updates with update and no reload
@@ -314,6 +321,7 @@ def collaboration_task_update_view(request, slug, pk):
 
 
 @login_required()
+@require_http_methods(["GET", "POST"])
 def collaboration_task_notes_view(request, slug, pk):
     """
     HTMX VIEW - Allows task notes to be given with update and no reload
@@ -358,6 +366,7 @@ def collaboration_task_notes_view(request, slug, pk):
 
 
 @login_required()
+@require_http_methods(["POST",])
 def collaboration_task_toggle_view(request, slug, pk, status):
     """
     HTMX VIEW - Allows completion of tasks with one click and no reload
@@ -403,6 +412,7 @@ def collaboration_task_toggle_view(request, slug, pk, status):
 
 
 @login_required()
+@require_http_methods(["GET", "POST"])
 def collaboration_task_delete_view(request, slug, pk):
     """
     HTMX VIEW - Allows deletion of tasks with reordering of elements
@@ -444,6 +454,7 @@ def collaboration_task_delete_view(request, slug, pk):
 
 
 @login_required()
+@require_http_methods(["GET", "POST"])
 def collaboration_milestone_create_view(request, slug):
     """
     HTMX VIEW - Allows milestone creation with update and no reload
@@ -488,6 +499,7 @@ def collaboration_milestone_create_view(request, slug):
 
 
 @login_required()
+@require_http_methods(["GET", "POST"])
 def collaboration_milestone_update_view(request, slug, pk):
     """
     HTMX VIEW - Allows milestone updates with update and no reload
@@ -535,6 +547,7 @@ def collaboration_milestone_update_view(request, slug, pk):
 
 
 @login_required()
+@require_http_methods(["GET", "POST"])
 def collaboration_milestone_delete_view(request, slug, pk):
     """
     HTMX VIEW - Allows deletion of milestones with reordering of elements
@@ -576,6 +589,7 @@ def collaboration_milestone_delete_view(request, slug, pk):
 
 
 @login_required()
+@require_http_methods(["GET",])
 def collaboration_elements_list_view(request, slug):
     """
     HTMX VIEW - Sends back html list of elements
@@ -601,6 +615,7 @@ def collaboration_elements_list_view(request, slug):
 
 
 @login_required()
+@require_http_methods(["POST",])
 def collaboration_task_move_view(request, slug, pk, position):
     """
     HTMX VIEW - Allows reordering of tasks.
@@ -629,6 +644,7 @@ def collaboration_task_move_view(request, slug, pk, position):
 
 
 @login_required()
+@require_http_methods(["POST",])
 def collaboration_milestone_move_view(request, slug, pk, position):
     """
     HTMX VIEW - Allows reordering of milestones
@@ -657,6 +673,7 @@ def collaboration_milestone_move_view(request, slug, pk, position):
 
 
 @login_required()
+@require_http_methods(["GET", "POST"])
 def user_collaboration_create_view(request):
     """
     HTMX VIEW - Allows collaboration creation from the user-collaboration list view

@@ -4,6 +4,7 @@ from django.http import HttpResponseRedirect
 from django.shortcuts import get_object_or_404
 from django.urls import reverse_lazy
 from django.utils.decorators import method_decorator
+from django.views.decorators.http import require_http_methods
 from django.views.generic import (
     DetailView,
     ListView,
@@ -21,7 +22,7 @@ from groups.utils import get_membership_level, get_membership_count
 @method_decorator(login_required(login_url="login"), name="dispatch")
 class GroupSearchView(ListView):
     """
-    Shows all of the groups that a user is not part of. serving both full adn htmx requests
+    Shows all of the groups that a user is not part of. serving both standard and htmx requests
     """
 
     model = Group
@@ -29,6 +30,7 @@ class GroupSearchView(ListView):
     template_name = "app/home/find_groups.html"
     partial_template_name = "app/home/partials/group_list.html"
     hx_target_id = "list_of_groups"
+    http_method_names = ['get',]
 
     def get_template_names(self):
         """
@@ -71,6 +73,7 @@ class GroupDetailView(FormMixin, DetailView):
     template_name = "app/group/main.html"
     model = Group
     form_class = GroupMessageForm
+    http_method_names = ['get',]
 
     def get_context_data(self, **kwargs):
         """
@@ -111,6 +114,7 @@ class GroupDetailView(FormMixin, DetailView):
 
 
 @login_required()
+@require_http_methods(["POST"])
 def group_join_view(request, slug):
     """
     FUNCTIONAL VIEW - Allows users to request to join groups.
@@ -149,6 +153,7 @@ def group_join_view(request, slug):
 
 
 @login_required()
+@require_http_methods(["POST"])
 def group_leave_view(request, slug):
     """
     FUNCTIONAL VIEW - Allows users to leave groups
