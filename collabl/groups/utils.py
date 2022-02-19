@@ -9,10 +9,11 @@ def get_membership_level(user, group):
     Simple utility function that return that status of the membership, if one exists.
     Used to render relevant sections on front end.
     """
-    if not (membership := group.memberships.filter(user=user, group=group).first()):
-        return None
 
-    return membership.status
+    if user.is_authenticated:
+        if membership := group.memberships.filter(user=user, group=group).first():
+            return membership.status
+    return None
 
 
 def user_has_active_membership(user, group):
@@ -20,12 +21,17 @@ def user_has_active_membership(user, group):
 
     active_membership_levels: list = [
         c.MEMBERSHIP_STATUS_ADMIN,
-        c.MEMBERSHIP_STATUS_CURRENT
+        c.MEMBERSHIP_STATUS_CURRENT,
     ]
 
     membership_level = get_membership_level(user, group)
 
     return membership_level in active_membership_levels
+
+
+def user_is_admin(user, group):
+    """Check that the users membership is of admin level"""
+    return get_membership_level(user, group) == c.MEMBERSHIP_STATUS_ADMIN
 
 
 def get_membership_count(group):

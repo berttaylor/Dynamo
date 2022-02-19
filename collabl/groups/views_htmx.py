@@ -1,5 +1,5 @@
 from django.contrib.auth.decorators import login_required
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseForbidden
 from django.shortcuts import render, get_object_or_404
 from django.urls import reverse_lazy
 
@@ -7,7 +7,11 @@ import groups.constants as c
 from collabl.settings import SITE_PROTOCOL, SITE_DOMAIN
 from groups.forms import GroupForm, GroupImageForm, GroupAnnouncementForm
 from groups.models import Group, Membership, GroupAnnouncement
-from groups.utils import get_membership_level, get_filtered_collaborations
+from groups.utils import (
+    get_membership_level,
+    get_filtered_collaborations,
+    user_is_admin,
+)
 from groups.views import get_membership_count
 
 
@@ -20,15 +24,15 @@ def group_update_view(request, slug):
     (with error messages, if appropriate)
     """
 
+    # Get Data
     group = get_object_or_404(Group, slug=slug)
-
     form = GroupForm(request.POST or None, instance=group)
 
-    if request.user.is_authenticated:
-        membership_level = get_membership_level(request.user, group)
-    else:
-        membership_level = None
+    # Check permissions
+    if not user_is_admin(request.user, group):
+        return HttpResponseForbidden()
 
+    # If POST, process the update
     if request.method == "POST":
         if form.is_valid():
             form.save()
@@ -37,11 +41,12 @@ def group_update_view(request, slug):
             "app/group/partials/header/main.html",
             {
                 "group": group,
-                "membership_level": membership_level,
+                "membership_level": get_membership_level(request.user, group),
                 "membership_count": get_membership_count(group),
             },
         )
 
+    # If GET, (or invalid data is posted) send back the Modal
     return render(
         request,
         "app/group/partials/modals/group_update.html",
@@ -61,15 +66,15 @@ def group_image_view(request, slug):
     (with error messages, if appropriate)
     """
 
+    # Get Data
     group = get_object_or_404(Group, slug=slug)
-
     form = GroupImageForm(request.POST or None, request.FILES or None, instance=group)
 
-    if request.user.is_authenticated:
-        membership_level = get_membership_level(request.user, group)
-    else:
-        membership_level = None
+    # Check permissions
+    if not user_is_admin(request.user, group):
+        return HttpResponseForbidden()
 
+    # If POST, process the update
     if request.method == "POST":
         if form.is_valid():
             form.save()
@@ -78,11 +83,12 @@ def group_image_view(request, slug):
             "app/group/partials/header/main.html",
             {
                 "group": group,
-                "membership_level": membership_level,
+                "membership_level": get_membership_level(request.user, group),
                 "membership_count": get_membership_count(group),
             },
         )
 
+    # If GET, (or invalid data is posted) send back the Modal
     return render(
         request,
         "app/group/partials/modals/group_image.html",
@@ -97,33 +103,39 @@ def group_image_view(request, slug):
 def group_membership_view(request, slug):
     """
     HTMX VIEW - Populates list of memberships of the specified type - set by select object on front end
+
+    if the filter is not set, we send back only pending membership requests
     """
 
-    # if the filter is not set, we send back only pending membership requests
+    # Get Data & Validate
+    group = get_object_or_404(Group, slug=slug)
     membership_filter = request.GET.get(
         "membership_filter", c.MEMBERSHIP_STATUS_PENDING
     )
-    group = get_object_or_404(Group, slug=slug)
+    if membership_filter not in c.MEMBERSHIP_FILTERS:
+        return HttpResponseForbidden()
+
+    # Check permissions
+    if not user_is_admin(request.user, group):
+        return HttpResponseForbidden()
 
     # Clear the session, if it is being used
     if request.session.get("selected_memberships", None):
         del request.session["selected_memberships"]
 
-    if membership_filter in c.MEMBERSHIP_FILTERS:
-        return render(
-            request,
-            "app/group/partials/memberships/list.html",
-            {
-                "membership_list": Membership.objects.filter(
-                    group__slug=slug, status=membership_filter
-                ),
-                "membership_filter": membership_filter,
-                "group": group,
-                "membership_count": get_membership_count(group),
-            },
-        )
-    else:
-        return HttpResponse()
+    # filter the queryset and send back the rendered template
+    return render(
+        request,
+        "app/group/partials/memberships/list.html",
+        {
+            "membership_list": Membership.objects.filter(
+                group__slug=slug, status=membership_filter
+            ),
+            "membership_filter": membership_filter,
+            "group": group,
+            "membership_count": get_membership_count(group),
+        },
+    )
 
 
 @login_required()
@@ -141,6 +153,10 @@ def group_membership_selector_view(request, slug, pk, membership_filter):
     # Grab the current list, or create one - an empty list
     selected_memberships = request.session.get("selected_memberships", [])
     group = get_object_or_404(Group, slug=slug)
+
+    # Check permissions
+    if not user_is_admin(request.user, group):
+        return HttpResponseForbidden()
 
     # CASE 1: Removing an agency - Update the shortlist (in session), render the response
     if pk in selected_memberships:
@@ -187,12 +203,18 @@ def group_membership_handler_view(request, slug, action, membership_filter):
     count or check/uncheck boxes)
     """
 
+    # Get Data
+    group = get_object_or_404(Group, slug=slug)
+
     # Grab the current list, or return None is there isn't one
     if not (selected_memberships := request.session.get("selected_memberships", None)):
         return None
 
-    group = get_object_or_404(Group, slug=slug)
+    # Check permissions
+    if not user_is_admin(request.user, group):
+        return HttpResponseForbidden()
 
+    # Process the request (depending on the action specified)
     if action == c.MEMBERSHIP_ACTION_CLEAR_SELECTION:
         # Get the ids (so that we can 'uncheck' the checkboxes on front end)
         check_box_ids = [
@@ -244,6 +266,7 @@ def group_membership_handler_view(request, slug, action, membership_filter):
     else:
         membership_list = Membership.objects.none()
 
+    # Make Response (updating state of the memberships section)
     return render(
         request,
         "app/group/partials/memberships/main.html",
@@ -270,12 +293,16 @@ def group_collaboration_list(request, slug):
     if collaboration_list_filter == "HIDE":
         return HttpResponse()
 
-    collaborations = get_filtered_collaborations(group, collaboration_list_filter)
-
+    # Make Response
     return render(
         request,
         "app/group/partials/collaborations/list.html",
-        {"collaboration_list": collaborations, "group": group},
+        {
+            "collaboration_list": get_filtered_collaborations(
+                group, collaboration_list_filter
+            ),
+            "group": group,
+        },
     )
 
 
@@ -289,9 +316,7 @@ def group_announcement_list(request, slug):
     announcement_list_filter = request.GET.get("announcement_list_filter", "HIDE")
     group = get_object_or_404(Group, slug=slug)
 
-    if announcement_list_filter == "HIDE":
-        return HttpResponse()
-
+    # Filter the announcements
     match announcement_list_filter:
         case c.ANNOUNCEMENTS_FILTER_LATEST:
             announcements = GroupAnnouncement.objects.filter(group=group)[:1]
@@ -300,6 +325,7 @@ def group_announcement_list(request, slug):
         case _:
             announcements = GroupAnnouncement.objects.none()
 
+    # Make Response
     return render(
         request,
         "app/group/partials/announcements/list.html",
@@ -316,9 +342,15 @@ def group_announcement_delete(request, slug, pk):
     (with error messages, if appropriate)
     """
 
+    # Get Data
     group = get_object_or_404(Group, slug=slug)
     announcement = get_object_or_404(GroupAnnouncement, pk=pk)
 
+    # Check permissions
+    if not user_is_admin(request.user, group):
+        return HttpResponseForbidden()
+
+    # If POST, process the delete operation
     if request.method == "POST":
         announcement.delete()
         return render(
@@ -330,6 +362,7 @@ def group_announcement_delete(request, slug, pk):
             },
         )
 
+    # If GET, send back the 'Delete Announcement' Modal
     return render(
         request,
         "app/group/partials/announcements/list.html",
@@ -351,10 +384,15 @@ def group_announcement_create(request, slug):
     (with error messages, if appropriate)
     """
 
+    # Get Data
     group = get_object_or_404(Group, slug=slug)
-
     form = GroupAnnouncementForm(request.POST or None)
 
+    # Check permissions
+    if not user_is_admin(request.user, group):
+        return HttpResponseForbidden()
+
+    # If POST, process the operation
     if request.method == "POST" and form.is_valid():
         announcement = form.save(commit=False)
         announcement.group = group
@@ -369,6 +407,7 @@ def group_announcement_create(request, slug):
             },
         )
 
+    # If GET, (or invalid data is posted) send back the 'Create Announcement' Modal
     return render(
         request,
         "app/group/partials/announcements/list.html",
@@ -390,13 +429,20 @@ def group_announcement_update(request, slug, pk):
     (with error messages, if appropriate)
     """
 
+    # Get Data
     group = get_object_or_404(Group, slug=slug)
     group_announcement = get_object_or_404(GroupAnnouncement, pk=pk)
-
     form = GroupAnnouncementForm(request.POST or None, instance=group_announcement)
 
+    # Check permissions
+    if not user_is_admin(request.user, group):
+        return HttpResponseForbidden()
+
+    # If POST, process the update (and change the user, if needed)
     if request.method == "POST" and form.is_valid():
-        form.save()
+        group_announcement = form.save(commit=False)
+        group_announcement.user = request.user
+        group_announcement.save()
         return render(
             request,
             "app/group/partials/announcements/list.html",
@@ -406,6 +452,7 @@ def group_announcement_update(request, slug, pk):
             },
         )
 
+    # If GET, (or invalid data is posted) send back the 'Update' Modal
     return render(
         request,
         "app/group/partials/announcements/list.html",
@@ -427,15 +474,24 @@ def group_create_view(request):
     on successful submission, sends back a JS/htmx redirect to the new group page.
     """
 
+    # Get data
     form = GroupForm(request.POST or None)
+
+    # If POST, create the group
     if request.method == "POST":
         if form.is_valid():
+
+            # Create the group
             group = form.save(commit=False)
             group.created_by = request.user
             group.save()
+
+            # Add the user as Admin
             Membership.objects.create(
                 user=request.user, group=group, status=c.MEMBERSHIP_STATUS_ADMIN
             )
+
+            # Get success_url - we send back a javascript redirect to take the user to this page
             success_url = (
                 SITE_PROTOCOL
                 + SITE_DOMAIN
@@ -445,6 +501,7 @@ def group_create_view(request):
                 )
             )
 
+            # Make Response
             return render(
                 request,
                 "app/snippets/js_redirect.html",
@@ -453,6 +510,7 @@ def group_create_view(request):
                 },
             )
 
+    # If GET, (or invalid data is posted) send back the 'Create Group' Modal
     return render(
         request,
         "app/home/modals/group_create.html",

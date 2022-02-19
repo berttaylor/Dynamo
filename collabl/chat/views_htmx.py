@@ -156,7 +156,9 @@ def collaboration_message_create_view(request, slug):
         return HttpResponseForbidden()
 
     # Create Message
-    Message.objects.create(collaboration=collaboration, user=request.user, message=message)
+    Message.objects.create(
+        collaboration=collaboration, user=request.user, message=message
+    )
 
     # Return Response
     return render(

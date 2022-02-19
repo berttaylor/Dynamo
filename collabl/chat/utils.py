@@ -11,9 +11,9 @@ def user_is_message_owner(user, message):
 def get_message_group(message):
     """Gets the group that a message belongs to"""
 
-    if hasattr(message, 'group'):
+    if hasattr(message, "group"):
         return message.group
-    elif hasattr(message, 'collaboration'):
+    elif hasattr(message, "collaboration"):
         return message.collaboration.related_group
     return None
 
@@ -24,6 +24,7 @@ def user_is_message_owner_or_admin(user, message):
     if user_is_message_owner(user, message):
         return True
     else:
-        return get_membership_level(
-            user, get_message_group(message)
-        ) == MEMBERSHIP_STATUS_ADMIN
+        return (
+            get_membership_level(user, get_message_group(message))
+            == MEMBERSHIP_STATUS_ADMIN
+        )

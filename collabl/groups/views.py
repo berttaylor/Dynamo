@@ -121,7 +121,7 @@ def group_join_view(request, slug):
 
     # If the user is already a member, send an error
     if Membership.objects.filter(user=user, group=group):
-        messages.error(request, "Membership object already exists")
+        messages.error(request, "Membership to this group has already been requested")
         return HttpResponseRedirect(
             reverse_lazy(
                 "group-detail",
@@ -134,10 +134,12 @@ def group_join_view(request, slug):
         user=user, group=group, status=c.MEMBERSHIP_STATUS_PENDING
     )
 
+    # Create a message
     messages.success(
         request, "Membership Requested: Awaiting confirmation from group admin"
     )
 
+    # Send Response
     return HttpResponseRedirect(
         reverse_lazy(
             "group-detail",
@@ -177,7 +179,8 @@ def group_leave_view(request, slug):
             .exists()
         ):
             messages.error(
-                request, "You are the last admin. Assign another to leave the group"
+                request,
+                "You are the last admin. Assign another admin from the memberships panel (current members) before leaving the group",
             )
             return HttpResponseRedirect(
                 reverse_lazy(

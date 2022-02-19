@@ -32,7 +32,11 @@ urlpatterns = [
         name="home",
     ),
     # Landing
-    path("landing", TemplateView.as_view(template_name="landing/landing.html"), name="landing"),
+    path(
+        "landing",
+        TemplateView.as_view(template_name="landing/landing.html"),
+        name="landing",
+    ),
     # FAQ / Support
     path("support/", include("support.urls")),
     # Groups
