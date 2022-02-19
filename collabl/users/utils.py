@@ -3,6 +3,10 @@ from django.db.models import Count, When, Case, IntegerField
 from collaborations.models import Collaboration
 import collaborations.constants as collaboration_constants
 
+"""
+Utility Functions for checking permissions
+"""
+
 
 def get_sentinel_user():
     """

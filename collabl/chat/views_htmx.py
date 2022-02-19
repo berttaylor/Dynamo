@@ -1,4 +1,5 @@
 from django.contrib.auth.decorators import login_required
+from django.http import HttpResponseForbidden
 from django.shortcuts import render
 
 from chat.forms import (
@@ -8,8 +9,10 @@ from chat.forms import (
     CollaborationMessageUpdateForm,
 )
 from chat.models import Message
+from chat.utils import user_is_message_owner, user_is_message_owner_or_admin
 from collaborations.models import Collaboration
 from groups.models import Group
+from groups.utils import user_has_active_membership
 from groups.views import get_membership_level
 
 
@@ -18,23 +21,25 @@ def group_message_create_view(request, slug):
     """
     HTMX VIEW - Allows chat messages to be added
     """
-    # TODO: Secure and set methods
 
-    # Get  variables
+    # Get data
     message = str(request.POST["message"])
-
-    user = request.user
     group = Group.objects.get(slug=slug)
 
-    Message.objects.create(group=group, user=user, message=message)
-    messages = Message.objects.filter(group=group)
-    membership_level = get_membership_level(request.user, group)
+    # Check Permissions
+    if not user_has_active_membership(request.user, group):
+        return HttpResponseForbidden()
 
+    # Create Message
+    Message.objects.create(group=group, user=request.user, message=message)
+    messages = Message.objects.filter(group=group)
+
+    # Return Response
     return render(
         request,
         "app/group/partials/chat/main.html",
         {
-            "membership_level": membership_level,
+            "membership_level": get_membership_level(request.user, group),
             "chat_messages": messages,
             "group": group,
             "chat_form": GroupMessageForm(initial={"group": group}),
@@ -51,11 +56,16 @@ def group_message_update_view(request, slug, pk):
     (with error messages, if appropriate)
     """
 
-    # Get  variables
+    # Get Data
     message = Message.objects.get(pk=pk)
     group = message.group
     form = GroupMessageUpdateForm(request.POST or None, instance=message)
 
+    # Check Permissions
+    if not user_is_message_owner(request.user, message):
+        return HttpResponseForbidden()
+
+    # If POST, update the message
     if request.method == "POST" and form.is_valid():
         form.save()
         return render(
@@ -69,6 +79,7 @@ def group_message_update_view(request, slug, pk):
             },
         )
 
+    # If GET, (or invalid data is posted) send back the populated 'Update Message' Modal
     return render(
         request,
         "app/group/partials/chat/main.html",
@@ -93,10 +104,15 @@ def group_message_delete_view(request, slug, pk):
     (with error messages, if appropriate)
     """
 
-    # Get  variables
+    # Get Data
     message = Message.objects.get(pk=pk)
     group = message.group
 
+    # Check Permissions
+    if not user_is_message_owner_or_admin(request.user, message):
+        return HttpResponseForbidden()
+
+    # If POST, delete the message
     if request.method == "POST":
         message.delete()
         return render(
@@ -110,6 +126,7 @@ def group_message_delete_view(request, slug, pk):
             },
         )
 
+    # If GET, send back the populated 'Delete Message' Modal
     return render(
         request,
         "app/group/partials/chat/main.html",
@@ -129,14 +146,19 @@ def collaboration_message_create_view(request, slug):
     """
     HTMX VIEW - Allows chat messages to be added
     """
-    # TODO: Secure and set methods
 
-    # Get  variables
+    # Get Data
     message = str(request.POST["message"])
-    user = request.user
     collaboration = Collaboration.objects.get(slug=slug)
-    Message.objects.create(collaboration=collaboration, user=user, message=message)
 
+    # Check Permissions
+    if not user_has_active_membership(request.user, collaboration.related_group):
+        return HttpResponseForbidden()
+
+    # Create Message
+    Message.objects.create(collaboration=collaboration, user=request.user, message=message)
+
+    # Return Response
     return render(
         request,
         "app/collaborations/partials/chat/main.html",
@@ -163,10 +185,15 @@ def collaboration_message_delete_view(request, slug, pk):
     (with error messages, if appropriate)
     """
 
-    # Get  variables
+    # Get Data
     message = Message.objects.get(pk=pk)
     collaboration = message.collaboration
 
+    # Check Permissions
+    if not user_is_message_owner_or_admin(request.user, message):
+        return HttpResponseForbidden()
+
+    # If POST, delete the message
     if request.method == "POST":
         message.delete()
         return render(
@@ -184,6 +211,7 @@ def collaboration_message_delete_view(request, slug, pk):
             },
         )
 
+    # If GET, send back the populated 'Delete Message' Modal
     return render(
         request,
         "app/collaborations/partials/chat/main.html",
@@ -212,11 +240,16 @@ def collaboration_message_update_view(request, slug, pk):
     (with error messages, if appropriate)
     """
 
-    # Get  variables
+    # Get Data
     message = Message.objects.get(pk=pk)
     collaboration = message.collaboration
     form = CollaborationMessageUpdateForm(request.POST or None, instance=message)
 
+    # Check Permissions
+    if not user_is_message_owner(request.user, message):
+        return HttpResponseForbidden()
+
+    # If POST, update the message
     if request.method == "POST" and form.is_valid():
         form.save()
         return render(
@@ -234,6 +267,7 @@ def collaboration_message_update_view(request, slug, pk):
             },
         )
 
+    # If GET, (or invalid data is posted) send back the populated 'Update Message' Modal
     return render(
         request,
         "app/collaborations/partials/chat/main.html",

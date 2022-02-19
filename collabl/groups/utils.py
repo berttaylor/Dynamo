@@ -15,6 +15,19 @@ def get_membership_level(user, group):
     return membership.status
 
 
+def user_has_active_membership(user, group):
+    """Check that the users membership is of the correct level"""
+
+    active_membership_levels: list = [
+        c.MEMBERSHIP_STATUS_ADMIN,
+        c.MEMBERSHIP_STATUS_CURRENT
+    ]
+
+    membership_level = get_membership_level(user, group)
+
+    return membership_level in active_membership_levels
+
+
 def get_membership_count(group):
     """
     Counts memberships by type in order to provide as context to front end
