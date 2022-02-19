@@ -1,5 +1,5 @@
 from django.contrib.auth.decorators import login_required
-from django.http import HttpResponse, HttpResponseForbidden
+from django.http import HttpResponse, HttpResponseForbidden, HttpResponseRedirect
 from django.shortcuts import render, get_object_or_404
 from django.urls import reverse_lazy
 from django.views.decorators.http import require_http_methods
@@ -57,6 +57,31 @@ def group_update_view(request, slug):
             "form": form,
         },
     )
+
+
+@login_required()
+@require_http_methods(["GET", "POST"])
+def group_delete_view(request, slug):
+    """
+    HTMX VIEW - Allows group deletion
+    On GET, sends back confirmation modal
+    ON POST, deletes the group, and redirects user to the group list page.
+    """
+
+    # Get Data
+    group = get_object_or_404(Group, slug=slug)
+
+    # Check permissions
+    if not user_is_admin(request.user, group):
+        return HttpResponseForbidden()
+
+    # If POST, delete the group
+    if request.method == "POST":
+        group.delete()
+        return HttpResponseRedirect(reverse_lazy("user-group-list"))
+
+    # If GET, (or invalid data is posted) send back the Modal
+    return render(request,"app/group/partials/modals/group_delete.html",{"group": group,},)
 
 
 @login_required()
