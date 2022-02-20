@@ -3,7 +3,8 @@
 
 
     <ol class="text-white bg-secondary p-0 text-center">
-        <a hx-boost="true" hx-swap="innerHTML swap:0.1s" href="{% url 'user-group-list' %}"><span class="breadcrumb-item">Dashboard </span></a> /
+        <a hx-boost="true" hx-swap="innerHTML swap:0.1s" href="{% url 'user-group-list' %}"><span
+                class="breadcrumb-item">Dashboard </span></a> /
         <a href=""><span class="breadcrumb-item text-white"> <strong>{{ group }}</strong></span></a>
     </ol>
 
@@ -30,7 +31,7 @@
         {% include "app/group/partials/collaborations/main.html" with group_id=group.pk %}
     </div>
 
-        <hr>
+    <hr>
 
     <div id="group_chat">
         {% include "app/group/partials/chat/main.html" %}

@@ -1,12 +1,15 @@
 <div class="row justify-content-center text-center text-white">
 
     <div class="col-lg-8">
-
+{% if membership_level == "Admin" %}
         <a
-            hx-get="{% url 'collaboration-image' slug=collaboration.slug %}"
-            hx-target="#collaboration_header"
-            hx-swap="afterend"
+
+                hx-get="{% url 'collaboration-image' slug=collaboration.slug %}"
+                hx-target="#collaboration_header"
+                hx-swap="afterend"
+
         >
+    {% endif %}
             {% if collaboration.image %}
                 <img src="{{ collaboration.image.url }}"
                      class="rounded-circle img-thumbnail image-lg"
@@ -15,23 +18,32 @@
                 <img src="/compiled/pixel/html&css/assets/img/blog/image-1.jpg"
                      class="rounded-circle img-thumbnail image-lg" alt="Office">
             {% endif %}
+    {% if membership_level == "Admin" %}
         </a>
-
+    {% endif %}
+{% if membership_level == "Admin" %}
         <a
             hx-get="{% url 'collaboration-update' slug=collaboration.slug %}"
             hx-target="#collaboration_header"
             hx-swap="afterend"
         >
+            {% endif %}
             <h1 class="my-4">{{ collaboration.name }}</h1>
+    {% if membership_level == "Admin" %}
         </a>
+    {% endif %}
 
+    {% if membership_level == "Admin" %}
         <a
             hx-get="{% url 'collaboration-update' slug=collaboration.slug %}"
             hx-target="#collaboration_header"
             hx-swap="afterend"
         >
+            {% endif %}
             <p class="card-description">{{ collaboration.description }}</p>
+    {% if membership_level == "Admin" %}
         </a>
+    {% endif %}
 
     </div>
 
