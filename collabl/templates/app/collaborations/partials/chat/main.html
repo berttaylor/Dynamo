@@ -1,9 +1,7 @@
-<div class="py-4 px-4 bg-white rounded shadow-sm">
+<div class="py-4 text-white">
 
-    <div class="d-flex align-items-center justify-content-between mb-3">
-        <h5 class="mb-0">Message Board</h5>
-    </div>
 
+    <h3 class="mb-3">Message Board</h3>
 
     {% if user.is_authenticated %}
 
@@ -13,7 +11,7 @@
                     {{ chat_form.message }}
 
                     <button hx-post="{% url 'collaboration-message-create' slug=collaboration.slug %}"
-                            hx-target="#collaboration_chat" type="submit" class="btn btn-outline-primary">Send
+                            hx-target="#collaboration_chat" type="submit" class="btn btn-primary">Send
                     </button>
                 </div>
             </form>
@@ -28,12 +26,15 @@
 
         {% if message.user == request.user %}
 
-            <div class="row align-items-center m-2 ms-5 py-2 bg-dark rounded">
+            <div class="row align-items-center m-2 ms-5 py-2 bg-primary rounded">
                 <div class="col text-white">
+
                     <a
-                           hx-get="{% url 'collaboration-message-update' slug=collaboration.slug pk=message.pk %}"
-                           hx-target="#collaboration_chat"
-                   >{{ message.message }}</a>
+                            hx-get="{% url 'collaboration-message-update' slug=collaboration.slug pk=message.pk %}"
+                            hx-target="#group_chat"
+                    >{{ message.message }}</a>
+
+
                     <div class="small mt-1 text-gray-200"><strong
                             class="text-gray-200">You </strong>- {{ message.created_at }}
                     </div>
@@ -42,20 +43,21 @@
 
         {% else %}
 
-
-
-            <div class="row align-items-center m-2 me-5 py-2 bg-gray-200 rounded">
-                <div class="col text-primary"> {{ message.message }}
-                    <div class="small mt-1 text-tertiary"><strong
-                            class="text-primary">{{ message.user.first_name }} </strong>- {{ message.created_at }}
-
+            <div class="row align-items-center m-2 me-5 py-2 bg-primary rounded">
+                <div class="col text-white"> {{ message.message }}
+                    <div class="small mt-1">
+                        <strong>{{ message.user.first_name }} </strong>- {{ message.created_at }}
                     </div>
                 </div>
             </div>
+
         {% endif %}
+
     {% empty %}
 
-        <div class="text-muted text-center mb-0 p-1">nothing to see here...</div>
+        <div class="text-muted text-center mb-0 p-1"
+        >nothing to see here...
+        </div>
 
     {% endfor %}
 

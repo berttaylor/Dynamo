@@ -62,11 +62,11 @@ const paths = {
         vendor: './vendor'
     },
     temp: {
-        base: './.temp/',
-        css: './.temp/css',
-        html: './.temp/html',
-        assets: './.temp/assets',
-        vendor: './.temp/vendor'
+        base: './html&css/',
+        css: './html&css/css',
+        html: './html&css/html',
+        assets: './html&css/assets',
+        vendor: './html&css/vendor'
     }
 };
 

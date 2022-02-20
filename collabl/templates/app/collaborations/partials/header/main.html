@@ -1,56 +1,61 @@
-<div class="row justify-content-center text-center">
+<div class="row justify-content-center text-center text-white">
 
     <div class="col-lg-8">
-
+{% if membership_level == "Admin" %}
         <a
-            hx-get="{% url 'collaboration-image' slug=collaboration.slug %}"
-            hx-target="#collaboration_header"
-            hx-swap="afterend"
+
+                hx-get="{% url 'collaboration-image' slug=collaboration.slug %}"
+                hx-target="#collaboration_header"
+                hx-swap="afterend"
+
         >
+    {% endif %}
             {% if collaboration.image %}
                 <img src="{{ collaboration.image.url }}"
-                     class="rounded-circle img-thumbnail image-lg border-secondary p-2"
+                     class="rounded-circle img-thumbnail image-lg"
                      alt="{{ collaboration.image }}">
             {% else %}
                 <img src="/compiled/pixel/html&css/assets/img/blog/image-1.jpg"
-                     class="rounded-circle img-thumbnail image-lg border-secondary p-2" alt="Office">
+                     class="rounded-circle img-thumbnail image-lg" alt="Office">
             {% endif %}
+    {% if membership_level == "Admin" %}
         </a>
-
+    {% endif %}
+{% if membership_level == "Admin" %}
         <a
             hx-get="{% url 'collaboration-update' slug=collaboration.slug %}"
             hx-target="#collaboration_header"
             hx-swap="afterend"
         >
+            {% endif %}
             <h1 class="my-4">{{ collaboration.name }}</h1>
+    {% if membership_level == "Admin" %}
         </a>
+    {% endif %}
 
-        <h2 class="h5 fw-normal text-gray mb-4">
-
-            <a hx-boost="true" hx-swap="innerHTML swap:0.2s" href="{% url 'group-detail' slug=collaboration.related_group.slug %}">
-                <span class="text-tertiary">{{ collaboration.related_group }}</span>
-            </a>
-        </h2>
-
+    {% if membership_level == "Admin" %}
         <a
             hx-get="{% url 'collaboration-update' slug=collaboration.slug %}"
             hx-target="#collaboration_header"
             hx-swap="afterend"
         >
+            {% endif %}
             <p class="card-description">{{ collaboration.description }}</p>
+    {% if membership_level == "Admin" %}
         </a>
+    {% endif %}
 
     </div>
 
     <div class="d-flex justify-content-between m-2 mb-5 col-10">
         <div class="col ps-0"><span class="small d-block">Creator</span> <span
-                class="h6 text-dark fw-bold">{{ collaboration.created_by }}</span></div>
+                class="h6 fw-bold">{{ collaboration.created_by }}</span></div>
         <div class="col"><span class="small d-block">Status</span>
-            <span class="h6 text-dark fw-bold" id="collaboration_status_span">{{ collaboration.status }}</span>
+            <span class="h6 fw-bold" id="collaboration_status_span">{{ collaboration.status }}</span>
         </div>
         <div class="col me-0">
             <span class="small d-block">Progress</span>
-            <span class="h6 text-dark fw-bold" id="completion_percentage_span"
+            <span class="h6 fw-bold" id="completion_percentage_span"
                   data-value="{{ collaboration.percent_completed }}">{{ collaboration.percent_completed }}</span>%
         </div>
     </div>

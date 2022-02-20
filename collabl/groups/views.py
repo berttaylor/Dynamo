@@ -4,6 +4,7 @@ from django.http import HttpResponseRedirect
 from django.shortcuts import get_object_or_404
 from django.urls import reverse_lazy
 from django.utils.decorators import method_decorator
+from django.views.decorators.http import require_http_methods
 from django.views.generic import (
     DetailView,
     ListView,
@@ -18,10 +19,10 @@ from groups.models import Group, GroupAnnouncement, Membership
 from groups.utils import get_membership_level, get_membership_count
 
 
-@method_decorator(login_required, name="dispatch")
+@method_decorator(login_required(login_url="login"), name="dispatch")
 class GroupSearchView(ListView):
     """
-    Shows all of the groups that a user is not part of. serving both full adn htmx requests
+    Shows all of the groups that a user is not part of. serving both standard and htmx requests
     """
 
     model = Group
@@ -29,6 +30,7 @@ class GroupSearchView(ListView):
     template_name = "app/home/find_groups.html"
     partial_template_name = "app/home/partials/group_list.html"
     hx_target_id = "list_of_groups"
+    http_method_names = ['get',]
 
     def get_template_names(self):
         """
@@ -57,7 +59,7 @@ class GroupSearchView(ListView):
         return groups
 
 
-@method_decorator(login_required, name="dispatch")
+@method_decorator(login_required(login_url="login"), name="dispatch")
 class GroupDetailView(FormMixin, DetailView):
     """
     Shows all information regarding a group, as well as populating the initial state for the below page sections
@@ -71,6 +73,7 @@ class GroupDetailView(FormMixin, DetailView):
     template_name = "app/group/main.html"
     model = Group
     form_class = GroupMessageForm
+    http_method_names = ['get',]
 
     def get_context_data(self, **kwargs):
         """
@@ -111,6 +114,7 @@ class GroupDetailView(FormMixin, DetailView):
 
 
 @login_required()
+@require_http_methods(["POST"])
 def group_join_view(request, slug):
     """
     FUNCTIONAL VIEW - Allows users to request to join groups.
@@ -121,7 +125,7 @@ def group_join_view(request, slug):
 
     # If the user is already a member, send an error
     if Membership.objects.filter(user=user, group=group):
-        messages.error(request, "Membership object already exists")
+        messages.error(request, "Membership to this group has already been requested")
         return HttpResponseRedirect(
             reverse_lazy(
                 "group-detail",
@@ -134,10 +138,12 @@ def group_join_view(request, slug):
         user=user, group=group, status=c.MEMBERSHIP_STATUS_PENDING
     )
 
+    # Create a message
     messages.success(
         request, "Membership Requested: Awaiting confirmation from group admin"
     )
 
+    # Send Response
     return HttpResponseRedirect(
         reverse_lazy(
             "group-detail",
@@ -147,6 +153,7 @@ def group_join_view(request, slug):
 
 
 @login_required()
+@require_http_methods(["POST"])
 def group_leave_view(request, slug):
     """
     FUNCTIONAL VIEW - Allows users to leave groups
@@ -177,7 +184,8 @@ def group_leave_view(request, slug):
             .exists()
         ):
             messages.error(
-                request, "You are the last admin. Assign another to leave the group"
+                request,
+                "You are the last admin. Assign another admin from the memberships panel (current members) before leaving the group",
             )
             return HttpResponseRedirect(
                 reverse_lazy(

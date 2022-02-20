@@ -1,30 +1,54 @@
+
+<hr>
+
+<h3 class="py-3 pb-5 text-center">Progress</h3>
+
 {% for element in elements %}
 
     {% if forloop.counter|divisibleby:2 %}
 
         {% if element.type == "Task" %}
             {% include "app/collaborations/partials/elements/list/task_right.html" with task=element %}
+            {% include "app/collaborations/partials/elements/list/task_center.html" with task=element %}
         {% else %}
             {% include "app/collaborations/partials/elements/list/milestone_right.html" with milestone=element %}
+            {% include "app/collaborations/partials/elements/list/milestone_center.html" with milestone=element %}
         {% endif %}
 
+        <br class="d-md-none">
+
         {% include "app/collaborations/partials/elements/list/linker_right.html" with element=element %}
+
+        {% if forloop.counter != elements|length %}
+            {% include "app/collaborations/partials/elements/list/linker_center.html" with element=element %}
+        {% endif %}
 
     {% else %}
 
         {% if element.type == "Task" %}
             {% include "app/collaborations/partials/elements/list/task_left.html" with task=element %}
+            {% include "app/collaborations/partials/elements/list/task_center.html" with task=element %}
         {% else %}
             {% include "app/collaborations/partials/elements/list/milestone_left.html" with milestone=element %}
+            {% include "app/collaborations/partials/elements/list/milestone_center.html" with milestone=element %}
         {% endif %}
 
         {% include "app/collaborations/partials/elements/list/linker_left.html" with element=element %}
+
+        {% if forloop.counter != elements|length %}
+            {% include "app/collaborations/partials/elements/list/linker_center.html" with element=element %}
+        {% endif %}
 
     {% endif %}
 
 {% endfor %}
 
-{% include "app/collaborations/partials/elements/list/finish.html" %}
+<div class="card border-gray-300 p-2 bg-secondary">
+
+    {% include "app/collaborations/partials/elements/list/finish.html" %}
+
+</div>
+
 
 {% include "app/collaborations/partials/elements/template_js/update_completion_percentage.html" %}
 
@@ -55,3 +79,5 @@
 {% if milestone_delete_modal %}
     {% include "app/collaborations/partials/elements/modals/milestone_delete.html" %}
 {% endif %}
+
+<hr>

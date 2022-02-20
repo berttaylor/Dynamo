@@ -1,10 +1,11 @@
 {% for group in groups %}
 
-    <div class="col-12 col-m-6 col-xl-6 mb-5">
-        <div class="card border-light">
-        <a hx-swap="innerHTML swap:0.2s" hx-boost="true" href="{% url 'group-detail' slug=group.slug %}">
+    <div class="col-md-6 mb-4 text-center text-md-left">
+        <div class="card border-gray-300 bg-tertiary text-white border-3">
+        <a hx-swap="innerHTML swap:0.1s" hx-boost="true" href="{% url 'group-detail' slug=group.slug %}">
             {% if group.profile_image %}
-                <img src="{{ group.profile_image.url }}" class="card-img-top rounded-top"
+                <img src="{{ group.profile_image.url }}" class="card-img-top rounded-top fh-250"
+                     style="object-fit: cover;"
                      alt="{{ group.profile_image }}">
             {% else %}
                 <img src="/compiled/pixel/html&css/assets/img/blog/image-1.jpg"
@@ -29,8 +30,8 @@
 
 
                 <h3 class="h5 card-title mt-2">
-                    <a hx-swap="innerHTML swap:0.2s" hx-boost="true" href="{% url 'group-detail' slug=group.slug %}">{{ group.name }}</a></h3>
-                <div class="col d-flex mb-2 ps-0"><span class="font-small me-3"><span
+                    <a hx-swap="innerHTML swap:0.1s" hx-boost="true" href="{% url 'group-detail' slug=group.slug %}">{{ group.name }}</a></h3>
+                <div class="col d-flex mb-2 ps-0  justify-content-center justify-content-md-start"><span class="font-small me-3"><span
                         class="fas fa-user me-2"></span>{{ group.active_member_count }}</span>
 
                     <span class="font-small me-3">
@@ -40,9 +41,7 @@
                     <span class="font-small">
                         <span class="fas fa-envelope me-2"></span>{{ group.chat_messages.count }}</span>
                 </div>
-                <p class="card-text">{{ group.description }}</p>
-                <a hx-swap="innerHTML swap:0.2s" hx-boost="true" href="{% url 'group-detail' slug=group.slug %}"
-                   class="btn btn-primary btn-sm">Enter</a>
+                <p class="card-text" style="height: 70px !important;" >{{ group.description|truncatechars:80 }}</p>
             </div>
         </div>
     </div>

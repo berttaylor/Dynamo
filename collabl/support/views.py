@@ -17,6 +17,7 @@ class FAQListView(ListView):
     model = FAQ
     template_name = "landing/faq_list.html"
     paginate_by = 30
+    http_method_names = ['get',]
 
 
 class SupportMessageCreateView(CreateView):
@@ -28,6 +29,7 @@ class SupportMessageCreateView(CreateView):
     form_class = SupportMessageForm
     template_name = "landing/support_message_form.html"
     success_url = reverse_lazy("support-message-thanks")
+    http_method_names = ['get', 'post']
 
     def get_initial(self):
         """
@@ -72,10 +74,10 @@ class SupportMessageCreateView(CreateView):
         return response
 
 
-@method_decorator(login_required, name="dispatch")
 class SupportMessageThanksView(TemplateView):
     """
     Confirms to the user that the message has been sent
     """
 
     template_name = "landing/support_message_thanks.html"
+    http_method_names = ['get',]

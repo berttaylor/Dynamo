@@ -39,7 +39,7 @@ from .views_htmx import (
     group_announcement_create,
     group_announcement_update,
     group_collaboration_list,
-    group_create_view,
+    group_create_view, group_delete_view,
 )
 
 urlpatterns = [
@@ -62,6 +62,11 @@ urlpatterns = [
         "<slug>/update",
         group_update_view,
         name="group-update",
+    ),
+    path(
+        "<slug>/delete",
+        group_delete_view,
+        name="group-delete",
     ),
     path(
         "<slug>/image",

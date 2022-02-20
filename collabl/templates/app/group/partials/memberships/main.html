@@ -1,14 +1,14 @@
-<div class="mb-4 p-4 bg-white rounded shadow-sm">
-    <div class="d-flex align-items-center justify-content-between">
-        <h5 class="mb-0">Members</h5>
+
+    <div class="d-flex align-items-center justify-content-between text-white">
+        <h4 class="mb-0">Memberships</h4>
 
 
         <div class="d-flex">
 
-            <select class="form-select fmxw-150 pe-5" id="inlineFormCustomSelectMessages"
+            <select class="form-select fw-150 pe-5 btn-primary" id="inlineFormCustomSelectMessages"
                     aria-label="select membership view"
                     name="membership_filter"
-                    hx-swap="innerHTML swap:0.2s"
+                    hx-swap="innerHTML swap:0.1s"
                     hx-get={% url 'group-membership-list' slug=group.slug %}
                             hx-target="#list_of_members"
             >
@@ -19,7 +19,6 @@
                             value="{{ MEMBERSHIP_STATUS_PENDING }}">{{ MEMBERSHIP_STATUS_PENDING }}
                     ({{ membership_count.pending }})
                 </option>
-
                 <option
                         {% if membership_filter == MEMBERSHIP_STATUS_CURRENT %}
                             selected
@@ -43,7 +42,6 @@
                 </option>
                 <option value="HIDE">Hide All</option>
 
-
             </select>
         </div>
     </div>
@@ -51,5 +49,3 @@
     <div id="list_of_members">
         {% include "app/group/partials/memberships/list.html" %}
     </div>
-
-</div>

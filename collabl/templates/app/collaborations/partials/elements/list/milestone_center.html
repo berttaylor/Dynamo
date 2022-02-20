@@ -1,0 +1,84 @@
+<div class="row align-items-center justify-content-end vertical-timeline p-1 d-md-none">
+
+    <div class="col-md-2 text-center full mt-4">
+        {% if milestone.is_complete %}
+
+            {% include "app/collaborations/partials/elements/list/milestone_complete_symbol.html" %}
+
+        {% else %}
+
+            {% include "app/collaborations/partials/elements/list/milestone_incomplete_symbol.html" %}
+
+        {% endif %}
+    </div>
+
+    <div class="text-center my-4">
+
+        <a
+                hx-get="{% url 'collaboration-milestone-update' slug=collaboration.slug pk=milestone.pk %}"
+                hx-target="#element_list"
+                hx-swap="innerHTML"
+        ><h2 class="h6">{{ milestone.name }} ( {{ milestone.tasks_completed }} / {{ milestone.prerequisites.count }}
+            Tasks Complete)</h2></a>
+
+
+        <div class="task_action_bar pt-1">
+
+
+            {% if forloop.counter != 1 %}
+                <a class="text-muted font-small me-2"
+                   hx-post="{% url 'collaboration-milestone-move' slug=collaboration.slug pk=milestone.pk position=milestone.position|add:"-1" %}"
+                   hx-target="#element_list"
+                   hx-swap="innerHTML swap:0.1s"
+                ><span class="fa fa-arrow-up m-2"></span></a>
+
+            {% endif %}
+
+            {% if forloop.counter != elements|length %}
+
+                <a class="text-muted font-small"
+                   hx-post="{% url 'collaboration-milestone-move' slug=collaboration.slug pk=milestone.pk position=milestone.position|add:"1" %}"
+                   hx-target="#element_list"
+                   hx-swap="innerHTML swap:0.1s"
+                ><span class="fa fa-arrow-down m-2"></span></a>
+
+            {% endif %}
+
+        </div>
+    </div>
+
+
+</div>
+
+
+{#<div class="card border-gray-300 mb-1 py-1 px-0">#}
+{#    <div class="row g-0 align-items-center px-0 justify-content-between">#}
+{##}
+{##}
+{#        <div class="col-8 text-left ms-4 text-tertiary">#}
+{##}
+{#            <span class="fa fa-bullseye mx-1" aria-hidden="true"></span><span>Milestone: {{ milestone.name }}</span>#}
+{##}
+{#        </div>#}
+{##}
+{#        <div class="col-1 text-right me-3 mt-1">#}
+{#            <div class="btn-group">#}
+{#                <button class="btn btn-link text-dark dropdown-toggle dropdown-toggle-split m-0 p-0"#}
+{#                        data-bs-toggle="dropdown" aria-haspopup="true"#}
+{#                        aria-expanded="false"><span class="icon icon-sm"><span#}
+{#                        class="fas fa-ellipsis-h icon-secondary"></span> </span><span#}
+{#                        class="sr-only">Toggle Dropdown</span></button>#}
+{#                <div class="dropdown-menu py-0"><a class="dropdown-item rounded-top"#}
+{#                                                   href={% url 'milestone-update' milestone.id %}><span#}
+{#                        class="fas fa-edit me-2"></span>Edit</a>#}
+{#                    <a class="dropdown-item text-danger rounded-bottom"#}
+{#                       hx-delete="{% url 'milestone-delete' milestone.id %}" hx-target="#collaboration_elements"#}
+{#                       hx-confirm="Delete Milestone '{{ milestone.name }}'?"><span class="fa fa-trash me-2"#}
+{#                                                                                   aria-hidden="true"></span>Delete</a>#}
+{#                </div>#}
+{#            </div>#}
+{#        </div>#}
+{##}
+{##}
+{#    </div>#}
+{#</div>#}

@@ -2,26 +2,32 @@
 {% block body_content %}
 
 
-    <div class="py-4 px-4 mb-4 bg-white rounded shadow-sm">
+    <div class="mb-4">
 
-        <div class="d-flex align-items-center justify-content-between">
+        <div class="d-flex align-items-center justify-content-between text-white">
 
-            <h5 class="mb-0">Find Groups</h5>
+            <h2 class="mb-0 me-2">Search</h2>
 
             <div class="d-flex">
 
-                <input type="search" class="form-control fmw-100 fmxh-50" placeholder="Search"
+                <input type="search" class="form-control fmw-50 fmxh-50 btn-primary" placeholder="Search"
                     aria-label="group query string"
                     name="group_query_string"
                     hx-get={% url 'group-search' %}
                             hx-target="#list_of_groups"
-                    hx-swap="innerHTML swap:0.3s"
+                    hx-swap="innerHTML swap:0.1s"
                    hx-trigger="keyup changed delay:500ms, search"
                 >
 
-                <a hx-get="{% url 'group-create' %}" hx-target="#modal-div" hx-swap="innerHTML">
-                    <button class="btn btn-tertiary ms-2 fmw-150 fmxh-50">+ Add Group</button>
-                </a>
+
+                <button hx-get="{% url 'group-create' %}" class="btn btn-tertiary ms-2 fmw-150 fmxh-50 d-none d-md-block" hx-target="#modal-div" hx-swap="innerHTML">
+                    <strong>+ Add Group</strong>
+                </button>
+
+                <button hx-get="{% url 'group-create' %}" class="btn btn-tertiary ms-2 fmw-50 fmxh-50 d-md-none" hx-target="#modal-div" hx-swap="innerHTML">
+                    <strong>+</strong>
+                </button>
+
 
             </div>
 

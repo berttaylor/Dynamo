@@ -2,26 +2,30 @@
 {% block body_content %}
 
 
-    <div class="py-4 px-4 mb-4 bg-white rounded shadow-sm">
+    <div class="mb-4 bg-secondary rounded">
 
-        <div class="d-flex align-items-center justify-content-between">
-            <h5 class="mb-0">My Groups</h5>
+        <div class="d-flex align-items-center justify-content-between text-white">
+            <h2 class="mb-0">Groups</h2>
             <div class="d-flex">
 
-                <select class="form-select fmw-100 fmxh-50 pe-5"
+                <select class="form-select fmw-100 fmxh-50 pe-5 btn-primary"
                         aria-label="show_pending"
                         name="show_pending"
                         hx-get='{% url 'user-group-list' %}'
                         hx-target="#list_of_groups"
-                        hx-swap="innerHTML swap:0.3s"
+                        hx-swap="innerHTML swap:0.1s"
                 >
                     <option value="">Current</option>
                     <option value="True">Show Pending</option>
                 </select>
 
-                <a hx-get="{% url 'group-create' %}" hx-target="#modal-div" hx-swap="innerHTML">
-                    <button class="btn btn-tertiary ms-2 fmw-150 fmxh-50">+ Add Group</button>
-                </a>
+                <button hx-get="{% url 'group-create' %}" class="btn btn-tertiary ms-2 fmw-150 fmxh-50 d-none d-md-block" hx-target="#modal-div" hx-swap="innerHTML">
+                    <strong>+ Add Group</strong>
+                </button>
+
+                <button hx-get="{% url 'group-create' %}" class="btn btn-tertiary ms-2 fmw-50 fmxh-50 d-md-none" hx-target="#modal-div" hx-swap="innerHTML">
+                    <strong>+</strong>
+                </button>
 
             </div>
 
