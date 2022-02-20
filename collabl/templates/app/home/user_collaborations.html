@@ -12,7 +12,7 @@
                         name="collaboration_list_filter"
                         hx-get={% url 'user-collaboration-list' %}
                                 hx-target="#list_of_collaborations"
-                        hx-swap="innerHTML swap:0.3s"
+                        hx-swap="innerHTML swap:0.1s"
                 >
                     <option value="{{ COLLABORATION_STATUS_ALL }}">{{ COLLABORATION_STATUS_ALL }}</option>
                     <option value="{{ COLLABORATION_STATUS_PLANNING }}">{{ COLLABORATION_STATUS_PLANNING }}</option>

@@ -22,7 +22,7 @@ def get_users_filtered_collaborations(user, collaboration_list_filter):
     The possible filters are listed below (taken from constants):
         COLLABORATION_STATUS_PLANNING: str = "Planning"
         COLLABORATION_STATUS_ONGOING: str = "Ongoing"
-        COLLABORATION_STATUS_COMPLETED: str = "Completed"
+        COLLABORATION_STATUS_COMPLETED: str = "Complete"
         COLLABORATION_STATUS_ALL: str = "All"  # Used for filtering
     """
 

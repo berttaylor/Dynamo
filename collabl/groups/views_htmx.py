@@ -141,8 +141,11 @@ def group_membership_view(request, slug):
     membership_filter = request.GET.get(
         "membership_filter", c.MEMBERSHIP_STATUS_PENDING
     )
+
+    # If the filter isn't out list of membership statuses, we dont want it thrown at the database.
+    # Instead, we return nothing. (This also acts as a 'HIDE' function on the FE)
     if membership_filter not in c.MEMBERSHIP_FILTERS:
-        return HttpResponseForbidden()
+        return HttpResponse("")
 
     # Check permissions
     if not user_is_admin(request.user, group):
@@ -345,11 +348,13 @@ def group_announcement_list(request, slug):
     HTMX VIEW - Populates the list of announcements - either Latest, All, or None
     """
 
-    # if the filter is not set, we hide the announcements
+    # if the filter is not set (ir is set to hide), we hide the announcements
     announcement_list_filter = request.GET.get("announcement_list_filter", "HIDE")
-    group = get_object_or_404(Group, slug=slug)
+    if announcement_list_filter == "HIDE":
+        return HttpResponse("")
 
     # Filter the announcements
+    group = get_object_or_404(Group, slug=slug)
     match announcement_list_filter:
         case c.ANNOUNCEMENTS_FILTER_LATEST:
             announcements = GroupAnnouncement.objects.filter(group=group)[:1]
