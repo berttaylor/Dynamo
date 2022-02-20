@@ -1,11 +1,17 @@
-from django.contrib.auth import login, authenticate
+import os
+
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect
 from django.urls import reverse_lazy
 from django.utils.decorators import method_decorator
+from django.utils.encoding import force_bytes
+from django.utils.http import urlsafe_base64_encode
 from django.views.decorators.http import require_http_methods
 from django.views.generic import UpdateView, ListView
 
+from users.models import User
+from users.utils import account_activation_token
+from collabl.tasks import send_email
 from collaborations.models import Collaboration
 from groups.constants import (
     MEMBERSHIP_STATUS_CURRENT,
@@ -15,22 +21,84 @@ from groups.constants import (
 from groups.models import Group, Membership
 from users.forms import SignUpForm, UserDetailUpdateForm
 from users.utils import get_users_filtered_collaborations
-
+from django.contrib.auth import logout
+from django.contrib.auth.decorators import login_required
+from django.core.exceptions import ValidationError
+from django.db import transaction
+from django.shortcuts import redirect, render
+from django.urls import reverse_lazy
+from django.utils.encoding import force_bytes, force_text
+from django.utils.http import urlsafe_base64_decode, urlsafe_base64_encode
+from django.views.decorators.http import require_http_methods
+from django.views.generic import TemplateView
 
 @require_http_methods(["GET", "POST"])
 def sign_up_view(request):
-    if request.method == "POST":
-        form = SignUpForm(request.POST)
-        if form.is_valid():
-            form.save()
-            email = form.cleaned_data.get("email")
-            raw_password = form.cleaned_data.get("password1")
-            user = authenticate(email=email, password=raw_password, request=request)
-            login(request, user)
-            return redirect("login")
-    else:
-        form = SignUpForm()
+
+    form = SignUpForm(request.POST or None)
+
+    if request.method == "POST" and form.is_valid():
+
+        # Set the user as inactive and create
+        form.instance.is_active = False
+        user = form.save()
+
+        # Send activation email
+        site_protocol = os.environ.get("SITE_PROTOCOL")
+        site_domain = os.environ.get("SITE_DOMAIN")
+        activation_url_section = reverse_lazy(
+            "activate",
+            kwargs={
+                "encoded_pk": urlsafe_base64_encode(
+                    force_bytes(user.pk)
+                ),
+                "token": account_activation_token.make_token(user),
+            },
+        )
+        full_activation_url = (
+                site_protocol + site_domain + activation_url_section
+        )
+        send_email.delay(
+            {
+                "template": "activation.email",
+                "recipients": (str(user.email),),
+                "additional_context": {
+                    "subject": "Activate Your Account",
+                    "first_name": str(user.first_name),
+                    "link": str(full_activation_url),
+                },
+            }
+        )
+
+        # Redirect to login page
+        return redirect("login")
+
+    # If get (or invalid data) render Signup form
     return render(request, "landing/registration/signup.html", {"form": form})
+
+
+@require_http_methods(["GET",])
+def account_activation_view(request, encoded_pk, token):
+    """
+    View that is linked to from account verification emails.
+    """
+
+    pk = force_text(urlsafe_base64_decode(encoded_pk))
+    user = User.objects.get(pk=pk)
+
+    # If the user is already active, we redirect to the login page
+    if user.is_active:
+        return redirect("login")
+
+    # If there is no matching token, we redirect with a message
+    if not account_activation_token.check_token(user, token):
+        return redirect("login")
+
+    # If everything matches, we mark the user as active, and send a confirmation email.
+    user.is_active = True
+    user.save()
+
+    return redirect("login")
 
 
 @method_decorator(login_required, name="dispatch")

@@ -1,4 +1,6 @@
 from django.contrib.auth import get_user_model
+from django.contrib.auth.tokens import PasswordResetTokenGenerator
+from six import text_type
 from django.db.models import Count, When, Case, IntegerField
 from collaborations.models import Collaboration
 import collaborations.constants as collaboration_constants
@@ -31,7 +33,7 @@ def get_users_filtered_collaborations(user, collaboration_list_filter):
         Collaboration.objects.filter(
             related_group__members=user,
         )
-        .annotate(
+            .annotate(
             tasks_complete=Count(
                 Case(
                     When(tasks__completed_at__isnull=False, then=1),
@@ -45,7 +47,7 @@ def get_users_filtered_collaborations(user, collaboration_list_filter):
                 )
             ),
         )
-        .order_by("-created_at")
+            .order_by("-created_at")
     )
 
     # Filter the collaborations, depending on the filter parameter chosen
@@ -66,3 +68,15 @@ def get_users_filtered_collaborations(user, collaboration_list_filter):
             collaborations = Collaboration.objects.none()
 
     return collaborations
+
+
+class ActivationTokenGenerator(PasswordResetTokenGenerator):
+    def _make_hash_value(self, user_auth, timestamp):
+        return (
+                text_type(user_auth.is_active)
+                + text_type(user_auth.pk)
+                + text_type(timestamp)
+        )
+
+
+account_activation_token = ActivationTokenGenerator()
