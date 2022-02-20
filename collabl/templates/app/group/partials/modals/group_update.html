@@ -18,6 +18,10 @@
                         <h2 class="h4 modal-title">Update Group</h2>
                                         <div class="text-center py-3">
 
+                        <button type="button" class="btn btn-outline-white btn-sm" data-bs-dismiss="modal"
+                               hx-get="{% url 'group-delete' slug=group.slug  %}" hx-target="#modals-here" hx-swap="innerHTML"
+                        >Delete</button>
+
                     </div>
                     </div>
 

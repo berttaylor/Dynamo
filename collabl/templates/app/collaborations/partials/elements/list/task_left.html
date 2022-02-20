@@ -1,4 +1,4 @@
-<div class="row d-flex align-items-center p-0">
+<div class="row d-flex align-items-center p-0 d-none d-md-flex">
 
     <div class="col-md-2 text-center bottom">
 
@@ -16,7 +16,7 @@
 
     </div>
 
-    <div class="col-12 col-md-8">
+    <div class="col-12 col-md-8 text-md-start">
 
         <a
            hx-get="{% url 'collaboration-task-update' slug=collaboration.slug pk=task.pk %}"
@@ -59,7 +59,7 @@
                 </a>
 
                 {% if task.file %}
-                    <a class="text-muted font-small me-3" href={{ task.file.url }}>
+                    <a target="_blank" class="text-muted font-small me-3" href={{ task.file.url }}>
                         <span class="fa fa-file me-2" aria-hidden="true"></span>
                         <strong>File</strong>
                     </a>

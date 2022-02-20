@@ -18,15 +18,25 @@ from django.contrib import admin
 from django.urls import path, include
 from django.views.generic import TemplateView
 
-from collabl.base.views import empty_string
+from collabl.base.views import empty_string, HomepageRedirectView
 
 urlpatterns = [
     # ADMIN
     path("admin/", admin.site.urls),
     # AUTH
     path("", include("users.urls")),
-    # Home
-    path("", TemplateView.as_view(template_name="landing/landing.html"), name="home"),
+    # Homepage
+    path(
+        "",
+        HomepageRedirectView.as_view(),
+        name="home",
+    ),
+    # Landing
+    path(
+        "landing",
+        TemplateView.as_view(template_name="landing/landing.html"),
+        name="landing",
+    ),
     # FAQ / Support
     path("support/", include("support.urls")),
     # Groups

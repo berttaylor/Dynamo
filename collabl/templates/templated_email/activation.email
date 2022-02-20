@@ -1,0 +1,59 @@
+{% extends './email_base.html' %}
+
+{% block subject %}
+    {{ subject }}
+{% endblock %}
+
+{% block preview %}
+    <span class="preheader"
+          style="color: transparent; display: none; height: 0; max-height: 0; max-width: 0; overflow: hidden; mso-hide: all; visibility: hidden; width: 0;">
+Action Needed: Activate Your Account
+</span>
+{% endblock %}
+
+{% block title %}
+    <h3>Action Needed: Activate Your Account</h3>
+{% endblock %}
+
+{% block subtitle %}{% endblock %}
+
+{% block greeting %}{% endblock %}
+
+{% block body_content_primary %}
+    <div style="font-family: sans-serif; font-size: 14px; font-weight: normal; margin: 0; margin-bottom: 15px;">
+        <p>
+            Dear {{ first_name }},
+        </p>
+        <br>
+        <p>
+            Please click <a href="{{ link }}">here</a> to activate your account.
+        </p>
+
+    </div>
+
+    <p style="font-family: sans-serif; font-size: 14px; font-weight: normal; margin: 0; margin-bottom: 15px;">
+
+    </p>
+
+    <p style="font-family: sans-serif; font-size: 14px; font-weight: normal; margin: 0; margin-bottom: 15px;">
+
+    </p>
+
+{% endblock %}
+
+{% block button %}
+    <tr>
+        <td style="font-family: sans-serif; font-size: 14px; vertical-align: top; background-color: #0000FF; text-align: center;">
+            <a href="{{ link }}" target="_blank"
+               style="display: inline-block; color: #ffffff; background-color: #0000FF; box-sizing: border-box; cursor: pointer; text-decoration: none; font-size: 14px; font-weight: bold; margin: 0; padding: 12px 25px;;">
+                Activate
+            </a>
+        </td>
+    </tr>
+{% endblock button %}
+
+{% block body_content_secondary %}{% endblock %}
+
+{% block plain %}
+    Dear {{ first_name }}, please activate your account.
+{% endblock %}

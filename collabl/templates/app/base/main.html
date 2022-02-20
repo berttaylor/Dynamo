@@ -5,18 +5,18 @@
     {% include 'base/head.html' %}
 {% endblock %}
 
-<body>
+<body class="bg-secondary">
 
 <!-- Section -->
 
-{% block global_header %}
-    {% include 'app/base/top_nav.html' %}
-{% endblock %}
+{#{% block global_header %}#}
+{#    {% include 'app/base/top_nav.html' %}#}
+{#{% endblock %}#}
 
 {% block body %}
-    <div class="section section-lg pt-5 pt-md-7 bg-gray-200">
+    <div class="bg-secondary align-content-start py-4 min-vh-100">
         <div class="container">
-            <div class="row pt-5 pt-md-0">
+            <div class="row pt-md-0">
                 {% block sidenav %}
                     {% include 'app/base/side_nav.html' %}
 

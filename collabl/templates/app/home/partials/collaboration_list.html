@@ -1,22 +1,24 @@
 {% for collaboration in collaboration_list %}
-    <div class="col-12 col-md-6 col-lg-6 mb-4 rounded">
-        <div class="card border-gray-300">
+    <div class="col-12 col-md-6 col-lg-6 mb-4">
+        <div class="card border-gray-300 bg-tertiary text-white border-3 text-center text-md-left">
 
-            <a hx-boost="true" hx-swap="innerHTML swap:0.2s" href="{% url 'collaboration-detail' slug=collaboration.slug %}">
+            <a hx-boost="true" hx-swap="innerHTML swap:0.1s" href="{% url 'collaboration-detail' slug=collaboration.slug %}">
                 {% if collaboration.image %}
-                    <img src="{{ collaboration.image.url }}" class="collaboration-card-img"
+                    <img src="{{ collaboration.image.url }}" class="collaboration-card-img fh-200"
+                         style="object-fit: cover;"
                          alt="{{ collaboration.image }}">
                 {% else %}
                     <img src="/compiled/pixel/html&css/assets/img/blog/image-1.jpg"
-                         class="collaboration-card-img" alt="Office">
+                         style="object-fit: cover;"
+                         class="collaboration-card-img fmh-250" alt="Office">
                 {% endif %}
             </a>
 
             <div class="card-body">
                 <div class="media d-flex align-items-center justify-content-between">
                     <div class="post-group">
-                        <a hx-boost="true" hx-swap="innerHTML swap:0.2s" href="{% url 'group-detail' slug=collaboration.related_group.slug %}">
-                            <span class="text-tertiary">{{ collaboration.related_group }}</span>
+                        <a hx-boost="true" hx-swap="innerHTML swap:0.1s" href="{% url 'group-detail' slug=collaboration.related_group.slug %}">
+                            <span>{{ collaboration.related_group }}</span>
                         </a>
 
                     </div>
@@ -34,9 +36,9 @@
 
                 </div>
 
-                <a hx-boost="true" hx-swap="innerHTML swap:0.2s" href="{% url 'collaboration-detail' slug=collaboration.slug %}"><h3
+                <a hx-boost="true" hx-swap="innerHTML swap:0.1s" href="{% url 'collaboration-detail' slug=collaboration.slug %}"><h3
                         class="h5 card-title mt-4">{{ collaboration.name }}</h3></a>
-                <p class="card-text">{{ collaboration.description }}</p>
+                <p class="card-text" style="height: 70px !important;">{{ collaboration.description|truncatechars:80 }}</p>
 
 
             </div>

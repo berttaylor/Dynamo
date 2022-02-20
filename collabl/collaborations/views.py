@@ -1,3 +1,5 @@
+from django.contrib.auth.decorators import login_required
+from django.utils.decorators import method_decorator
 from django.views.generic import DetailView
 from django.views.generic.edit import FormMixin
 
@@ -8,6 +10,7 @@ from collaborations.utils import get_all_elements
 from groups.views import get_membership_level
 
 
+@method_decorator(login_required(login_url="login"), name="dispatch")
 class CollaborationDetailView(FormMixin, DetailView):
     """
     Shows all information regarding a collaboration, as well as
@@ -18,6 +21,7 @@ class CollaborationDetailView(FormMixin, DetailView):
     template_name = "app/collaborations/main.html"
     model = Collaboration
     form_class = CollaborationMessageForm
+    http_method_names = ['get', 'post']
 
     def get_context_data(self, **kwargs):
         """

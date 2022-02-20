@@ -1,28 +1,39 @@
-<div class="overflow-hidden text-center mb-0 bg-white rounded shadow-sm">
-    <div hx-boost="true" class="p-4 text-center">
+<div class="overflow-hidden text-center mb-0">
+    <div hx-boost="true" class="p-4 text-center text-white">
 
-        <a
-            hx-get="{% url 'group-image' slug=group.slug %}"
-            hx-target="#group_page_header"
-            hx-swap="afterend"
-        >
+
+        {% if membership_level == "Admin" %}
+            <a
+                hx-get="{% url 'group-image' slug=group.slug %}"
+                hx-target="#group_page_header"
+                hx-swap="afterend"
+            >
+        {% endif %}
         {% if group.profile_image %}
-            <img src="{{ group.profile_image.url }}" class="organic-radius img-fluid rounded shadow-sm" alt="Joseph Avatar">
+            <img src="{{ group.profile_image.url }}" class="organic-radius img-fluid shape-white p-1 fmxh-250 fmxw-300" alt="Joseph Avatar"
+            style="object-fit: cover;"
+            >
         {% else %}
             <img src="/compiled/pixel/html&css/assets/img/blog/image-1.jpg" class="organic-radius img-fluid" alt="Joseph Avatar">
         {% endif %}
 
+        {% if membership_level == "Admin" %}
         </a>
+        {% endif %}
 
-        <a
-            hx-get="{% url 'group-update' slug=group.slug %}"
-            hx-target="#group_page_header"
-            hx-swap="afterend"
-        >
+        {% if membership_level == "Admin" %}
+            <a
+                hx-get="{% url 'group-update' slug=group.slug %}"
+                hx-target="#group_page_header"
+                hx-swap="afterend"
+            >
+        {% endif %}
 
             <h1 class="m-4 ">{{ group.name }}</h1>
             <p class="lead ">{{ group.description }}</p>
-            </a>
+        {% if membership_level == "Admin" %}
+                </a>
+        {% endif %}
 
 
 
@@ -50,7 +61,7 @@
 
 </div>
 
-<div class="bg-light p-4 d-flex justify-content-end text-center">
+<div class="bg-light p-4 d-flex justify-content-end text-center text-white">
     <ul class="list-inline mb-0">
         <li class="list-inline-item">
             <h5 id="h5_admin_count" class="font-weight-bold mb-0 d-block">{{ membership_count.admin }}</h5><small

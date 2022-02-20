@@ -1,13 +1,19 @@
 {% for announcement in announcement_list %}
 
-    <div class="p-4 bg-white rounded shadow-sm my-3">
+    <div class="p-4 bg-tertiary rounded shadow-sm my-3 border-3 border-white text-white">
 
+        {% if membership_level == "Admin" %}
         <a
             hx-get="{% url 'group-announcement-update' slug=group.slug pk=announcement.pk %}"
             hx-target="#list_of_announcements"
             hx-swap="innerHTML"
-        ><h5>{{ announcement.title }}</h5><p class="font-italic mb-0">{{ announcement.body }}</p></a>
+        >
+            {% endif %}
 
+            <h5>{{ announcement.title }}</h5><p class="font-italic mb-0">{{ announcement.body }}</p>
+        {% if membership_level == "Admin" %}
+        </a>
+        {% endif %}
         <div class="justify-content-end">
             <ul class="list-inline small text-muted mt-3 mb-0">
                 <li class="list-inline-item"><i class="fa fa-comment-o mr-2"></i>

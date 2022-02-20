@@ -24,7 +24,7 @@ from users.views import (
     sign_up_view,
     UserUpdateView,
     UserGroupListView,
-    UserCollaborationListView,
+    UserCollaborationListView, account_activation_view,
 )
 
 urlpatterns = [
@@ -96,6 +96,8 @@ urlpatterns = [
         ),
         name="password-change-done",
     ),
+    path("activate/<encoded_pk>/<token>", account_activation_view, name="activate"),
+
     # Home views
     path(
         "user/details/",

@@ -1,9 +1,9 @@
 {% for membership in membership_list %}
 
 
-    <div class="card border-gray-300 mt-2 pt-3">
 
-        <div class="card-body d-flex flex-wrap flex-lg-nowrap py-0 justify-content-between">
+
+        <div class="card-body d-flex flex-wrap flex-lg-nowrap pb-0 my-3 justify-content-between bg-tertiary rounded text-white">
 
             <div class="col-auto col-4 d-flex">
 
@@ -39,14 +39,14 @@
         </div>
 
 
-    </div>
 
 {% empty %}
-    <div class="text-muted text-center mb-0 pt-3 pb-1">nothing to see here...</div>
+    <div class="text-muted text-center mb-0 pt-3 pb-1"
+    >nothing to see here...</div>
 
 {% endfor %}
 
-<div id="requests_action_bar">
+<div id="requests_action_bar" class="text-white">
 
 </div>
 
