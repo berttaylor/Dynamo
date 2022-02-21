@@ -12,9 +12,11 @@ To do this, we prioritise the following points when making decisions about the a
 * Simplicity over complexity
 * Convenience for all (Brag-worthy technical skills should never be required in order to use the application)
 
-**Features**:
+**Documents**:
 
-* Full Specification/ Feature List : https://docs.google.com/document/d/1hGJv78bRKELfpIdVuFYk0ieoiUYLcTmtASej49wl9mk/edit?usp=sharing
+* Full Specification/ Feature List : https://docs.google.com/document/d/10w7Cqz6SDbyOHe6ItVXebESuKtB6kFSVh2pXAV6un8M/edit?usp=sharing
+* Data Model & Hierarchy : https://drive.google.com/file/d/18L7y34p-JRpzon9RWW7iMVCEI4eciJv9/view?usp=sharing
+* Endpoint Schema : https://docs.google.com/spreadsheets/d/1Ib8M2oub7MfTZmSC-i9hmN7KmX-QwJes/edit?usp=sharing&ouid=101532288351105639878&rtpof=true&sd=true
 
 **Demo**:
 
@@ -30,13 +32,22 @@ To do this, we prioritise the following points when making decisions about the a
 
 ## Technology stack
 
+
+### Back End
+
 The platform is built on the following technology:
+
 * Python / Django
 * PostgreSQL
 * Docker
 
 The PostgreSQL database system and the Python/Django code are containerised using Docker, for ease and consistency of deployment.
 
+### Front End - HTMX
+
+The app makes heavy use of HTMX to add async and SPA elements to the interface. Most operations are performed without a full page refresh, with these reserved for more substantial events - e.g. entering the dashboard, deleting a group/collaboration.
+
+The aesthetics are is based on a css theme, and adapted to fulfil all items of functionality described in the specification.
 
 ### Local development environment
 
