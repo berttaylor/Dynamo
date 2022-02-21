@@ -71,9 +71,10 @@ __What you should see__
 
 - After the successful build, check that your containers cane run by using `make -f make-dev up`.
   You should have obvious terminal output that confirms this, but you can also run
-  `docker ps` - you should have all of the required containers running.
-- At `http://127.0.0.1:8000/admin`, you should see the admin login page.
+  `docker ps` - you should have all the required containers running.
+- At `http://127.0.0.1:8000/control`, you should see the admin login page.
 
 ## Usage & Testing
 
-TODO
+(_Demo Data/Fixtures are being created. More information will be provided on this in later versions of the app/readme._)
+

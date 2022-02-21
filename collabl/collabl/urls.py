@@ -22,7 +22,7 @@ from collabl.base.views import empty_string, HomepageRedirectView
 
 urlpatterns = [
     # ADMIN
-    path("admin/", admin.site.urls),
+    path("control/", admin.site.urls),
     # AUTH
     path("", include("users.urls")),
     # Homepage
