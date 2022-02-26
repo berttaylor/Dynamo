@@ -81,6 +81,9 @@ dumpdatatofixtures:
 loaddata:
 	$(BACKEND_RUN) "cd $(PROJECT); ./manage.py loaddata fixtures/fixtures.json;"
 
+create_users:
+	$(BACKEND_RUN) "cd $(PROJECT); ./manage.py create_users;"
+
 # Starts any registered Celery worker tasks
 startbeat:
 	$(WORKER_RUN) "celery -A backend worker --beat;"
