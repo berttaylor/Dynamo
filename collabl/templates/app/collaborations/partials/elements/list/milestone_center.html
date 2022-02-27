@@ -14,12 +14,16 @@
 
     <div class="text-center my-4">
 
+
+        {% if membership_level == "Admin" or membership_level == "Current" %}
         <a
                 hx-get="{% url 'collaboration-milestone-update' slug=collaboration.slug pk=milestone.pk %}"
                 hx-target="#element_list"
                 hx-swap="innerHTML"
         ><h2 class="h6">{{ milestone.name }} ( {{ milestone.tasks_completed }} / {{ milestone.prerequisites.count }}
             Tasks Complete)</h2></a>
+
+
 
 
         <div class="task_action_bar pt-1">
@@ -45,6 +49,12 @@
             {% endif %}
 
         </div>
+
+        {% else %}
+            <h2 class="h6">{{ milestone.name }} ( {{ milestone.tasks_completed }} / {{ milestone.prerequisites.count }}
+            Tasks Complete)</h2>
+
+        {% endif %}
     </div>
 
 

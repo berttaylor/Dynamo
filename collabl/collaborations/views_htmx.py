@@ -4,7 +4,7 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseRedirect, HttpResponseForbidden
 from django.shortcuts import render, get_object_or_404
-from django.urls import reverse_lazy
+from django.urls import reverse_lazy, reverse
 from django.views.decorators.http import require_http_methods
 
 import collaborations.constants as c
@@ -29,7 +29,7 @@ from groups.models import Group
 from groups.utils import (
     get_filtered_collaborations,
     user_is_admin,
-    user_has_active_membership,
+    user_has_active_membership, get_membership_level,
 )
 
 
@@ -258,6 +258,7 @@ def collaboration_task_create_view(request, slug):
             {
                 "elements": get_all_elements(collaboration),
                 "collaboration": collaboration,
+                "membership_level": get_membership_level(request.user, collaboration.related_group),
             },
         )
 
@@ -270,6 +271,7 @@ def collaboration_task_create_view(request, slug):
             "collaboration": collaboration,
             "task_creation_modal": True,
             "form": form,
+            "membership_level": get_membership_level(request.user, collaboration.related_group),
         },
     )
 
@@ -303,6 +305,7 @@ def collaboration_task_update_view(request, slug, pk):
             {
                 "elements": get_all_elements(collaboration),
                 "collaboration": collaboration,
+                "membership_level": get_membership_level(request.user, collaboration.related_group),
             },
         )
 
@@ -316,6 +319,7 @@ def collaboration_task_update_view(request, slug, pk):
             "task_update_modal": True,
             "task": task,
             "form": form,
+            "membership_level": get_membership_level(request.user, collaboration.related_group),
         },
     )
 
@@ -348,6 +352,7 @@ def collaboration_task_notes_view(request, slug, pk):
             {
                 "elements": get_all_elements(collaboration),
                 "collaboration": collaboration,
+                "membership_level": get_membership_level(request.user, collaboration.related_group),
             },
         )
 
@@ -361,6 +366,7 @@ def collaboration_task_notes_view(request, slug, pk):
             "task_completion_notes_modal": True,
             "task": task,
             "form": TaskCompleteForm(instance=task),
+            "membership_level": get_membership_level(request.user, collaboration.related_group),
         },
     )
 
@@ -411,6 +417,7 @@ def collaboration_task_toggle_view(request, slug, pk, status):
             "form": TaskCompleteForm(instance=task),
             "task": task,
             "collaboration": collaboration,
+            "membership_level": get_membership_level(request.user, collaboration.related_group),
         },
     )
 
@@ -441,6 +448,7 @@ def collaboration_task_delete_view(request, slug, pk):
             {
                 "elements": get_all_elements(collaboration),
                 "collaboration": collaboration,
+                "membership_level": get_membership_level(request.user, collaboration.related_group),
             },
         )
 
@@ -451,6 +459,7 @@ def collaboration_task_delete_view(request, slug, pk):
         {
             "elements": get_all_elements(collaboration),
             "collaboration": collaboration,
+            "membership_level": get_membership_level(request.user, collaboration.related_group),
             "task_delete_modal": True,
             "task": task,
         },
@@ -486,6 +495,7 @@ def collaboration_milestone_create_view(request, slug):
             {
                 "elements": get_all_elements(collaboration),
                 "collaboration": collaboration,
+                "membership_level": get_membership_level(request.user, collaboration.related_group),
             },
         )
 
@@ -495,6 +505,7 @@ def collaboration_milestone_create_view(request, slug):
         "app/collaborations/partials/elements/list/main.html",
         {
             "elements": get_all_elements(collaboration),
+            "membership_level": get_membership_level(request.user, collaboration.related_group),
             "collaboration": collaboration,
             "milestone_creation_modal": True,
             "form": form,
@@ -532,6 +543,7 @@ def collaboration_milestone_update_view(request, slug, pk):
             "app/collaborations/partials/elements/list/main.html",
             {
                 "elements": get_all_elements(collaboration),
+                "membership_level": get_membership_level(request.user, collaboration.related_group),
                 "collaboration": collaboration,
             },
         )
@@ -542,6 +554,7 @@ def collaboration_milestone_update_view(request, slug, pk):
         "app/collaborations/partials/elements/list/main.html",
         {
             "elements": get_all_elements(collaboration),
+            "membership_level": get_membership_level(request.user, collaboration.related_group),
             "collaboration": collaboration,
             "milestone_update_modal": True,
             "milestone": milestone,
@@ -576,6 +589,7 @@ def collaboration_milestone_delete_view(request, slug, pk):
             {
                 "elements": get_all_elements(collaboration),
                 "collaboration": collaboration,
+                "membership_level": get_membership_level(request.user, collaboration.related_group),
             },
         )
 
@@ -588,38 +602,52 @@ def collaboration_milestone_delete_view(request, slug, pk):
             "collaboration": collaboration,
             "milestone_delete_modal": True,
             "milestone": milestone,
+            "membership_level": get_membership_level(request.user, collaboration.related_group),
         },
     )
 
 
-@login_required()
-@require_http_methods(
-    [
-        "GET",
-    ]
-)
-def collaboration_elements_list_view(request, slug):
-    """
-    HTMX VIEW - Sends back html list of elements
-    Used to refresh state after reordering takes place
-    """
-
-    # Get data
-    collaboration = get_object_or_404(Collaboration, slug=slug)
-
-    # Check permissions
-    if not user_has_active_membership(request.user, collaboration.related_group):
-        return HttpResponseForbidden()
-
-    # Make Response
-    return render(
-        request,
-        "app/collaborations/partials/elements/list/main.html",
-        {
-            "elements": get_all_elements(collaboration),
-            "collaboration": collaboration,
-        },
-    )
+# @login_required()
+# @require_http_methods(
+#     [
+#         "GET",
+#     ]
+# )
+# def collaboration_elements_list_view(request, slug):
+#     """
+#     HTMX VIEW - Sends back html list of elements
+#     Used to refresh state after reordering takes place
+#     """
+#
+#     # Get data
+#     collaboration = get_object_or_404(Collaboration, slug=slug)
+#
+#     # Check permissions
+#     if not user_has_active_membership(request.user, collaboration.related_group):
+#         return HttpResponseForbidden()
+#
+#     print(request.user)
+#
+#     membership_level = get_membership_level(request.user, collaboration.related_group)
+#
+#     print("HI")
+#     print("HI")
+#     print("HI")
+#     print(membership_level)
+#     print(membership_level)
+#     print(membership_level)
+#     print(membership_level)
+#     print(membership_level)
+#     # Make Response
+#     # return render(
+#     #     request,
+#     #     "app/collaborations/partials/elements/list/main.html",
+#     #     {
+#     #         "elements": get_all_elements(collaboration),
+#     #         "membership_level": get_membership_level(request.user, collaboration.related_group),
+#     #         "collaboration": collaboration,
+#     #     },
+#     # )
 
 
 @login_required()
@@ -647,11 +675,14 @@ def collaboration_task_move_view(request, slug, pk, position):
         task.save()
 
     # Make Response
-    return HttpResponseRedirect(
-        reverse_lazy(
-            "collaboration-elements-list",
-            kwargs={"slug": task.collaboration.slug},
-        )
+    return render(
+        request,
+        "app/collaborations/partials/elements/list/main.html",
+        {
+            "elements": get_all_elements(collaboration),
+            "collaboration": collaboration,
+            "membership_level": get_membership_level(request.user, collaboration.related_group),
+        },
     )
 
 
@@ -680,11 +711,14 @@ def collaboration_milestone_move_view(request, slug, pk, position):
         milestone.save()
 
     # Make Response
-    return HttpResponseRedirect(
-        reverse_lazy(
-            "collaboration-elements-list",
-            kwargs={"slug": milestone.collaboration.slug},
-        )
+    return render(
+        request,
+        "app/collaborations/partials/elements/list/main.html",
+        {
+            "elements": get_all_elements(collaboration),
+            "collaboration": collaboration,
+            "membership_level": get_membership_level(request.user, collaboration.related_group),
+        },
     )
 
 
