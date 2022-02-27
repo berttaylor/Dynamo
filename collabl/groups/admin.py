@@ -12,6 +12,7 @@ class GroupAdmin(admin.ModelAdmin):
         "name",
         "slug",
         "created_by",
+        "profile_image",
     )
 
     list_filter = ("created_at",)
@@ -87,10 +88,7 @@ class GroupAnnouncementAdmin(admin.ModelAdmin):
     search_fields = ("title",)
     ordering = ("created_at",)
 
-    list_display = (
-        "title",
-        "group",
-    )
+    list_display = ("title", "group", "created_at")
 
     list_filter = ("created_at",)
 

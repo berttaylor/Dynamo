@@ -366,7 +366,11 @@ def collaboration_task_notes_view(request, slug, pk):
 
 
 @login_required()
-@require_http_methods(["POST",])
+@require_http_methods(
+    [
+        "POST",
+    ]
+)
 def collaboration_task_toggle_view(request, slug, pk, status):
     """
     HTMX VIEW - Allows completion of tasks with one click and no reload
@@ -589,7 +593,11 @@ def collaboration_milestone_delete_view(request, slug, pk):
 
 
 @login_required()
-@require_http_methods(["GET",])
+@require_http_methods(
+    [
+        "GET",
+    ]
+)
 def collaboration_elements_list_view(request, slug):
     """
     HTMX VIEW - Sends back html list of elements
@@ -615,7 +623,11 @@ def collaboration_elements_list_view(request, slug):
 
 
 @login_required()
-@require_http_methods(["POST",])
+@require_http_methods(
+    [
+        "POST",
+    ]
+)
 def collaboration_task_move_view(request, slug, pk, position):
     """
     HTMX VIEW - Allows reordering of tasks.
@@ -644,7 +656,11 @@ def collaboration_task_move_view(request, slug, pk, position):
 
 
 @login_required()
-@require_http_methods(["POST",])
+@require_http_methods(
+    [
+        "POST",
+    ]
+)
 def collaboration_milestone_move_view(request, slug, pk, position):
     """
     HTMX VIEW - Allows reordering of milestones

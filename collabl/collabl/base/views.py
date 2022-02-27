@@ -20,7 +20,9 @@ class HomepageRedirectView(RedirectView):
     This view directs the user to the correct 'home' location, depending on whether they are logged in or not
     """
 
-    http_method_names = ['get', ]
+    http_method_names = [
+        "get",
+    ]
 
     def get_redirect_url(self, *args, **kwargs):
         user = self.request.user

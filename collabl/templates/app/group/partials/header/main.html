@@ -46,7 +46,7 @@
         </p>
 
         {% if messages %}
-            <ul hx-get="{% url 'empty-string' %}" hx-swap="outerHTML swap:0.1s" hx-trigger="load delay:3s"
+            <ul hx-get="{% url 'empty-string' %}" hx-swap="outerHTML" hx-trigger="load delay:3s"
                 class="pt-3 m-0"
                 style="list-style-type: none">
                 {% for message in messages %}

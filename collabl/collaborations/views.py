@@ -21,7 +21,7 @@ class CollaborationDetailView(FormMixin, DetailView):
     template_name = "app/collaborations/main.html"
     model = Collaboration
     form_class = CollaborationMessageForm
-    http_method_names = ['get', 'post']
+    http_method_names = ["get", "post"]
 
     def get_context_data(self, **kwargs):
         """

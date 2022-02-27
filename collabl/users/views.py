@@ -32,6 +32,7 @@ from django.utils.http import urlsafe_base64_decode, urlsafe_base64_encode
 from django.views.decorators.http import require_http_methods
 from django.views.generic import TemplateView
 
+
 @require_http_methods(["GET", "POST"])
 def sign_up_view(request):
 
@@ -49,15 +50,11 @@ def sign_up_view(request):
         activation_url_section = reverse_lazy(
             "activate",
             kwargs={
-                "encoded_pk": urlsafe_base64_encode(
-                    force_bytes(user.pk)
-                ),
+                "encoded_pk": urlsafe_base64_encode(force_bytes(user.pk)),
                 "token": account_activation_token.make_token(user),
             },
         )
-        full_activation_url = (
-                site_protocol + site_domain + activation_url_section
-        )
+        full_activation_url = site_protocol + site_domain + activation_url_section
         send_email.delay(
             {
                 "template": "activation.email",
@@ -77,7 +74,11 @@ def sign_up_view(request):
     return render(request, "landing/registration/signup.html", {"form": form})
 
 
-@require_http_methods(["GET",])
+@require_http_methods(
+    [
+        "GET",
+    ]
+)
 def account_activation_view(request, encoded_pk, token):
     """
     View that is linked to from account verification emails.
@@ -110,7 +111,7 @@ class UserUpdateView(UpdateView):
     template_name = "app/home/user_details.html"
     form_class = UserDetailUpdateForm
     success_url = reverse_lazy("user-update")
-    http_method_names = ['get', 'post']
+    http_method_names = ["get", "post"]
 
     def get_object(self, queryset=None):
         return self.request.user
@@ -127,7 +128,9 @@ class UserGroupListView(ListView):
     template_name = "app/home/user_groups.html"
     partial_template_name = "app/home/partials/group_list.html"
     hx_target_id = "list_of_groups"
-    http_method_names = ['get',]
+    http_method_names = [
+        "get",
+    ]
 
     def get_template_names(self):
         """
@@ -163,7 +166,9 @@ class UserCollaborationListView(ListView):
     template_name = "app/home/user_collaborations.html"
     partial_template_name = "app/home/partials/collaboration_list.html"
     hx_target_id = "list_of_collaborations"
-    http_method_names = ['get',]
+    http_method_names = [
+        "get",
+    ]
 
     def get_template_names(self):
         """

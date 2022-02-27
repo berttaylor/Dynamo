@@ -4,7 +4,7 @@
         <select class="form-select fw-150 pe-5 btn-primary" id="inlineFormCustomSelectMessages"
                 aria-label="announcement filter"
                 name="announcement_list_filter"
-                hx-swap="innerHTML swap:0.1s"
+                hx-swap="innerHTML"
                 hx-get={% url 'group-announcement-list' slug=group.slug %}
                         hx-target="#list_of_announcements"
         >

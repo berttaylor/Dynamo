@@ -2,10 +2,10 @@
 
     <div class="col-md-6 mb-4 text-center text-md-left">
         <div class="card border-gray-300 bg-tertiary text-white border-3">
-        <a hx-swap="innerHTML swap:0.1s" hx-boost="true" href="{% url 'group-detail' slug=group.slug %}">
+        <a hx-swap="innerHTML" hx-boost="true" href="{% url 'group-detail' slug=group.slug %}">
             {% if group.profile_image %}
-                <img src="{{ group.profile_image.url }}" class="card-img-top rounded-top fh-250"
-                     style="object-fit: cover;"
+                <img src="{{ group.profile_image.url }}" class="card-img-top rounded-top"
+                     style="object-fit: cover; height: 250px"
                      alt="{{ group.profile_image }}">
             {% else %}
                 <img src="/compiled/pixel/html&css/assets/img/blog/image-1.jpg"
@@ -30,7 +30,7 @@
 
 
                 <h3 class="h5 card-title mt-2">
-                    <a hx-swap="innerHTML swap:0.1s" hx-boost="true" href="{% url 'group-detail' slug=group.slug %}">{{ group.name }}</a></h3>
+                    <a hx-swap="innerHTML" hx-boost="true" href="{% url 'group-detail' slug=group.slug %}">{{ group.name }}</a></h3>
                 <div class="col d-flex mb-2 ps-0  justify-content-center justify-content-md-start"><span class="font-small me-3"><span
                         class="fas fa-user me-2"></span>{{ group.active_member_count }}</span>
 
