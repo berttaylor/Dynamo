@@ -83,7 +83,7 @@
                        hx-post="{% url 'collaboration-task-move' slug=collaboration.slug pk=task.pk position=task.position|add:"-1" %}"
                        hx-target="#element_list"
                        hx-swap="innerHTML swap:0.1s"
-                    ><span class="fa fa-arrow-up m-2"></span></a>
+                    ><span class="fa fa-arrow-up m-2 ms-3"></span></a>
 
                 {% endif %}
 
@@ -93,7 +93,16 @@
                        hx-post="{% url 'collaboration-task-move' slug=collaboration.slug pk=task.pk position=task.position|add:"1" %}"
                        hx-target="#element_list"
                        hx-swap="innerHTML swap:0.1s"
-                    ><span class="fa fa-arrow-down m-2"></span></a>
+                    >
+
+                                            {% if forloop.counter == 1 %}
+                        <span class="fa fa-arrow-down m-2"></span>
+                    {% else %}
+                        <span class="fa fa-arrow-down m-2 me-3"></span>
+                    {% endif %}
+
+
+                    </a>
 
                 {% endif %}
 
