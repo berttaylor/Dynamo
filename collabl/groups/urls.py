@@ -39,7 +39,8 @@ from .views_htmx import (
     group_announcement_create,
     group_announcement_update,
     group_collaboration_list,
-    group_create_view, group_delete_view,
+    group_create_view,
+    group_delete_view,
 )
 
 urlpatterns = [

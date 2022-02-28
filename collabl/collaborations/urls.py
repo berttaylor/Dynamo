@@ -33,7 +33,6 @@ from .views_htmx import (
     collaboration_task_move_view,
     collaboration_milestone_move_view,
     collaboration_task_notes_view,
-    collaboration_elements_list_view,
     collaboration_update_view,
     collaboration_image_view,
     collaboration_delete_view,
@@ -60,11 +59,6 @@ urlpatterns = [
         "collaborations/<slug>/delete",
         collaboration_delete_view,
         name="collaboration-delete",
-    ),
-    path(
-        "collaborations/<slug>/elements",
-        collaboration_elements_list_view,
-        name="collaboration-elements-list",
     ),
     path(
         "collaborations/<slug>/tasks",

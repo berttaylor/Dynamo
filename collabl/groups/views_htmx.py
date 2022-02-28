@@ -81,7 +81,13 @@ def group_delete_view(request, slug):
         return HttpResponseRedirect(reverse_lazy("user-group-list"))
 
     # If GET, (or invalid data is posted) send back the Modal
-    return render(request,"app/group/partials/modals/group_delete.html",{"group": group,},)
+    return render(
+        request,
+        "app/group/partials/modals/group_delete.html",
+        {
+            "group": group,
+        },
+    )
 
 
 @login_required()
@@ -128,7 +134,11 @@ def group_image_view(request, slug):
 
 
 @login_required()
-@require_http_methods(["GET",])
+@require_http_methods(
+    [
+        "GET",
+    ]
+)
 def group_membership_view(request, slug):
     """
     HTMX VIEW - Populates list of memberships of the specified type - set by select object on front end
@@ -171,7 +181,11 @@ def group_membership_view(request, slug):
 
 
 @login_required()
-@require_http_methods(["POST",])
+@require_http_methods(
+    [
+        "POST",
+    ]
+)
 def group_membership_selector_view(request, slug, pk, membership_filter):
     """
     HTMX VIEW - Allows admins to select memberships in order to process in bulk
@@ -225,7 +239,11 @@ def group_membership_selector_view(request, slug, pk, membership_filter):
 
 
 @login_required()
-@require_http_methods(["POST",])
+@require_http_methods(
+    [
+        "POST",
+    ]
+)
 def group_membership_handler_view(request, slug, action, membership_filter):
     """
     HTMX VIEW - Allows admins process memberships stored in session
@@ -314,7 +332,11 @@ def group_membership_handler_view(request, slug, action, membership_filter):
 
 
 @login_required()
-@require_http_methods(["GET",])
+@require_http_methods(
+    [
+        "GET",
+    ]
+)
 def group_collaboration_list(request, slug):
     """
     HTMX VIEW - Populates the list of collaborations - either All, Planning, ongoing,
@@ -342,7 +364,11 @@ def group_collaboration_list(request, slug):
 
 
 @login_required()
-@require_http_methods(["GET",])
+@require_http_methods(
+    [
+        "GET",
+    ]
+)
 def group_announcement_list(request, slug):
     """
     HTMX VIEW - Populates the list of announcements - either Latest, All, or None
@@ -367,7 +393,11 @@ def group_announcement_list(request, slug):
     return render(
         request,
         "app/group/partials/announcements/list.html",
-        {"group": group, "announcement_list": announcements},
+        {
+            "group": group,
+            "announcement_list": announcements,
+            "membership_level": get_membership_level(request.user, group),
+        },
     )
 
 
@@ -410,6 +440,7 @@ def group_announcement_delete(request, slug, pk):
             "group": group,
             "announcement_delete_modal": True,
             "announcement": announcement,
+            "membership_level": get_membership_level(request.user, group),
         },
     )
 
@@ -456,6 +487,7 @@ def group_announcement_create(request, slug):
             "group": group,
             "announcement_create_modal": True,
             "form": form,
+            "membership_level": get_membership_level(request.user, group),
         },
     )
 
@@ -490,6 +522,7 @@ def group_announcement_update(request, slug, pk):
             {
                 "announcement_list": GroupAnnouncement.objects.filter(group=group)[:1],
                 "group": group,
+                "membership_level": get_membership_level(request.user, group),
             },
         )
 
@@ -503,6 +536,7 @@ def group_announcement_update(request, slug, pk):
             "announcement_update_modal": True,
             "announcement": group_announcement,
             "form": form,
+            "membership_level": get_membership_level(request.user, group),
         },
     )
 

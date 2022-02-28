@@ -11,10 +11,13 @@
         {% endif %}
         {% if group.profile_image %}
             <img src="{{ group.profile_image.url }}" class="organic-radius img-fluid shape-white p-1 fmxh-250 fmxw-300" alt="Joseph Avatar"
-            style="object-fit: cover;"
+            style="object-fit: cover; height: 250px"
             >
         {% else %}
-            <img src="/compiled/pixel/html&css/assets/img/blog/image-1.jpg" class="organic-radius img-fluid" alt="Joseph Avatar">
+            <img src="/compiled/img/logo/collabl_logo_no_text.png" class="organic-radius img-fluid shape-white p-1 fmxh-250 fmxw-300" alt="Collabl Logo"
+            style="object-fit: cover; height: 250px"
+            >
+
         {% endif %}
 
         {% if membership_level == "Admin" %}
@@ -39,14 +42,14 @@
 
         <p class="mt-4 mb-0">
             {% if membership_level == MEMBERSHIP_STATUS_ADMIN or membership_level == MEMBERSHIP_STATUS_CURRENT %}
-                <a href="{% url 'group-leave' slug=group.slug %}">Leave</a>
+                <a href="{% url 'group-leave' slug=group.slug %}" hx-boost="True">Leave</a>
             {% elif not membership_level == MEMBERSHIP_STATUS_PENDING %}
-                <a href="{% url 'group-join' slug=group.slug %}">Join</a>
+                <a href="{% url 'group-join' slug=group.slug %}" hx-boost="True">Join</a>
             {% endif %}
         </p>
 
         {% if messages %}
-            <ul hx-get="{% url 'empty-string' %}" hx-swap="outerHTML swap:0.1s" hx-trigger="load delay:3s"
+            <ul hx-get="{% url 'empty-string' %}" hx-swap="outerHTML" hx-trigger="load delay:3s"
                 class="pt-3 m-0"
                 style="list-style-type: none">
                 {% for message in messages %}

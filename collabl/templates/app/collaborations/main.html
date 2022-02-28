@@ -2,8 +2,8 @@
 {% block body_content %}
 
     <ol class="text-white bg-secondary p-0 text-center">
-        <a hx-boost="true" hx-swap="innerHTML swap:0.1s" href="{% url 'user-group-list' %}"><span class="breadcrumb-item">Home </span></a> /
-        <a hx-boost="true" hx-swap="innerHTML swap:0.1s" href="{% url 'group-detail' slug=collaboration.related_group.slug %}"><span class="breadcrumb-item text-white"> {{ collaboration.related_group }}</span></a>   /
+        <a hx-boost="true" hx-swap="innerHTML" href="{% url 'user-group-list' %}"><span class="breadcrumb-item">Home </span></a> /
+        <a hx-boost="true" hx-swap="innerHTML" href="{% url 'group-detail' slug=collaboration.related_group.slug %}"><span class="breadcrumb-item text-white"> {{ collaboration.related_group }}</span></a>   /
         <a href=""><span class="breadcrumb-item text-white"> <strong>{{ collaboration }}</strong></span></a>
 
     </ol>

@@ -30,7 +30,9 @@ class GroupSearchView(ListView):
     template_name = "app/home/find_groups.html"
     partial_template_name = "app/home/partials/group_list.html"
     hx_target_id = "list_of_groups"
-    http_method_names = ['get',]
+    http_method_names = [
+        "get",
+    ]
 
     def get_template_names(self):
         """
@@ -73,7 +75,9 @@ class GroupDetailView(FormMixin, DetailView):
     template_name = "app/group/main.html"
     model = Group
     form_class = GroupMessageForm
-    http_method_names = ['get',]
+    http_method_names = [
+        "get",
+    ]
 
     def get_context_data(self, **kwargs):
         """
@@ -114,7 +118,7 @@ class GroupDetailView(FormMixin, DetailView):
 
 
 @login_required()
-@require_http_methods(["POST"])
+@require_http_methods(["GET"])
 def group_join_view(request, slug):
     """
     FUNCTIONAL VIEW - Allows users to request to join groups.
@@ -153,7 +157,7 @@ def group_join_view(request, slug):
 
 
 @login_required()
-@require_http_methods(["POST"])
+@require_http_methods(["GET"])
 def group_leave_view(request, slug):
     """
     FUNCTIONAL VIEW - Allows users to leave groups

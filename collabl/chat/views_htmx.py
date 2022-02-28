@@ -18,7 +18,11 @@ from groups.views import get_membership_level
 
 
 @login_required()
-@require_http_methods(["POST",])
+@require_http_methods(
+    [
+        "POST",
+    ]
+)
 def group_message_create_view(request, slug):
     """
     HTMX VIEW - Allows chat messages to be added
@@ -146,7 +150,11 @@ def group_message_delete_view(request, slug, pk):
 
 
 @login_required()
-@require_http_methods(["POST",])
+@require_http_methods(
+    [
+        "POST",
+    ]
+)
 def collaboration_message_create_view(request, slug):
     """
     HTMX VIEW - Allows chat messages to be added

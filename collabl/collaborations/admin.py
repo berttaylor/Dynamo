@@ -42,6 +42,7 @@ class CollaborationAdmin(admin.ModelAdmin):
     list_display = (
         "name",
         "slug",
+        "image",
         "related_group",
         "number_of_tasks",
         "number_of_tasks_completed",

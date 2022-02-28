@@ -3,15 +3,15 @@
     <div class="col-12 col-md-6 col-lg-6 mt-3 text-center text-md-left">
         <div class="card border-gray-300 my-2 bg-tertiary text-white border-3">
 
-            <a hx-swap="innerHTML swap:0.1s" hx-boost="true" href="{% url 'collaboration-detail' slug=collaboration.slug %}">
+            <a hx-swap="innerHTML" hx-boost="true" href="{% url 'collaboration-detail' slug=collaboration.slug %}">
                 {% if collaboration.image %}
-                    <img src="{{ collaboration.image.url }}" class="collaboration-card-img align-self-center fh-250"
+                    <img src="{{ collaboration.image.url }}" class="collaboration-card-img align-self-center"
                          alt="{{ collaboration.image }}"
-                        style="object-fit: cover;"
+                        style="object-fit: cover; height: 200px;"
                     >
                 {% else %}
-                    <img src="/compiled/pixel/html&css/assets/img/blog/image-1.jpg"
-                         class="collaboration-card-img align-self-center fmh-250" alt="Office">
+                    <img src="/compiled/img/logo/collabl_logo_no_text.png"
+                         class="collaboration-card-img align-self-center" alt="Collabl logo" style="object-fit: cover; height: 200px;">
                 {% endif %}
             </a>
 
@@ -35,7 +35,7 @@
 
                 </div>
 
-                <a hx-swap="innerHTML swap:0.1s" hx-boost="true" href="{% url 'collaboration-detail' slug=collaboration.slug %}"><h3
+                <a hx-swap="innerHTML" hx-boost="true" href="{% url 'collaboration-detail' slug=collaboration.slug %}"><h3
                         class="h5 card-title mt-4">{{ collaboration.name }}</h3></a>
                 <p class="card-text" style="height: 70px !important;">{{ collaboration.description|truncatechars:80 }}</p>
 
