@@ -26,7 +26,7 @@
                     hx-get="{% url 'collaboration-task-update' slug=collaboration.slug pk=task.pk %}"
                     hx-target="#element_list"
                     hx-swap="innerHTML"
-            ><h2 class="h6 pb-1">{{ task.number }}. {{ task.name }}</h2></a>
+            ><h2 class="h6 pb-1">{{ task.name }}</h2></a>
 
             {% if task.description %}
                 <p class="mb-1">{{ task.description }}</p>
@@ -40,16 +40,20 @@
             {% endif %}
 
             <div class="task_action_bar mt-3">
-                    <span class="text-muted font-small me-3">
+
                         {% if task.is_complete %}
+                            <span class="text-muted font-small me-3">
                             <span class="fas fa-user-check me-2"></span>
                             <strong>{{ task.completed_by.first_name }}</strong>
-                        {% else %}
+                            </span>
+                        {% elif task.assigned_to %}
+                            <span class="text-muted font-small me-3">
                             <span class="fas fa-user-clock me-2"></span>
                             <strong>{{ task.assigned_to.first_name }}</strong>
+                            </span>
                         {% endif %}
 
-            </span>
+
 
 
                 {% if task.is_complete %}
@@ -96,7 +100,7 @@
             </div>
 
         {% else %}
-            <h2 class="h6 pb-1">{{ task.number }}. {{ task.name }}</h2>
+            <h2 class="h6 pb-1">{{ task.name }}</h2>
 
             {% if task.description %}
                 <p class="mb-1">{{ task.description }}</p>

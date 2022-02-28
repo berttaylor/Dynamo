@@ -118,7 +118,7 @@ class GroupDetailView(FormMixin, DetailView):
 
 
 @login_required()
-@require_http_methods(["POST"])
+@require_http_methods(["GET"])
 def group_join_view(request, slug):
     """
     FUNCTIONAL VIEW - Allows users to request to join groups.
@@ -157,7 +157,7 @@ def group_join_view(request, slug):
 
 
 @login_required()
-@require_http_methods(["POST"])
+@require_http_methods(["GET"])
 def group_leave_view(request, slug):
     """
     FUNCTIONAL VIEW - Allows users to leave groups
