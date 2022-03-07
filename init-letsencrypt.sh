@@ -5,7 +5,7 @@ if ! [ -x "$(command -v docker-compose)" ]; then
   exit 1
 fi
 
-domains=(collabl.io collabl.io)
+domains=(collabl.io www.collabl.io)
 rsa_key_size=4096
 data_path="./data/certbot"
 email="taftaylor@gmail.com" # Adding a valid address is strongly recommended
