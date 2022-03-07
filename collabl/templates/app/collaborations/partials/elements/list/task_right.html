@@ -4,9 +4,9 @@
 
         {% if membership_level == "Admin" or membership_level == "Current" %}
             <a
-               hx-get="{% url 'collaboration-task-update' slug=collaboration.slug pk=task.pk %}"
-               hx-target="#element_list"
-               hx-swap="innerHTML"
+                    hx-get="{% url 'collaboration-task-update' slug=collaboration.slug pk=task.pk %}"
+                    hx-target="#element_list"
+                    hx-swap="innerHTML"
             ><h2 class="h6 pb-1">{{ task.name }}</h2></a>
             {% if task.description %}
                 <p class="mb-1">{{ task.description }}</p>
@@ -15,55 +15,13 @@
                 <p class="mb-1">"{{ task.completion_notes }}"</p>
             {% endif %}
             {% if task.completed_by %}
-                <p class="text-muted font-small mb-1">Completed by {{ task.completed_by.first_name }} ({{ task.completed_at|date:"d M, y" }})</p>
+                <p class="text-muted font-small mb-1">Completed by {{ task.completed_by.first_name }}
+                    ({{ task.completed_at|date:"d M, y" }})</p>
             {% endif %}
 
 
 
             <div class="task_action_bar mt-3">
-
-
-                            {% if task.is_complete %}
-                                <span class="text-muted font-small me-3">
-                                    <span class="fas fa-user-check me-2"></span>
-                                    <strong>{{ task.completed_by.first_name }}</strong>
-                                </span>
-                            {% elif task.assigned_to %}
-                                <span class="text-muted font-small me-3">
-                                    <span class="fas fa-user-clock me-2"></span>
-                                    <strong>{{ task.assigned_to.first_name }}</strong>
-                                </span>
-                            {% endif %}
-
-
-
-
-                        {% if task.is_complete %}
-
-                    <a class="text-muted font-small me-3"
-                       hx-get="{% url 'collaboration-task-notes' slug=collaboration.slug pk=task.pk %}"
-                       hx-target="#element_list"
-                       hx-swap="innerHTML"
-                    >
-                        <span class="fas fa-sticky-note me-2"></span>
-                        <strong>Notes</strong>
-                    </a>
-
-
-                    {% if task.file %}
-
-                        <a target="_blank" class="text-muted font-small me-3" href={{ task.file.url }}>
-                            <span class="fa fa-file me-2" aria-hidden="true"></span>
-                            <strong>File</strong>
-                        </a>
-
-                    {% endif %}
-
-
-                {% else %}
-
-
-            {% endif %}
 
                 {% if forloop.counter != 1 %}
 
@@ -71,7 +29,7 @@
                        hx-post="{% url 'collaboration-task-move' slug=collaboration.slug pk=task.pk position=task.position|add:"-1" %}"
                        hx-target="#element_list"
                        hx-swap="innerHTML swap:0.1s"
-                    ><span class="fa fa-arrow-up m-2"></span></a>
+                    ><span class="fa fa-arrow-up m-2 ms-3"></span></a>
 
                 {% endif %}
 
@@ -81,7 +39,51 @@
                        hx-post="{% url 'collaboration-task-move' slug=collaboration.slug pk=task.pk position=task.position|add:"1" %}"
                        hx-target="#element_list"
                        hx-swap="innerHTML swap:0.1s"
-                    ><span class="fa fa-arrow-down m-2"></span></a>
+                    >
+
+                        {% if forloop.counter == 1 %}
+                            <span class="fa fa-arrow-down m-2 ms-3"></span>
+                        {% else %}
+                            <span class="fa fa-arrow-down m-2 me-3"></span>
+                        {% endif %}
+
+
+                    </a>
+
+                {% endif %}
+
+                {% if task.is_complete %}
+                    <span class="text-muted font-small ms-3">
+                                    <span class="fas fa-user-check"></span>
+                                    <strong>{{ task.completed_by.first_name }}</strong>
+                                </span>
+                {% elif task.assigned_to %}
+                    <span class="text-muted font-small ms-3">
+                                    <span class="fas fa-user-clock"></span>
+                                    <strong>{{ task.assigned_to.first_name }}</strong>
+                                </span>
+                {% endif %}
+
+                {% if task.is_complete %}
+
+                    <a class="text-muted font-small ms-3"
+                       hx-get="{% url 'collaboration-task-notes' slug=collaboration.slug pk=task.pk %}"
+                       hx-target="#element_list"
+                       hx-swap="innerHTML"
+                    >
+                        <span class="fas fa-sticky-note ms-2"></span>
+                        <strong>Notes</strong>
+                    </a>
+
+
+                    {% if task.file %}
+
+                        <a target="_blank" class="text-muted font-small ms-3" href={{ task.file.url }}>
+                            <span class="fa fa-file me-2" aria-hidden="true"></span>
+                            <strong>File</strong>
+                        </a>
+
+                    {% endif %}
 
                 {% endif %}
 

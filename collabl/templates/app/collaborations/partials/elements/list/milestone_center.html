@@ -1,4 +1,8 @@
-<div class="row align-items-center justify-content-end vertical-timeline p-1 d-md-none">
+<div class="row align-items-center justify-content-end vertical-timeline p-1 d-md-none"
+
+
+
+>
 
     <div class="col-md-2 text-center full mt-4">
         {% if milestone.is_complete %}
@@ -34,7 +38,7 @@
                    hx-post="{% url 'collaboration-milestone-move' slug=collaboration.slug pk=milestone.pk position=milestone.position|add:"-1" %}"
                    hx-target="#element_list"
                    hx-swap="innerHTML swap:0.1s"
-                ><span class="fa fa-arrow-up m-2"></span></a>
+                ><span class="fa fa-arrow-up m-2 ms-3"></span></a>
 
             {% endif %}
 
@@ -44,7 +48,15 @@
                    hx-post="{% url 'collaboration-milestone-move' slug=collaboration.slug pk=milestone.pk position=milestone.position|add:"1" %}"
                    hx-target="#element_list"
                    hx-swap="innerHTML swap:0.1s"
-                ><span class="fa fa-arrow-down m-2"></span></a>
+                >
+
+                    {% if forloop.counter == 1 %}
+                        <span class="fa fa-arrow-down m-2"></span>
+                    {% else %}
+                        <span class="fa fa-arrow-down m-2 me-3"></span>
+                    {% endif %}
+
+                </a>
 
             {% endif %}
 
