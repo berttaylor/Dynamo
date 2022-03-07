@@ -1,0 +1,69 @@
+version: '3'
+
+services:
+  # Backend container, with both Django + Gunicorn
+  web:
+    restart: always
+    env_file:
+      - .env.prod
+    build: .
+    volumes:
+      - .:/opt/services/msm/src:delegated
+      - static:/opt/services/msm/static:delegated
+      - media:/opt/services/msm/media:delegated
+    depends_on:
+      - redis
+
+  # Reverse proxy container for Nginx
+  nginx:
+    restart: unless-stopped
+    image: nginx:1.21.0
+    ports:
+      - 80:80
+      - 443:443
+    command: "/bin/sh -c 'while :; do sleep 6h & wait $${!}; nginx -s reload; done & nginx -g \"daemon off;\"'"
+    volumes:
+      - ./msm/config/nginx/prod-conf.d:/etc/nginx/conf.d
+      - ./msm/static/compiled/:/compiled:delegated
+      - ./msm/static/admin/:/admin:delegated
+      - ./msm/certificates/certbot/conf:/etc/letsencrypt
+      - ./msm/certificates/www:/var/www/certbot
+    depends_on:
+      - web
+
+  # Message queue for Celery tasks
+  redis:
+    image: redis:6.2.4-alpine
+
+  # Container specifically for Celery workers
+  worker:
+    env_file:
+      - .env.prod
+    working_dir: /opt/services/msm/src/msm
+    build: .
+    # In prod, we may want to pass the --uid of the user to silence warnings
+    command: celery -A msm worker -l info
+#    command: sh -c "celery -A msm worker -l info && celery -A msm worker --beat --loglevel=INFO" # Start both a worker and beat, for the nightly deletion task.
+    volumes:
+      - .:/opt/services/msm/src:delegated
+      - static:/opt/services/msm/static:delegated
+      - media:/opt/services/msm/media:delegated
+      - logs:/opt/services/msm/logs:delegated
+    depends_on:
+      - redis
+
+  certbot:
+    image: certbot/certbot
+    restart: unless-stopped
+    volumes:
+      - ./msm/certificates/certbot/conf:/etc/letsencrypt
+      - ./msm/certificates/www:/var/www/certbot
+    entrypoint: "/bin/sh -c 'trap exit TERM; while :; do certbot renew; sleep 12h & wait $${!}; done;'"
+    depends_on:
+      - web
+
+# Persist certain volumes
+volumes:
+  logs:
+  static:
+  media:
