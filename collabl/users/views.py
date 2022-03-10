@@ -27,7 +27,7 @@ from django.core.exceptions import ValidationError
 from django.db import transaction
 from django.shortcuts import redirect, render
 from django.urls import reverse_lazy
-from django.utils.encoding import force_bytes, force_text
+from django.utils.encoding import force_bytes, force_str
 from django.utils.http import urlsafe_base64_decode, urlsafe_base64_encode
 from django.views.decorators.http import require_http_methods
 from django.views.generic import TemplateView
@@ -84,7 +84,7 @@ def account_activation_view(request, encoded_pk, token):
     View that is linked to from account verification emails.
     """
 
-    pk = force_text(urlsafe_base64_decode(encoded_pk))
+    pk = force_str(urlsafe_base64_decode(encoded_pk))
     user = User.objects.get(pk=pk)
 
     # If the user is already active, we redirect to the login page
