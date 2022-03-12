@@ -5,4 +5,4 @@ build:
   docker:
     web: Dockerfile
 run:
-  web: gunicorn config.wsgi
+  web: gunicorn -c collabl/config/gunicorn/conf.py --bind :8000 --chdir collabl collabl.wsgi:application
