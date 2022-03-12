@@ -4,5 +4,3 @@ setup:
 build:
   docker:
     web: Dockerfile
-run:
-  web: gunicorn config.wsgi
