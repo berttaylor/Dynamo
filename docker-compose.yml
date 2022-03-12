@@ -7,6 +7,8 @@ services:
     env_file:
       - .env.prod
     build: .
+    environment:
+      - DJANGO_SETTINGS_MODULE
     volumes:
       - .:/opt/services/collabl/src:delegated
       - static:/opt/services/collabl/static:delegated
@@ -26,8 +28,6 @@ services:
       - ./collabl/config/nginx/prod-conf.d:/etc/nginx/conf.d
       - ./collabl/static/compiled/:/compiled:delegated
       - ./collabl/static/admin/:/admin:delegated
-      - ./collabl/certificates/certbot/conf:/etc/letsencrypt
-      - ./collabl/certificates/www:/var/www/certbot
     depends_on:
       - web
 
@@ -51,16 +51,6 @@ services:
       - logs:/opt/services/collabl/logs:delegated
     depends_on:
       - redis
-
-  certbot:
-    image: certbot/certbot
-    restart: unless-stopped
-    volumes:
-      - ./collabl/certificates/certbot/conf:/etc/letsencrypt
-      - ./collabl/certificates/www:/var/www/certbot
-    entrypoint: "/bin/sh -c 'trap exit TERM; while :; do certbot renew; sleep 12h & wait $${!}; done;'"
-    depends_on:
-      - web
 
 # Persist certain volumes
 volumes:
