@@ -19,8 +19,8 @@ services:
     restart: unless-stopped
     image: nginx:1.21.0
     ports:
-      - 80:80
-      - 443:443
+      - "80:80"
+      - "443:443"
     command: "/bin/sh -c 'while :; do sleep 6h & wait $${!}; nginx -s reload; done & nginx -g \"daemon off;\"'"
     volumes:
       - ./collabl/config/nginx/prod-conf.d:/etc/nginx/conf.d
