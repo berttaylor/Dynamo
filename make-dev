@@ -23,6 +23,10 @@ export
 build:
 	docker-compose -f docker-compose.dev.yml build --no-cache $(CONT)
 
+# Deployment checks
+deploy_check:
+	$(BACKEND_RUN) "cd $(PROJECT); ./manage.py check --deploy"
+
 # Build all containers
 buildall:
 	docker-compose -f docker-compose.dev.yml build

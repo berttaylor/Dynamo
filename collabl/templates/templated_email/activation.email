@@ -20,15 +20,18 @@ Action Needed: Activate Your Account
 {% block greeting %}{% endblock %}
 
 {% block body_content_primary %}
+
+    <h2>Collabl.io</h2>
+
     <div style="font-family: sans-serif; font-size: 14px; font-weight: normal; margin: 0; margin-bottom: 15px;">
+        <hr>
         <p>
             Dear {{ first_name }},
         </p>
-        <br>
         <p>
             Please click <a href="{{ link }}">here</a> to activate your account.
         </p>
-
+        <hr>
     </div>
 
     <p style="font-family: sans-serif; font-size: 14px; font-weight: normal; margin: 0; margin-bottom: 15px;">

@@ -9,14 +9,14 @@ PROJECT = collabl
 INSTALL = pip install
 
 # Sets commands for individual containers
-BACKEND_RUN = docker-compose -f docker-compose.prod.yml run --rm web /bin/bash -c
-BACKEND_EXEC = docker-compose -f docker-compose.prod.yml exec web /bin/bash -c
+BACKEND_RUN = docker-compose -f docker-compose.yml run --rm web /bin/bash -c
+BACKEND_EXEC = docker-compose -f docker-compose.yml exec web /bin/bash -c
 
-WORKER_RUN = docker-compose -f docker-compose.prod.yml run --rm worker /bin/bash -c
-WORKER_EXEC = docker-compose -f docker-compose.prod.yml exec worker /bin/bash -c
+WORKER_RUN = docker-compose -f docker-compose.yml run --rm worker /bin/bash -c
+WORKER_EXEC = docker-compose -f docker-compose.yml exec worker /bin/bash -c
 
-DATABASE_RUN = docker-compose -f docker-compose.prod.yml run --rm db /bin/bash -c
-DATABASE_EXEC = docker-compose -f docker-compose.prod.yml exec db bash -c
+DATABASE_RUN = docker-compose -f docker-compose.yml run --rm db /bin/bash -c
+DATABASE_EXEC = docker-compose -f docker-compose.yml exec db bash -c
 
 # Includes and exports environment variables for Database
 include .env.prod
@@ -24,18 +24,22 @@ export
 
 # Build one named container
 build:
-	docker-compose -f docker-compose.prod.yml build --no-cache $(CONT)
+	docker-compose -f docker-compose.yml build --no-cache $(CONT)
+
+# Deployment checks
+deploy_check:
+	$(BACKEND_RUN) "cd $(PROJECT); ./manage.py check --deploy"
 
 # Build all containers
 buildall:
-	docker-compose -f docker-compose.prod.yml build
-	docker-compose -f docker-compose.prod.yml up
+	docker-compose -f docker-compose.yml build
+	docker-compose -f docker-compose.yml up
 
 up:
-	docker-compose -f docker-compose.prod.yml up
+	docker-compose -f docker-compose.yml up
 
 down:
-	docker-compose -f docker-compose.prod.yml down --remove-orphans
+	docker-compose -f docker-compose.yml down --remove-orphans
 
 killdocker:
 	docker kill $(docker ps -q)
@@ -43,12 +47,12 @@ killdocker:
 # Pass this a container name to reboot it
 # Needed if you make changes to Django's application layer or admin files
 restart:
-	docker-compose -f docker-compose.prod.yml restart $(CONT)
+	docker-compose -f docker-compose.yml restart $(CONT)
 
 fullrebuild:
-	docker-compose -f docker-compose.prod.yml down --rmi local -v
-	docker-compose -f docker-compose.prod.yml build --no-cache
-	docker-compose -f docker-compose.prod.yml up
+	docker-compose -f docker-compose.yml down --rmi local -v
+	docker-compose -f docker-compose.yml build --no-cache
+	docker-compose -f docker-compose.yml up
 
 # DATABASE - Migration & DB tools
 planmigrations:

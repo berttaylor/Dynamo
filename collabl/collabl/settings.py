@@ -32,6 +32,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # CHANGED - SENT SECRET KEY TO ENV
 SECRET_KEY = os.environ.get("DJANGO_SECRET_KEY")
 DEBUG = bool(strtobool(os.environ.get("DJANGO_DEBUG_STATUS")))
+SECURE_SSL_REDIRECT = bool(strtobool(os.environ.get("SECURE_SSL_REDIRECT")))
 ALLOWED_HOSTS = json.loads(os.environ.get("DJANGO_ALLOWED_HOSTS"))
 
 # ADDED: More constants
@@ -185,9 +186,13 @@ USE_TZ = True
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.2/howto/static-files/
-
-STATIC_URL = "/static/"
-STATIC_ROOT = os.path.join(BASE_DIR, "static/")  # Added
+STATIC_URL = '/static/'
+STATICFILES_DIRS = (str(BASE_DIR.joinpath('static')),)
+STATIC_ROOT = str(BASE_DIR.joinpath('staticfiles')) # new
+STATICFILES_FINDERS = [
+    "django.contrib.staticfiles.finders.FileSystemFinder",
+    "django.contrib.staticfiles.finders.AppDirectoriesFinder",
+]
 MEDIA_ROOT = os.path.join(BASE_DIR, "media/root")  # Added
 
 # Default primary key field type
