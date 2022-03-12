@@ -12,14 +12,10 @@ https://docs.djangoproject.com/en/3.2/ref/settings/
 
 import json
 import os
-from datetime import timedelta
 from distutils.util import strtobool
 from pathlib import Path
 
-import sentry_sdk
 import storages.backends.s3boto3
-from celery.schedules import crontab
-from sentry_sdk.integrations.django import DjangoIntegration
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -188,7 +184,7 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/3.2/howto/static-files/
 STATIC_URL = '/static/'
 STATICFILES_DIRS = (str(BASE_DIR.joinpath('static')),)
-STATIC_ROOT = str(BASE_DIR.joinpath('staticfiles')) # new
+STATIC_ROOT = str(BASE_DIR.joinpath('staticfiles'))  # new
 STATICFILES_FINDERS = [
     "django.contrib.staticfiles.finders.FileSystemFinder",
     "django.contrib.staticfiles.finders.AppDirectoriesFinder",
