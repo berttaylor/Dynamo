@@ -39,7 +39,7 @@ urlpatterns = [
         LoginView.as_view(
             template_name="landing/registration/signin.html",
             form_class=CustomLoginForm,
-            success_url=reverse_lazy("user-collaboration-list"),
+            success_url=reverse_lazy("group-search"),
         ),
         name="login",
     ),
