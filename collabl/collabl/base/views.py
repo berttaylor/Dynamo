@@ -29,7 +29,7 @@ class HomepageRedirectView(RedirectView):
         match user.is_authenticated:
             # if logged_in, direct to the dashboard
             case True:
-                return reverse_lazy("user-group-list")
+                return reverse_lazy("group-search")
 
             # if unauthenticated, redirect to agency directory
             case _:
