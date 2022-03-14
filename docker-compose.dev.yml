@@ -7,7 +7,7 @@ services:
       - .env.dev
     image: postgres:13.4
     ports:
-      - 5432:5432
+      - "5432:5432"
     environment:
       - POSTGRES_DB=collabl_db_dev
       - POSTGRES_USER=collabl_db_user_dev
@@ -19,12 +19,11 @@ services:
   nginx:
     image: nginx:1.21.0
     ports:
-      - 8000:80
+      - "8000:80"
     volumes:
       - ./collabl/config/nginx/conf.d:/etc/nginx/conf.d
       - ./collabl/static/compiled/:/compiled:delegated
       - ./collabl/static/admin/:/admin:delegated
-      - ./collabl/static/rest_framework/:/rest_framework:delegated
     depends_on:
       - web
 

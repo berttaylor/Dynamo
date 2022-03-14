@@ -1,0 +1,8 @@
+setup:
+  addons:
+  - plan: heroku-postgresql
+build:
+  docker:
+    web: Dockerfile
+run:
+  web: gunicorn -c collabl/config/gunicorn/conf.py --bind :8000 --chdir collabl collabl.wsgi:application
