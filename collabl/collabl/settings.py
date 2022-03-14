@@ -30,7 +30,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # SECURITY WARNING: don't run with debug turned on in production!
 SECRET_KEY = os.environ.get("DJANGO_SECRET_KEY")
 DEBUG = bool(strtobool(os.environ.get("DJANGO_DEBUG_STATUS")))
-ALLOWED_HOSTS = [host for host in os.environ.get("DJANGO_ALLOWED_HOSTS").split(',')]
+DJANGO_ALLOWED_HOSTS=["localhost","127.0.0.1",".collabl.io","www.collabl.io","64.227.42.44"]
 CSRF_TRUSTED_ORIGINS=["https://collabl.io","https://www.collabl.io"]
 PREPEND_WWW = False
 APPEND_SLASH = False
