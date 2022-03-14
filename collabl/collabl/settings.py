@@ -30,7 +30,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # SECURITY WARNING: don't run with debug turned on in production!
 SECRET_KEY = os.environ.get("DJANGO_SECRET_KEY")
 DEBUG = bool(strtobool(os.environ.get("DJANGO_DEBUG_STATUS")))
-DJANGO_ALLOWED_HOSTS=os.environ.get("DJANGO_ALLOWED_HOSTS").split(" ")
+DJANGO_ALLOWED_HOSTS=["localhost", "127.0.0.1", "collabl.io", "www.collabl.io", "64.227.42.44"]
 CSRF_TRUSTED_ORIGINS=["https://collabl.io", "https://www.collabl.io"]
 SECURE_SSL_REDIRECT = False
 PREPEND_WWW = False
@@ -210,17 +210,17 @@ AXES_RESET_ON_SUCCESS = (
 AXES_ONLY_ADMIN_SITE = False  # Handle both admin panel and regular logins
 AXES_ENABLE_ADMIN = True  # Allow admin management
 
-# ADDED: Sentry settings
-sentry_sdk.init(
-    dsn="https://8a8705bb6d2c4cd9a5db9cace88da923@o1167645.ingest.sentry.io/6258892",
-    integrations=[DjangoIntegration()],
-
-    # Set traces_sample_rate to 1.0 to capture 100%
-    # of transactions for performance monitoring.
-    # We recommend adjusting this value in production.
-    traces_sample_rate=1.0,
-
-    # If you wish to associate users to errors (assuming you are using
-    # django.contrib.auth) you may enable sending PII data.
-    send_default_pii=True
-)
+# # ADDED: Sentry settings
+# sentry_sdk.init(
+#     dsn="https://8a8705bb6d2c4cd9a5db9cace88da923@o1167645.ingest.sentry.io/6258892",
+#     integrations=[DjangoIntegration()],
+#
+#     # Set traces_sample_rate to 1.0 to capture 100%
+#     # of transactions for performance monitoring.
+#     # We recommend adjusting this value in production.
+#     traces_sample_rate=1.0,
+#
+#     # If you wish to associate users to errors (assuming you are using
+#     # django.contrib.auth) you may enable sending PII data.
+#     send_default_pii=True
+# )
