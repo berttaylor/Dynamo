@@ -34,3 +34,8 @@ class HomepageRedirectView(RedirectView):
             # if unauthenticated, redirect to agency directory
             case _:
                 return reverse_lazy("landing")
+
+
+def trigger_error(request):
+    """Used for sentry debugging"""
+    division_by_zero = 1 / 0

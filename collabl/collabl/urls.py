@@ -18,7 +18,7 @@ from django.contrib import admin
 from django.urls import path, include
 from django.views.generic import TemplateView
 
-from collabl.base.views import empty_string, HomepageRedirectView
+from collabl.base.views import empty_string, HomepageRedirectView, trigger_error
 
 urlpatterns = [
     # ADMIN
@@ -45,4 +45,6 @@ urlpatterns = [
     path("", include("collaborations.urls")),
     # Generics
     path("clear", empty_string, name="empty-string"),
+    # Sentry Debug
+    path('trigger-sentry/', trigger_error),
 ]
