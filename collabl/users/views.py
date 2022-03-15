@@ -183,6 +183,7 @@ class UserCollaborationListView(ListView):
         """
         If a filter is specified, we send back a subset of the users groups, rather than all of them.
         """
+
         # Get filter parameter
         if collaboration_list_filter := self.request.GET.get(
             "collaboration_list_filter", None
@@ -190,4 +191,11 @@ class UserCollaborationListView(ListView):
             return get_users_filtered_collaborations(
                 self.request.user, collaboration_list_filter
             )
-        return Collaboration.objects.filter(related_group__members=self.request.user)
+
+        # Else, we return all collaborations from the users current groups
+        active_memberships = Membership.objects.filter(
+            user=self.request.user,
+            status__in=[MEMBERSHIP_STATUS_CURRENT, MEMBERSHIP_STATUS_ADMIN],
+        ).values_list("group", flat=True)
+
+        return Collaboration.objects.filter(related_group__in=active_memberships)

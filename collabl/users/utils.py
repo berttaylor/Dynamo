@@ -4,6 +4,7 @@ from six import text_type
 from django.db.models import Count, When, Case, IntegerField
 from collaborations.models import Collaboration
 import collaborations.constants as collaboration_constants
+from groups.constants import MEMBERSHIP_STATUS_CURRENT, MEMBERSHIP_STATUS_ADMIN
 
 """
 Utility Functions for checking permissions
@@ -28,10 +29,15 @@ def get_users_filtered_collaborations(user, collaboration_list_filter):
         COLLABORATION_STATUS_ALL: str = "All"  # Used for filtering
     """
 
+    # Get the users current memberships
+    active_memberships = user.memberships.filter(
+        status__in=[MEMBERSHIP_STATUS_CURRENT, MEMBERSHIP_STATUS_ADMIN],
+    ).values_list("group", flat=True)
+
     # Annotate the user's groups' collaborations with the number of complete/incomplete tasks,
     unfiltered_collaborations = (
         Collaboration.objects.filter(
-            related_group__members=user,
+            related_group__in=active_memberships,
         )
         .annotate(
             tasks_complete=Count(

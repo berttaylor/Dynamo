@@ -4,6 +4,8 @@ from django.urls import reverse_lazy
 from django.views.decorators.http import require_http_methods
 from django.views.generic import RedirectView
 
+from groups.constants import MEMBERSHIP_STATUS_CURRENT, MEMBERSHIP_STATUS_ADMIN
+
 """
 Generic views needed for front end functionality are kept here.
 """
@@ -29,6 +31,9 @@ class HomepageRedirectView(RedirectView):
         match user.is_authenticated:
             # if logged_in, direct to the dashboard
             case True:
+                if user.memberships.filter(status__in=[MEMBERSHIP_STATUS_CURRENT, MEMBERSHIP_STATUS_ADMIN]).exists():
+                    # If the user has groups, then take them to the group list. else, take them to the group search
+                    return reverse_lazy("user-group-list")
                 return reverse_lazy("group-search")
 
             # if unauthenticated, redirect to agency directory
