@@ -30,7 +30,7 @@ jobs:
         run: ssh prod 'cd app && git fetch && git reset --hard origin/main'
 
       - name: Rebuild docker containers
-        run: ssh prod 'cd app && sudo make -f make-prod build'
+        run: ssh prod 'cat $PROD_SSH_USER_SUDO_PASS | ssh prod cat \| sudo --prompt="" -S -- whoami root && cd app && sudo make -f make-prod build'
 
       - name: Restart docker containers
         run: ssh prod 'cd app && make -f make-prod restart'
