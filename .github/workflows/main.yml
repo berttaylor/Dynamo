@@ -19,6 +19,8 @@ jobs:
           echo DJANGO_DEBUG_STATUS=True >> .env.dev
           echo SITE_PROTOCOL='http://' >> .env.dev
           echo SITE_DOMAIN='127.0.0.1:8000' >> .env.dev
+          RANDOMKEY=$(python3 -c 'import secrets; print(secrets.token_hex(100))')
+          echo DJANGO_SECRET_KEY="${RANDOMKEY}" >> .env.dev
 
       - name: Print env file
         run: |
