@@ -1,21 +1,36 @@
-name: Deployment Workflow
-on:
-  push:
-    branches: [ main ]
-
+name: CI
+on: [push, pull_request]
 jobs:
-  job_one:
-    name: Deploy
+  # test:
+  #   ...
+  deploy:
+    name: "Deploy to prod server"
     runs-on: ubuntu-latest
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    # needs: test
     steps:
-      - name: testing server ssh connection
-        uses: appleboy/ssh-action@master
-        with:
-          host: ${{ secrets.PROD_SSH_HOST }}
-          username: ${{ secrets.PROD_SSH_USER }}
-          key: ${{ secrets.PROD_SSH_PRIVATE_KEY }}
-          port: 22
-          script: |
-            cd app
-            git pull origin main
-            git status
+      - name: Configure SSH
+        run: |
+          mkdir -p ~/.ssh/
+          echo "$SSH_KEY" > ~/.ssh/prod.key
+          chmod 600 ~/.ssh/prod.key
+          cat >>~/.ssh/config <<END
+          Host prod
+            HostName $SSH_HOST
+            User $SSH_USER
+            IdentityFile ~/.ssh/prod.key
+            StrictHostKeyChecking no
+          END
+        env:
+          SSH_USER: ${{ secrets.PROD_SSH_USER }}
+          SSH_KEY: ${{ secrets.PROD_SSH_PRIVATE_KEY }}
+          SSH_HOST: ${{ secrets.PROD_SSH_HOST }}
+
+      - name: Check out the new files
+        run: ssh prod 'cd app && git fetch && git reset --hard origin/master'
+
+      - name: Rebuild docker containers
+        run: ssh prod 'cd app && make -f make-prod build'
+
+      - name: Restart docker containers
+        run: ssh prod 'cd app && make -f make-prod restart'

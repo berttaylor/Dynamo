@@ -38,6 +38,11 @@ up:
 down:
 	docker-compose -f docker-compose.prod.yml down --remove-orphans
 
+# Pass this a container name to reboot it
+# Needed if you make changes to Django's application layer or admin files
+restart:
+	docker-compose -f docker-compose.dev.yml restart $(CONT)
+
 killdocker:
 	docker kill $(docker ps -q)
 
