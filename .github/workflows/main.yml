@@ -2,6 +2,30 @@ name: Main
 on: [push, pull_request]
 jobs:
 
+  test:
+    name: "Test Code"
+    runs-on: ubuntu-latest
+    if: github.event_name == 'push'
+    steps:
+      - name: Generate env file
+        run: |
+          touch .env.dev
+          echo POSTGRES_DB_PORT=1000 >> .env.dev
+          echo POSTGRES_DB_HOST=db >> .env.dev
+          echo POSTGRES_USER=pg_user >> .env.dev
+          echo POSTGRES_DB=postgres_db >> .env.dev
+          echo DJANGO_SETTINGS_MODULE=collabl.settings >> .env.dev
+          echo DJANGO_ALLOWED_HOSTS='localhost 127.0.0.1' >> .env.dev
+          echo DJANGO_DEBUG_STATUS=True >> .env.dev
+          echo SITE_PROTOCOL='http://' >> .env.dev
+          echo SITE_DOMAIN='127.0.0.1:8000' >> .env.dev
+
+      - name: Print env file
+        run: |
+          cat .env.dev
+          python3 --version
+  
+
   deploy:
     name: "Deploy to prod server"
     runs-on: ubuntu-latest
