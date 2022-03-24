@@ -160,6 +160,9 @@ collectstatic:
 djangocheck:
 	$(BACKEND_RUN) "cd $(PROJECT); ./manage.py check;"
 
+run_django_tests:
+	$(BACKEND_RUN) "cd $(PROJECT); ./manage.py test;"
+
 loadfixtures:
 	$(BACKEND_RUN) "cd $(PROJECT); ./manage.py loaddata fixtures/fixtures.json"
 
@@ -173,8 +176,7 @@ startapp:
 setuptests:
 	$(BACKEND_EXEC) "pip install --dev"
 
-runtests:
-	$(BACKEND_EXEC) "cd collabl/tests; pytest"
+
 
 droptestdata:
 	$(BACKEND_RUN) "cd $(PROJECT); ./manage.py drop_pm_test_data;"

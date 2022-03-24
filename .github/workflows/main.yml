@@ -7,6 +7,18 @@ jobs:
     runs-on: ubuntu-latest
     if: github.event_name == 'push'
     steps:
+
+      - uses: actions/checkout@v2
+
+      - name: Set up Python 3.10
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.10
+
+      - name: Print python version
+        run: |
+          python3 --version
+
       - name: Generate env file
         run: |
           touch .env.dev
@@ -25,7 +37,14 @@ jobs:
       - name: Print env file
         run: |
           cat .env.dev
-          python3 --version
+
+      - name: Build docker containters
+        run: |
+          make -f make-dev build
+
+      - name: Run Tests
+        run: |
+          make -f make-dev run_django_tests
   
 
   deploy:
