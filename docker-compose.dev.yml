@@ -8,10 +8,6 @@ services:
     image: postgres:13.4
     ports:
       - "5432:5432"
-    environment:
-      - POSTGRES_DB=collabl_db_dev
-      - POSTGRES_USER=collabl_db_user_dev
-      - POSTGRES_PASSWORD=rNKu2JPhbVY>NG]N
     volumes:
       - db_volume:/var/lib/postgresql/data:delegated
 

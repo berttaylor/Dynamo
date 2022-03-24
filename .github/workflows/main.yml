@@ -22,29 +22,28 @@ jobs:
       - name: Generate env file
         run: |
           touch .env.dev
-          echo POSTGRES_DB_PORT=1000 >> .env.dev
+          echo POSTGRES_DB_PORT=5432 >> .env.dev
           echo POSTGRES_DB_HOST=db >> .env.dev
           echo POSTGRES_USER=pg_user >> .env.dev
           echo POSTGRES_DB=postgres_db >> .env.dev
-          echo DJANGO_SETTINGS_MODULE=collabl.settings >> .env.dev
           echo DJANGO_ALLOWED_HOSTS='localhost 127.0.0.1' >> .env.dev
           echo DJANGO_DEBUG_STATUS=True >> .env.dev
-          echo SITE_PROTOCOL='http://' >> .env.dev
+          echo SITE_PROTOCOL=http:// >> .env.dev
           echo SITE_DOMAIN='127.0.0.1:8000' >> .env.dev
           RANDOMKEY=$(python3 -c 'import secrets; print(secrets.token_hex(100))')
           echo DJANGO_SECRET_KEY="${RANDOMKEY}" >> .env.dev
 
       - name: Print env file
-        run: |
-          cat .env.dev
+        run: cat .env.dev
 
       - name: Build docker containters
-        run: |
-          make -f make-dev build
+        run: make -f make-dev build
+
+      - name: Make databse migrations
+        run: make -f make-dev migrate
 
       - name: Run Tests
-        run: |
-          make -f make-dev run_django_tests
+        run: make -f make-dev run_django_tests
   
 
   deploy:
@@ -74,11 +73,11 @@ jobs:
       - name: Check out the new files
         run: ssh prod 'cd app && git fetch && git reset --hard origin/main'
 
-      - name: Migrate database changes
-        run: ssh prod 'cd app && make -f make-prod migrate'
-
       - name: Rebuild docker containers
         run: ssh prod 'cd app && sudo make -f make-prod build'
+
+      - name: Migrate database changes
+        run: ssh prod 'cd app && make -f make-prod migrate'
 
       - name: Restart docker containers
         run: ssh prod 'cd app && make -f make-prod restart'
