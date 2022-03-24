@@ -27,7 +27,7 @@ jobs:
           SSH_HOST: ${{ secrets.PROD_SSH_HOST }}
 
       - name: Check out the new files
-        run: ssh prod 'cd app && git fetch && git reset --hard origin/master'
+        run: ssh prod 'cd app && git fetch && git reset --hard origin/main'
 
       - name: Rebuild docker containers
         run: ssh prod 'cd app && make -f make-prod build'
