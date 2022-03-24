@@ -25,6 +25,7 @@ jobs:
           SSH_USER: ${{ secrets.PROD_SSH_USER }}
           SSH_KEY: ${{ secrets.PROD_SSH_PRIVATE_KEY }}
           SSH_HOST: ${{ secrets.PROD_SSH_HOST }}
+          SSH_USER_SUDO_PASS: ${{ secrets.SSH_USER_SUDO_PASS }}
 
       - name: Check out the new files
         run: ssh prod 'cd app && git fetch && git reset --hard origin/main'
