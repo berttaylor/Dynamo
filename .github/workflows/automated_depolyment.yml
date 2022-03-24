@@ -4,6 +4,7 @@ jobs:
   test:
     name: "Test Code"
     runs-on: ubuntu-latest
+    if: github.event_name == 'push'
     steps:
       - name: Generate env file
         run: |
