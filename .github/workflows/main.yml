@@ -33,6 +33,13 @@ jobs:
           echo SITE_DOMAIN='127.0.0.1:8000' >> .env.dev
           RANDOMKEY=$(python3 -c 'import secrets; print(secrets.token_hex(100))')
           echo DJANGO_SECRET_KEY="${RANDOMKEY}" >> .env.dev
+          echo CELERY_BROKER_URL=redis://redis:6379 >> .env.dev
+          echo CELERY_TIMEZONE=Europe/London >> .env.dev
+          echo CELERY_RESULT_BACKEND=redis://redis:6379 >> .env.dev
+          echo CELERY_TASK_SERIALIZER=json >> .env.dev
+          echo CELERY_RESULT_SERIALIZER=json >> .env.dev
+          echo DEFAULT_SYSTEM_FROM_EMAIL=no-reply@example.com >> .env.dev
+          echo DEFAULT_SYSTEM_TO_EMAIL=support@example.com >> .env.dev
 
       - name: Print .env File
         run: cat .env.dev
