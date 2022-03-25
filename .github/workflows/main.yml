@@ -40,6 +40,14 @@ jobs:
           echo CELERY_RESULT_SERIALIZER=json >> .env.dev
           echo DEFAULT_SYSTEM_FROM_EMAIL=no-reply@example.com >> .env.dev
           echo DEFAULT_SYSTEM_TO_EMAIL=support@example.com >> .env.dev
+          echo EMAIL_HOST=smtp.mailtrap.io >> .env.dev
+          echo EMAIL_HOST_USER=TODO >> .env.dev
+          echo EMAIL_HOST_PASSWORD=TODO >> .env.dev
+          echo EMAIL_PORT=2525 >> .env.dev
+          echo DEFAULT_FROM_EMAIL=todo@todo.com >> .env.dev
+          echo AWS_ACCESS_KEY_ID=TODO >> .env.dev
+          echo AWS_SECRET_ACCESS_KEY=TODO >> .env.dev
+          echo AWS_STORAGE_BUCKET_NAME=todo >> .env.dev
 
       - name: Print .env File
         run: cat .env.dev
