@@ -8,10 +8,12 @@ services:
     image: postgres:13.4
     ports:
       - "5432:5432"
+    environment:
+      - POSTGRES_DB=collabl_db_dev
+      - POSTGRES_USER=collabl_db_user_dev
+      - POSTGRES_PASSWORD=rNKu2JPhbVY>NG]N
     volumes:
       - db_volume:/var/lib/postgresql/data:delegated
-    networks:
-      - djangonetwork
 
   # Reverse proxy container for Nginx
   nginx:
@@ -24,8 +26,6 @@ services:
       - ./collabl/static/admin/:/admin:delegated
     depends_on:
       - web
-    networks:
-      - djangonetwork
 
   # Backend container, with both Django + Gunicorn
   web:
@@ -42,16 +42,10 @@ services:
     depends_on:
       - db
       - redis
-    links:
-      - db:db
-    networks:
-      - djangonetwork
 
   # Message queue for Celery tasks
   redis:
     image: redis:6.2.2-alpine
-    networks:
-      - djangonetwork
 
   # Container specifically for Celery workers
   worker:
@@ -69,12 +63,6 @@ services:
     depends_on:
       - db
       - redis
-    networks:
-      - djangonetwork
-
-networks:
-    djangonetwork:
-        driver: bridge
 
 # Persist certain volumes
 volumes:
