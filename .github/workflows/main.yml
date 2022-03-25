@@ -24,6 +24,7 @@ jobs:
           touch .env.dev
           echo POSTGRES_DB_PORT=5432 >> .env.dev
           echo POSTGRES_DB_HOST=db >> .env.dev
+          echo POSTGRES_HOST_AUTH_METHOD=trust >> .env.dev
           echo POSTGRES_USER=pg_user >> .env.dev
           echo POSTGRES_DB=postgres_db >> .env.dev
           echo DJANGO_ALLOWED_HOSTS='localhost 127.0.0.1' >> .env.dev
@@ -36,11 +37,8 @@ jobs:
       - name: Print .env File
         run: cat .env.dev
 
-      - name: Build Docker Containers
-        run: make -f make-dev build
-
-      - name: Make Database Migrations
-        run: make -f make-dev up
+      - name: Build & Start Docker Containers
+        run: make -f make-dev buildall
 
       - name: Make Database Migrations
         run: make -f make-dev migrate
