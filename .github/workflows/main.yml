@@ -25,8 +25,9 @@ jobs:
           echo POSTGRES_DB_PORT=5432 >> .env.dev
           echo POSTGRES_DB_HOST=db >> .env.dev
           echo POSTGRES_HOST_AUTH_METHOD=trust >> .env.dev
-          echo POSTGRES_USER=pg_user >> .env.dev
-          echo POSTGRES_DB=postgres_db >> .env.dev
+          echo POSTGRES_USER=collabl_db_user_dev >> .env.dev
+          echo POSTGRES_PASSWORD=rNKu2JPhbVY>NG]N >> .env.dev
+          echo POSTGRES_DB=collabl_db_dev >> .env.dev
           echo DJANGO_ALLOWED_HOSTS='localhost 127.0.0.1' >> .env.dev
           echo DJANGO_DEBUG_STATUS=True >> .env.dev
           echo SITE_PROTOCOL=http:// >> .env.dev
