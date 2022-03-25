@@ -67,14 +67,14 @@ jobs:
             docker-compose -f docker-compose.dev.yml ps
             docker-compose -f docker-compose.dev.yml logs
 
-      - name: wait for containers to be healthy
-        run: sleep 15
+      - name: wait for containers to be healthy (This takes longer on github actions, meaning that the test will sometimes fail if we dont wait)
+        run: sleep 30
 
       - name: Make Database Migrations
         run: make -f make-dev migrate
 
       - name: Run Tests
-        run: make -f make-dev run_django_tests
+        run: make -f make-dev runtests
   
 
   deploy:
