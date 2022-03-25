@@ -19,7 +19,7 @@ jobs:
 
       # Generate the .env file (we don't save one in the repo) and fill it with the required secrets (all either dummy
       # values or generated ones). The only exception is the POSTGRES_DB, POSTGRES_USER, and POSTGRES_PASSWORD values.
-      # These are specified in docker-compose.dev.yml, and so must match teh values written there.
+      # These are specified in docker-compose.dev.yml, and so must match the values written there.
       - name: Generate .env File
         run: |
           touch .env.dev
@@ -57,6 +57,9 @@ jobs:
 
       - name: Build Docker Containers
         run: make -f make-dev build
+
+      - name: Run Docker Containers
+        run: make -f make-dev up
 
       - name: Make Database Migrations
         run: make -f make-dev migrate
