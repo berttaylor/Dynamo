@@ -67,7 +67,7 @@ jobs:
             docker-compose -f docker-compose.dev.yml ps
             docker-compose -f docker-compose.dev.yml logs
 
-      - name: wait for containers to be healthy (This takes longer on github actions, meaning that the test will sometimes fail if we dont wait)
+      - name: wait for containers to be healthy (This takes longer on github actions, meaning that the test will sometimes fail if we don't wait)
         run: sleep 30
 
       - name: Make Database Migrations
@@ -99,16 +99,15 @@ jobs:
           SSH_USER: ${{ secrets.PROD_SSH_USER }}
           SSH_KEY: ${{ secrets.PROD_SSH_PRIVATE_KEY }}
           SSH_HOST: ${{ secrets.PROD_SSH_HOST }}
-          SSH_USER_SUDO_PASS: ${{ secrets.SSH_USER_SUDO_PASS }}
 
-      - name: Pull Down the New Files
+      - name: Server - Pulling Down the New Files
         run: ssh prod 'cd app && git fetch && git reset --hard origin/main'
 
-      - name: Rebuild Docker Containers
+      - name: Server - Rebuilding Docker Containers
         run: ssh prod 'cd app && sudo make -f make-prod build'
 
-      - name: Migrate Database Changes
+      - name: Server - Migrating Database Changes
         run: ssh prod 'cd app && make -f make-prod migrate'
 
-      - name: Restart Docker Containers
+      - name: Server - Restarting Docker Containers
         run: ssh prod 'cd app && make -f make-prod restart'
