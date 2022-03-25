@@ -10,16 +10,16 @@ jobs:
 
       - uses: actions/checkout@v2
 
-      - name: Set up Python 3.10
+      - name: Set Up Python 3.10
         uses: actions/setup-python@v3
         with:
           python-version: '3.10'
 
-      - name: Print python version
+      - name: Print Python Version
         run: |
           python3 --version
 
-      - name: Generate env file
+      - name: Generate .env File
         run: |
           touch .env.dev
           echo POSTGRES_DB_PORT=5432 >> .env.dev
@@ -33,13 +33,16 @@ jobs:
           RANDOMKEY=$(python3 -c 'import secrets; print(secrets.token_hex(100))')
           echo DJANGO_SECRET_KEY="${RANDOMKEY}" >> .env.dev
 
-      - name: Print env file
+      - name: Print .env File
         run: cat .env.dev
 
-      - name: Build docker containters
+      - name: Build Docker Containers
         run: make -f make-dev build
 
-      - name: Make databse migrations
+      - name: Make Database Migrations
+        run: make -f make-dev up
+
+      - name: Make Database Migrations
         run: make -f make-dev migrate
 
       - name: Run Tests
@@ -47,7 +50,7 @@ jobs:
   
 
   deploy:
-    name: "Deploy to prod server"
+    name: "Deploy to Server & Rebuild Docker Containers"
     runs-on: ubuntu-latest
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     needs: test
@@ -70,14 +73,14 @@ jobs:
           SSH_HOST: ${{ secrets.PROD_SSH_HOST }}
           SSH_USER_SUDO_PASS: ${{ secrets.SSH_USER_SUDO_PASS }}
 
-      - name: Check out the new files
+      - name: Pull Down the New Files
         run: ssh prod 'cd app && git fetch && git reset --hard origin/main'
 
-      - name: Rebuild docker containers
+      - name: Rebuild Docker Containers
         run: ssh prod 'cd app && sudo make -f make-prod build'
 
-      - name: Migrate database changes
+      - name: Migrate Database Changes
         run: ssh prod 'cd app && make -f make-prod migrate'
 
-      - name: Restart docker containers
+      - name: Restart Docker Containers
         run: ssh prod 'cd app && make -f make-prod restart'
