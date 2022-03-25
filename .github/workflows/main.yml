@@ -8,23 +8,23 @@ jobs:
     if: github.event_name == 'push'
     steps:
 
-      # Checkout the code
       - uses: actions/checkout@v2
 
-      # Set up python 3.10
       - name: Set Up Python 3.10
         uses: actions/setup-python@v3
         with:
           python-version: '3.10'
 
-      # Generate the .env file (we don't save one in the repo) and fill it with the required secrets (all either dummy
-      # values or generated ones). The only exception is the POSTGRES_DB, POSTGRES_USER, and POSTGRES_PASSWORD values.
-      # These are specified in docker-compose.dev.yml, and so must match the values written there.
+      - name: Print Python Version
+        run: |
+          python3 --version
+
       - name: Generate .env File
         run: |
           touch .env.dev
           echo POSTGRES_DB_PORT=5432 >> .env.dev
           echo POSTGRES_DB_HOST=db >> .env.dev
+          echo POSTGRES_HOST_AUTH_METHOD=trust >> .env.dev
           echo POSTGRES_USER=collabl_db_user_dev >> .env.dev
           echo POSTGRES_PASSWORD=rNKu2JPhbVY>NG]N >> .env.dev
           echo POSTGRES_DB=collabl_db_dev >> .env.dev
@@ -32,6 +32,8 @@ jobs:
           echo DJANGO_DEBUG_STATUS=True >> .env.dev
           echo SITE_PROTOCOL=http:// >> .env.dev
           echo SITE_DOMAIN='127.0.0.1:8000' >> .env.dev
+          RANDOMKEY=$(python3 -c 'import secrets; print(secrets.token_hex(100))')
+          echo DJANGO_SECRET_KEY="${RANDOMKEY}" >> .env.dev
           echo CELERY_BROKER_URL=redis://redis:6379 >> .env.dev
           echo CELERY_TIMEZONE=Europe/London >> .env.dev
           echo CELERY_RESULT_BACKEND=redis://redis:6379 >> .env.dev
@@ -47,11 +49,8 @@ jobs:
           echo AWS_ACCESS_KEY_ID=TODO >> .env.dev
           echo AWS_SECRET_ACCESS_KEY=TODO >> .env.dev
           echo AWS_STORAGE_BUCKET_NAME=todo >> .env.dev
-          RANDOMKEY=$(python3 -c 'import secrets; print(secrets.token_hex(100))')
-          echo DJANGO_SECRET_KEY="${RANDOMKEY}" >> .env.dev
 
-      # We print the .env file to the console so that we can see what's going on.
-      - name: Output .env values (For Debugging)
+      - name: Print .env File
         run: cat .env.dev
 
       - name: Build Docker Containers
@@ -61,7 +60,7 @@ jobs:
         run: make -f make-dev migrate
 
       - name: Run Tests
-        run: make -f make-dev runtests
+        run: make -f make-dev run_django_tests
   
 
   deploy:
