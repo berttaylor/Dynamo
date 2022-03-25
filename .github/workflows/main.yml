@@ -52,7 +52,7 @@ jobs:
       - name: Print .env File
         run: cat .env.dev
 
-      - name: Build & Start Docker Containers
+      - name: Build Docker Containers
         run: make -f make-dev build
 
       - name: Make Database Migrations
