@@ -59,17 +59,11 @@ jobs:
       - name: Check docker containers
         run: docker ps
 
-      - name: Bring up docker containers
-        run: docker-compose -f docker-compose.dev.yml up -d
-
-      - name: Check docker containers again
-        run: docker ps
-
-      - name: Check Service Readiness
-        uses: thegabriele97/dockercompose-health-action@main
-        with:
-          timeout: '60'
-          workdir: 'src'
+      - name: Bring up docker containers in background
+        run: |
+           chmod +x .github/scripts/monitor_docker.sh
+           .github/scripts/monitor_docker.sh
+        shell: bash
 
       - name: Make Database Migrations
         run: make -f make-dev migrate
