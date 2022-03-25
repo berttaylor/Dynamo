@@ -56,14 +56,19 @@ jobs:
       - name: Build Docker Containers
         run: make -f make-dev build
 
-      - name: Check docker containers
-        run: docker ps
+      - name: Check No containers running
+        run: |
+            docker-compose -f docker-compose.dev.yml down
+            docker-compose -f docker-compose.dev.yml ps
 
       - name: Bring up docker containers in background
         run: |
-           chmod +x .github/scripts/monitor_docker.sh
-           .github/scripts/monitor_docker.sh
-        shell: bash
+            docker-compose -f docker-compose.dev.yml up -d
+            docker-compose -f docker-compose.dev.yml ps
+            docker-compose -f docker-compose.dev.yml logs
+
+      - name: wait for containers to be healthy
+        run: sleep 15
 
       - name: Make Database Migrations
         run: make -f make-dev migrate
