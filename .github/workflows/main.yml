@@ -53,7 +53,7 @@ jobs:
         run: cat .env.dev
 
       - name: Build & Start Docker Containers
-        run: make -f make-dev buildall
+        run: make -f make-dev build
 
       - name: Make Database Migrations
         run: make -f make-dev migrate
